@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Mantis Notes</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="main_title">All Notes</string>
+    <string name="mantis">Mantis</string>
+    <string name="sample_note">When you speak a language, you need to follow grammar rules
+        and use commonly known vocabulary, otherwise nobody would under-
+stand you. Similar idea applies to code. Each programming language has its
+        syntax and if you violate that syntax, the compiler cannot
+understand your code. Each language also comes with certain conventions
+        (these do not matter to the compiler, but matter greatly to
+humans reading the code). Following certain conventions when writing code
+        makes it easier to read and to debug. For the benefit of
+your code readers and your own, you should follow the coding conventions
+        outlined in this document.</string>
+
+    <string name="sample_time">6:20pm</string>
+    <string name="home_fragment">Home</string>
+    <string name="add_note_fragment">Add Note Fragment</string>
+    <string name="note_title">Title</string>
+    <string name="sample_title">Sample Title</string>
+</resources>
