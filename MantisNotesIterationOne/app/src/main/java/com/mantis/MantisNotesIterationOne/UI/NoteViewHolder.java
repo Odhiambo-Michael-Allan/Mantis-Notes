@@ -12,6 +12,7 @@ import com.mantis.MantisNotesIterationOne.R;
 public class NoteViewHolder extends RecyclerView.ViewHolder {
 
     private View noteView;
+    private int position;
 
     public NoteViewHolder( View noteView ) {
         super( noteView );
@@ -19,9 +20,20 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
         setupListenerOnNoteView();
     }
 
+    public void setPosition( int position ) {
+        this.position = position;
+    }
+
     private void setupListenerOnNoteView() {
-        noteView.setOnClickListener( Navigation.createNavigateOnClickListener(
-                R.id.action_nav_home_to_nav_add_note, null ) );
+        noteView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick( View v ) {
+                HomeFragmentDirections.ActionNavHomeToNavAddNote action =
+                        HomeFragmentDirections.actionNavHomeToNavAddNote(
+                                NoteViewHolder.this.position );
+                Navigation.findNavController( v ).navigate( action );
+            }
+        } );
     }
 
     public void bindData( Note note ) {

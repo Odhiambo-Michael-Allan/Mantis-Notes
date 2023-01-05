@@ -23,4 +23,13 @@ public class NotesViewModel extends ViewModel {
     public LiveData<ArrayList<Note>> getNotes() {
         return notes;
     }
+
+    public Note getNoteAtPosition( int position ) {
+        return notesList.get( position );
+    }
+
+    public void setNote( Note note, int position ) {
+        notesList.set( position, note );
+        notes.postValue( notesList );
+    }
 }

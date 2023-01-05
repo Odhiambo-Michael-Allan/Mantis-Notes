@@ -36,6 +36,8 @@ public class AddNoteFragment extends Fragment {
     private FragmentAddNoteBinding binding;
     private NotesViewModel notesViewModel;
     private NavController controller;
+    private boolean isEditing;
+    private int position;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -73,6 +75,22 @@ public class AddNoteFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        AddNoteFragmentArgs args = AddNoteFragmentArgs.fromBundle( getArguments() );
+        position = args.getNotePosition();
+        if ( position == -1 )
+            return;
+        populateViews( notesViewModel.getNoteAtPosition( position ) );
+    }
+
+    private void populateViews( Note note ) {
+        isEditing = true;
+        binding.noteTitle.setText( note.getTitle() );
+        binding.addNoteEditText.setText( note.getDescription() );
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -95,7 +113,14 @@ public class AddNoteFragment extends Fragment {
             @Override
             public void onClick( View v ) {
                 System.out.println( "NAVIGATING FROM ADD NOTE FRAGMENT" );
-                addNoteToModel();
+                if ( !isEditing )
+                    addNoteToModel();
+                else {
+                    Note note = new Note( binding.noteTitle.getText().toString(),
+                            binding.addNoteEditText.getText().toString(),
+                            DateProvider.getCurrentDate() );
+                    notesViewModel.setNote( note, position );
+                }
                 controller.navigateUp();
             }
         } );
@@ -112,7 +137,15 @@ public class AddNoteFragment extends Fragment {
         OnBackPressedCallback callback = new OnBackPressedCallback( true ) {
             @Override
             public void handleOnBackPressed() {
-                addNoteToModel();
+                if ( !isEditing )
+                    addNoteToModel();
+                else {
+                    Note note = new Note( binding.noteTitle.getText().toString(),
+                            binding.addNoteEditText.getText().toString(),
+                            DateProvider.getCurrentDate() );
+                    notesViewModel.setNote( note, position );
+                }
+                isEditing = false;
                 controller.navigateUp();
             }
         };

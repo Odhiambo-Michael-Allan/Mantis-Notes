@@ -122,7 +122,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupFloatingActionButton() {
-        binding.fab.setOnClickListener( Navigation.createNavigateOnClickListener(
-                R.id.action_nav_home_to_nav_add_note, null ) );
+        binding.fab.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick( View v ) {
+                HomeFragmentDirections.ActionNavHomeToNavAddNote action =
+                        HomeFragmentDirections.actionNavHomeToNavAddNote(
+                                -1 );
+                Navigation.findNavController( v ).navigate( action );
+            }
+        } );
     }
 }
