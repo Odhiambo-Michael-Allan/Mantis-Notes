@@ -2,6 +2,7 @@ package com.mantis.MantisNotesIterationOne.UI;
 
 import android.os.Bundle;
 
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import android.text.Html;
@@ -19,6 +20,7 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.divider.MaterialDividerItemDecoration;
+import com.google.android.material.navigation.NavigationView;
 import com.mantis.MantisNotesIterationOne.Models.Note;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModel;
 import com.mantis.MantisNotesIterationOne.R;
@@ -94,17 +96,21 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        binding.notesRecyclerView.recyclerview.setLayoutManager(
+        binding.homeFragmentContent.notesRecyclerView.recyclerview.setLayoutManager(
                 new LinearLayoutManager( getContext() ) );
-        binding.textEmpty.setText( Html.fromHtml( getString( R.string.text_empty_message ) ) );
+        binding.homeFragmentContent.textEmpty.setText( Html.fromHtml( getString( R.string.text_empty_message ) ) );
         notesAdapter = new NotesAdapter();
-        notesAdapter.setEmptyView( binding.layoutEmpty );
+        notesAdapter.setEmptyView( binding.homeFragmentContent.layoutEmpty );
         notesAdapter.setData( new ArrayList<>() );
-        binding.notesRecyclerView.recyclerview.setAdapter( notesAdapter );
+        binding.homeFragmentContent.notesRecyclerView.recyclerview.setAdapter( notesAdapter );
+        binding.homeFragmentContent.notesRecyclerView.recyclerview.addItemDecoration( createDivider() );
+    }
+
+    private MaterialDividerItemDecoration createDivider() {
         MaterialDividerItemDecoration divider = new MaterialDividerItemDecoration( getContext(), LinearLayoutManager.VERTICAL );
         divider.setDividerInsetStart( 40 );
         divider.setDividerInsetEnd( 40 );
-        binding.notesRecyclerView.recyclerview.addItemDecoration( divider );
+        return divider;
     }
 
     private void setupNotesViewModel() {
@@ -119,14 +125,19 @@ public class HomeFragment extends Fragment {
 
     private void setupToolbar() {
         NavController controller = NavHostFragment.findNavController( this );
+        DrawerLayout drawerLayout = binding.drawerLayout;
+        NavigationView navigationView = binding.navView;
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration
-                .Builder( controller.getGraph() ).build();
-        NavigationUI.setupWithNavController( binding.toolbar, controller, appBarConfiguration );
+                .Builder( controller.getGraph() )
+                .setOpenableLayout( drawerLayout )
+                .build();
+        NavigationUI.setupWithNavController( binding.homeFragmentContent.toolbar, controller, appBarConfiguration );
+        NavigationUI.setupWithNavController( navigationView, controller );
 
     }
 
     private void setupFloatingActionButton() {
-        binding.fab.setOnClickListener( new View.OnClickListener() {
+        binding.homeFragmentContent.fab.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick( View v ) {
                 HomeFragmentDirections.ActionNavHomeToNavAddNote action =

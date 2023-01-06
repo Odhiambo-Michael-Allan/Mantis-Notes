@@ -24,4 +24,6 @@ your code readers and your own, you should follow the coding conventions
         <![CDATA[No notes added. Tap the <font color=\'#FF4081\'>+</font>
         button to create a note.]]>
     </string>
+    <string name="my_email">odhiambomichaelallan@gmail.com</string>
+    <string name="home">Home</string>
 </resources>
