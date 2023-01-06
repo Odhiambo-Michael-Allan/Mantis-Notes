@@ -26,4 +26,8 @@ your code readers and your own, you should follow the coding conventions
     </string>
     <string name="my_email">odhiambomichaelallan@gmail.com</string>
     <string name="home">Home</string>
+    <string name="frequently_used_fragment">Frequently Used</string>
+    <string name="frequent">Frequent</string>
+    <string name="no_notes">No notes</string>
+    <string name="trash">Trash</string>
 </resources>

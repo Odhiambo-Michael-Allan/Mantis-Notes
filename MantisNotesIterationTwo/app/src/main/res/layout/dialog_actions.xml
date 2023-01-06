@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <android.widget.Space
+            android:layout_width="16dp"
+            android:layout_height="0dp" />
+
+        <ImageView
+            android:id="@+id/flag_image_view"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="null"
+            tools:src="@drawable/ic_launcher_background" />
+
+        <TextView
+            android:id="@+id/name_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_weight="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            tools:text="US Dollar" />
+        
+        <TextView
+            android:id="@+id/code_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            tools:text="USD" />
+        
+        <android.widget.Space
+            android:layout_width="16dp"
+            android:layout_height="0dp" />
+    </LinearLayout>
+    
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+            
+            <TextView
+                android:id="@+id/pin_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:drawableLeft="@drawable/ic_star_border"
+                android:drawablePadding="16dp"
+                android:drawableStart="@drawable/ic_star_border"
+                android:gravity="center_vertical"
+                android:paddingBottom="12dp"
+                android:paddingEnd="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="12dp"
+                android:text="Pin item to top"
+                android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+
+            <TextView
+                android:id="@+id/text_view_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:drawableLeft="@drawable/ic_edit"
+                android:drawablePadding="16dp"
+                android:drawableStart="@drawable/ic_edit"
+                android:gravity="center_vertical"
+                android:paddingBottom="12dp"
+                android:paddingEnd="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="12dp"
+                android:text="Edit preferences"
+                android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+
+            <TextView
+                android:id="@+id/text_view_delete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:drawableLeft="@drawable/ic_delete"
+                android:drawablePadding="16dp"
+                android:drawableStart="@drawable/ic_delete"
+                android:gravity="center_vertical"
+                android:paddingBottom="12dp"
+                android:paddingEnd="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="12dp"
+                android:text="Delete item"
+                android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

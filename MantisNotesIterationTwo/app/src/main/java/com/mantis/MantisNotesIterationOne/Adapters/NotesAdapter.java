@@ -1,4 +1,4 @@
-package com.mantis.MantisNotesIterationOne.UI;
+package com.mantis.MantisNotesIterationOne.Adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mantis.MantisNotesIterationOne.Models.Note;
 import com.mantis.MantisNotesIterationOne.R;
+import com.mantis.MantisNotesIterationOne.UI.NoteViewHolder;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
     private ArrayList<Note> data;
     private View emptyView;
+
     @NonNull
     @Override
     public NoteViewHolder onCreateViewHolder( @NonNull ViewGroup parent, int viewType ) {

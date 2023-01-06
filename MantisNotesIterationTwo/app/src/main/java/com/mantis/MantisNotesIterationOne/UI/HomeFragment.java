@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.divider.MaterialDividerItemDecoration;
 import com.google.android.material.navigation.NavigationView;
+import com.mantis.MantisNotesIterationOne.Adapters.NotesAdapter;
 import com.mantis.MantisNotesIterationOne.Models.Note;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModel;
 import com.mantis.MantisNotesIterationOne.R;
@@ -128,13 +129,20 @@ public class HomeFragment extends Fragment {
         DrawerLayout drawerLayout = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration
-                .Builder( controller.getGraph() )
+                .Builder( R.id.nav_home, R.id.nav_frequently_used, R.id.nav_trash )
                 .setOpenableLayout( drawerLayout )
                 .build();
-        NavigationUI.setupWithNavController( binding.homeFragmentContent.toolbar, controller, appBarConfiguration );
+        NavigationUI.setupWithNavController( binding.homeFragmentContent.appBarLayout.toolbar,
+                controller, appBarConfiguration );
         NavigationUI.setupWithNavController( navigationView, controller );
-
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        binding.navView.getMenu().findItem( R.id.nav_home ).setChecked( true );
+    }
+
 
     private void setupFloatingActionButton() {
         binding.homeFragmentContent.fab.setOnClickListener( new View.OnClickListener() {

@@ -29,5 +29,16 @@
             app:argType="integer" />
     </fragment>
 
+    <fragment
+        android:id="@+id/nav_frequently_used"
+        android:name="com.mantis.MantisNotesIterationOne.UI.FrequentlyUsedFragment"
+        android:label="@string/frequently_used_fragment"
+        tools:layout="@layout/fragment_frequently_used" />
+
+    <fragment
+        android:id="@+id/nav_trash"
+        android:name="com.mantis.MantisNotesIterationOne.UI.TrashFragment"
+        android:label="@string/trash"
+        tools:layout="@layout/fragment_trash" />
 
 </navigation>

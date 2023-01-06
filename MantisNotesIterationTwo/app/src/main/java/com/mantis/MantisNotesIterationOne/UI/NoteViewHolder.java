@@ -3,9 +3,11 @@ package com.mantis.MantisNotesIterationOne.UI;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mantis.MantisNotesIterationOne.Dialogs.NoteActionDialog;
 import com.mantis.MantisNotesIterationOne.Models.Note;
 import com.mantis.MantisNotesIterationOne.R;
 
@@ -17,14 +19,14 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
     public NoteViewHolder( View noteView ) {
         super( noteView );
         this.noteView = noteView;
-        setupListenerOnNoteView();
+        setupListenersOnNoteView();
     }
 
     public void setPosition( int position ) {
         this.position = position;
     }
 
-    private void setupListenerOnNoteView() {
+    private void setupListenersOnNoteView() {
         noteView.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick( View v ) {
@@ -32,6 +34,15 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
                         HomeFragmentDirections.actionNavHomeToNavAddNote(
                                 NoteViewHolder.this.position );
                 Navigation.findNavController( v ).navigate( action );
+            }
+        } );
+
+        noteView.setOnLongClickListener( new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick( View v ) {
+                NoteActionDialog actionDialog = NoteActionDialog.newInstance();
+                actionDialog.show( ((AppCompatActivity) noteView.getContext()).getSupportFragmentManager(), "note-icons" );
+                return true;
             }
         } );
     }
