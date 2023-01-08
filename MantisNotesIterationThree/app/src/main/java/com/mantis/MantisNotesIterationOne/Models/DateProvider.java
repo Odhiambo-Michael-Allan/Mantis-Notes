@@ -6,7 +6,7 @@ import java.util.Date;
 public class DateProvider {
 
     public static String getCurrentDate() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy.MM.dd G 'at' HH:mm:ss z" );
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "EEE, MMM d 'at' h:mm a" );
         String currentDateAndTime = simpleDateFormat.format( new Date() );
         return currentDateAndTime;
     }

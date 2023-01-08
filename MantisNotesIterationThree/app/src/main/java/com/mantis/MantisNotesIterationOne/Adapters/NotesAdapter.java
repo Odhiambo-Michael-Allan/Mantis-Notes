@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mantis.MantisNotesIterationOne.Models.Note;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModel;
 import com.mantis.MantisNotesIterationOne.R;
-import com.mantis.MantisNotesIterationOne.UI.NoteViewHolder;
+import com.mantis.MantisNotesIterationOne.ViewHolders.NoteViewHolder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
+public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
     private ArrayList<Note> data;
     private View emptyView;
@@ -25,10 +25,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     @NonNull
     @Override
     public NoteViewHolder onCreateViewHolder( @NonNull ViewGroup parent, int viewType ) {
-        View view = LayoutInflater.from( parent.getContext() )
-                .inflate( R.layout.notes_view, parent, false );
-        NoteViewHolder noteViewHolder = new NoteViewHolder( view, this );
-        noteViewHolder.addListener(new NoteViewHolder.NoteViewHolderListener() {
+        View view = getNoteView( parent );
+        NoteViewHolder noteViewHolder = getNoteViewHolder( view, this );
+        noteViewHolder.addListener( new NoteViewHolder.NoteViewHolderListener() {
             @Override
             public void onClick( View view, int viewHolderPosition ) {
                 notifyListenersOfViewHolderClick( view, viewHolderPosition );
@@ -36,6 +35,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
         } );
         return noteViewHolder;
     }
+
+    protected abstract View getNoteView( @NonNull ViewGroup parent );
+
+    protected abstract NoteViewHolder getNoteViewHolder( View view, NotesAdapter adapter );
 
     private void notifyListenersOfViewHolderClick( View view, int viewHolderPosition ) {
         Iterator i = listeners.iterator();
@@ -63,6 +66,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
         else
             showEmptyView( false );
         notifyDataSetChanged();
+    }
+
+    public ArrayList<Note> getData() {
+        return this.data;
     }
 
     public void setEmptyView( View view ) {

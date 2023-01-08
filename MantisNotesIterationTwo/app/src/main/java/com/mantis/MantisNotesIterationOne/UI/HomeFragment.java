@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment;
 
 import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -25,7 +28,9 @@ import com.mantis.MantisNotesIterationOne.Adapters.NotesAdapter;
 import com.mantis.MantisNotesIterationOne.Models.Note;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModel;
 import com.mantis.MantisNotesIterationOne.R;
+import com.mantis.MantisNotesIterationOne.Utils.MenuConfigurer;
 import com.mantis.MantisNotesIterationOne.databinding.FragmentHomeBinding;
+
 
 import java.util.ArrayList;
 
@@ -85,6 +90,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState ) {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate( inflater, container, false );
+        setHasOptionsMenu( true );
         return binding.getRoot();
     }
 
@@ -145,6 +151,8 @@ public class HomeFragment extends Fragment {
         NavigationUI.setupWithNavController( binding.homeFragmentContent.appBarLayout.toolbar,
                 controller, appBarConfiguration );
         NavigationUI.setupWithNavController( navigationView, controller );
+        binding.homeFragmentContent.appBarLayout.toolbar.inflateMenu( R.menu.options_menu );
+        MenuConfigurer.configureMenu( binding.homeFragmentContent.appBarLayout.toolbar );
     }
 
     @Override
@@ -165,4 +173,5 @@ public class HomeFragment extends Fragment {
             }
         } );
     }
+
 }

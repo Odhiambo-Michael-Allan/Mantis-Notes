@@ -12,6 +12,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import com.mantis.MantisNotesIterationOne.Adapters.NotesAdapter;
 import com.mantis.MantisNotesIterationOne.Models.Note;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModel;
 import com.mantis.MantisNotesIterationOne.R;
+import com.mantis.MantisNotesIterationOne.Utils.RecyclerViewConfigurator;
 import com.mantis.MantisNotesIterationOne.databinding.FragmentFrequentlyUsedBinding;
 import com.mantis.MantisNotesIterationOne.databinding.FrequentlyUsedFragmentContentBinding;
 
@@ -111,9 +113,11 @@ public class FrequentlyUsedFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        binding.frequentlyUsedFragmentContent.frequentlyUsedFragmentNotesRecyclerView.recyclerview.setLayoutManager( new LinearLayoutManager( getContext() ) );
+        RecyclerView recyclerView = binding.frequentlyUsedFragmentContent
+                .frequentlyUsedFragmentNotesRecyclerView.recyclerview;
+        RecyclerViewConfigurator.configureSimpleListRecyclerView( recyclerView, getContext() );
         binding.frequentlyUsedFragmentContent.textEmpty.setText( getString( R.string.no_notes ) );
-        adapter = new NotesAdapter();
+        adapter = ( NotesAdapter ) recyclerView.getAdapter();
         adapter.setEmptyView( binding.frequentlyUsedFragmentContent.layoutEmpty );
         adapter.setData( new ArrayList<>() );
         adapter.addListener( new NotesAdapter.NoteAdapterListener() {
@@ -125,8 +129,6 @@ public class FrequentlyUsedFragment extends Fragment {
                 Navigation.findNavController( view ).navigate( action );
             }
         } );
-        binding.frequentlyUsedFragmentContent.frequentlyUsedFragmentNotesRecyclerView.recyclerview.setAdapter( adapter );
-        binding.frequentlyUsedFragmentContent.frequentlyUsedFragmentNotesRecyclerView.recyclerview.addItemDecoration( createDivider() );
     }
 
     private MaterialDividerItemDecoration createDivider() {

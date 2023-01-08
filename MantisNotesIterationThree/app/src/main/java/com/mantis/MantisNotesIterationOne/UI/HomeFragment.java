@@ -8,8 +8,6 @@ import androidx.fragment.app.Fragment;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,15 +18,16 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.divider.MaterialDividerItemDecoration;
 import com.google.android.material.navigation.NavigationView;
 import com.mantis.MantisNotesIterationOne.Adapters.NotesAdapter;
+import com.mantis.MantisNotesIterationOne.Logger;
 import com.mantis.MantisNotesIterationOne.Models.Note;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModel;
 import com.mantis.MantisNotesIterationOne.R;
-import com.mantis.MantisNotesIterationOne.Utils.MenuConfigurer;
+import com.mantis.MantisNotesIterationOne.Utils.MenuConfigurator;
+import com.mantis.MantisNotesIterationOne.Utils.RecyclerViewConfigurator;
 import com.mantis.MantisNotesIterationOne.databinding.FragmentHomeBinding;
 
 
@@ -41,37 +40,17 @@ import java.util.ArrayList;
  */
 public class HomeFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private FragmentHomeBinding binding;
     private NotesViewModel notesViewModel;
     private NotesAdapter notesAdapter;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -79,10 +58,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
-        if ( getArguments() != null ) {
-            mParam1 = getArguments().getString( ARG_PARAM1 );
-            mParam2 = getArguments().getString( ARG_PARAM2 );
-        }
     }
 
     @Override
@@ -90,55 +65,18 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState ) {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate( inflater, container, false );
-        setHasOptionsMenu( true );
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated( View view, Bundle savedInstanceState ) {
-        setupRecyclerView();
-        setupNotesViewModel();
+        Logger.log( "View created" );
         setupToolbar();
+        setupNotesViewModel();
+        configureRecyclerView( notesViewModel.getCurrentLayoutType() );
         setupFloatingActionButton();
     }
 
-    private void setupRecyclerView() {
-        binding.homeFragmentContent.notesRecyclerView.recyclerview.setLayoutManager(
-                new LinearLayoutManager( getContext() ) );
-        binding.homeFragmentContent.textEmpty.setText( Html.fromHtml( getString( R.string.text_empty_message ) ) );
-        notesAdapter = new NotesAdapter();
-        notesAdapter.setEmptyView( binding.homeFragmentContent.layoutEmpty );
-        notesAdapter.setData( new ArrayList<>() );
-        notesAdapter.addListener(new NotesAdapter.NoteAdapterListener() {
-            @Override
-            public void onViewHolderClicked( View view, int viewHolderPosition ) {
-                HomeFragmentDirections.ActionNavHomeToNavAddNote action =
-                        HomeFragmentDirections.actionNavHomeToNavAddNote(
-                                viewHolderPosition );
-                Navigation.findNavController( view ).navigate( action );
-            }
-        } );
-        binding.homeFragmentContent.notesRecyclerView.recyclerview.setAdapter( notesAdapter );
-        binding.homeFragmentContent.notesRecyclerView.recyclerview.addItemDecoration( createDivider() );
-    }
-
-    private MaterialDividerItemDecoration createDivider() {
-        MaterialDividerItemDecoration divider = new MaterialDividerItemDecoration( getContext(), LinearLayoutManager.VERTICAL );
-        divider.setDividerInsetStart( 40 );
-        divider.setDividerInsetEnd( 40 );
-        return divider;
-    }
-
-    private void setupNotesViewModel() {
-        notesViewModel = new ViewModelProvider( requireActivity() ).get( NotesViewModel.class );
-        notesViewModel.getNotes().observe( getViewLifecycleOwner(), new Observer<ArrayList<Note>>() {
-            @Override
-            public void onChanged( ArrayList<Note> notes ) {
-                notesAdapter.setData( notes );
-            }
-        } );
-        notesAdapter.setNotesViewModel( notesViewModel );
-    }
 
     private void setupToolbar() {
         NavController controller = NavHostFragment.findNavController( this );
@@ -152,8 +90,91 @@ public class HomeFragment extends Fragment {
                 controller, appBarConfiguration );
         NavigationUI.setupWithNavController( navigationView, controller );
         binding.homeFragmentContent.appBarLayout.toolbar.inflateMenu( R.menu.options_menu );
-        MenuConfigurer.configureMenu( binding.homeFragmentContent.appBarLayout.toolbar );
+        MenuConfigurator.configureMenu( binding.homeFragmentContent.appBarLayout.toolbar.getMenu() );
+    }
 
+    private void setupNotesViewModel() {
+        notesViewModel = new ViewModelProvider( requireActivity() ).get( NotesViewModel.class );
+        observeLayoutState();
+        observeNotes();
+    }
+
+    private void observeLayoutState() {
+        notesViewModel.getLayoutState().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged( Integer integer ) {
+                Logger.log( "SETTING VIEW STATE" );
+                configureRecyclerView( integer );
+                MenuConfigurator.checkSelectedLayoutType( integer, binding.homeFragmentContent.appBarLayout.toolbar.getMenu() );
+            }
+        } );
+    }
+
+    private void configureRecyclerView( int layoutType ) {
+        RecyclerView recyclerView = binding.homeFragmentContent.notesRecyclerView.recyclerview;
+        NotesAdapter oldAdapter = ( NotesAdapter ) recyclerView.getAdapter();
+        Logger.log( String.format( "Old Adapter: %s", oldAdapter ) );
+        createAppropriateLayoutType( layoutType, recyclerView );
+        configureRecyclerViewComponents( recyclerView );
+        reloadAdapterData( oldAdapter );
+        configureListenerOnNotesAdapter();
+    }
+
+    private void observeNotes() {
+        notesViewModel.getNotes().observe( getViewLifecycleOwner(), new Observer<ArrayList<Note>>() {
+            @Override
+            public void onChanged( ArrayList<Note> notes ) {
+                Logger.log( "SETTING NOTES LIST" );
+                notesAdapter.setData( notes );
+            }
+        } );
+    }
+
+    private void createAppropriateLayoutType( int layoutType, RecyclerView recyclerView ) {
+        if ( layoutType == NotesViewModel.VIEW_STATE_SIMPLE_LIST )
+            createSimpleListLayout( recyclerView );
+        else if ( layoutType == NotesViewModel.VIEW_STATE_GRID )
+            createGridLayout( recyclerView );
+        else
+            createListLayout( recyclerView );
+    }
+
+    private void createSimpleListLayout( RecyclerView recyclerView ) {
+        RecyclerViewConfigurator.configureSimpleListRecyclerView( recyclerView, getContext() );
+    }
+
+    private void createGridLayout( RecyclerView recyclerView ) {
+        RecyclerViewConfigurator.configureGridLayoutRecyclerView( recyclerView, getContext() );
+    }
+
+    private void createListLayout( RecyclerView recyclerView ) {
+        RecyclerViewConfigurator.configureListRecyclerView( recyclerView, getContext() );
+    }
+
+    private void configureRecyclerViewComponents( RecyclerView recyclerView ) {
+        binding.homeFragmentContent.textEmpty.setText( Html.fromHtml( getString( R.string.text_empty_message ) ) );
+        notesAdapter = ( NotesAdapter ) recyclerView.getAdapter();
+        notesAdapter.setEmptyView( binding.homeFragmentContent.layoutEmpty );
+        notesAdapter.setNotesViewModel( notesViewModel );
+    }
+
+    private void reloadAdapterData( NotesAdapter oldAdapter ) {
+        if ( oldAdapter == null )
+            notesAdapter.setData( new ArrayList<>() );
+        else
+            notesAdapter.setData( oldAdapter.getData() );
+    }
+
+    private void configureListenerOnNotesAdapter() {
+        notesAdapter.addListener( new NotesAdapter.NoteAdapterListener() {
+            @Override
+            public void onViewHolderClicked( View view, int viewHolderPosition ) {
+                HomeFragmentDirections.ActionNavHomeToNavAddNote action =
+                        HomeFragmentDirections.actionNavHomeToNavAddNote(
+                                viewHolderPosition );
+                Navigation.findNavController( view ).navigate( action );
+            }
+        } );
     }
 
     @Override
@@ -174,5 +195,4 @@ public class HomeFragment extends Fragment {
             }
         } );
     }
-
 }

@@ -20,6 +20,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:itemCount="5"
-        tools:listitem="@layout/notes_view" />
+        tools:listitem="@layout/simple_list_note_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

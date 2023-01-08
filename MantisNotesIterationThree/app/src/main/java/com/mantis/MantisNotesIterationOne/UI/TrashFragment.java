@@ -12,6 +12,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.mantis.MantisNotesIterationOne.Adapters.NotesAdapter;
 import com.mantis.MantisNotesIterationOne.Models.Note;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModel;
 import com.mantis.MantisNotesIterationOne.R;
+import com.mantis.MantisNotesIterationOne.Utils.RecyclerViewConfigurator;
 import com.mantis.MantisNotesIterationOne.databinding.FragmentTrashBinding;
 
 import java.util.ArrayList;
@@ -108,10 +110,10 @@ public class TrashFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        binding.trashFragmentContent.trashFragmentNotesRecyclerView.recyclerview
-                .setLayoutManager( new LinearLayoutManager( getContext() ) );
+        RecyclerView recyclerView = binding.trashFragmentContent.trashFragmentNotesRecyclerView.recyclerview;
+        RecyclerViewConfigurator.configureSimpleListRecyclerView( recyclerView, getContext() );
         binding.trashFragmentContent.textEmpty.setText( getString( R.string.no_notes ) );
-        adapter = new NotesAdapter();
+        adapter = ( NotesAdapter ) recyclerView.getAdapter();
         adapter.setEmptyView( binding.trashFragmentContent.layoutEmpty );
         adapter.setData( new ArrayList<>() );
         adapter.addListener( new NotesAdapter.NoteAdapterListener() {
@@ -119,17 +121,6 @@ public class TrashFragment extends Fragment {
             public void onViewHolderClicked( View view, int viewHolderPosition ) {
             }
         } );
-        binding.trashFragmentContent.trashFragmentNotesRecyclerView
-                .recyclerview.setAdapter( adapter );
-        binding.trashFragmentContent.trashFragmentNotesRecyclerView.recyclerview
-                .addItemDecoration( createDivider() );
-    }
-
-    private MaterialDividerItemDecoration createDivider() {
-        MaterialDividerItemDecoration divider = new MaterialDividerItemDecoration( getContext(), LinearLayoutManager.VERTICAL );
-        divider.setDividerInsetStart( 40 );
-        divider.setDividerInsetEnd( 40 );
-        return divider;
     }
 
     private void setupNotesViewModel() {

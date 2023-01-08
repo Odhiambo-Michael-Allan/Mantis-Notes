@@ -4,13 +4,13 @@ public class Note {
 
     private String title;
     private String description;
-    private String time;
+    private String date;
     private int accessCount;
 
-    public Note( String title, String description, String time ) {
+    public Note( String title, String description, String date ) {
         this.title = title;
         this.description = description;
-        this.time = time;
+        this.date = date;
         this.accessCount = 0;
     }
 
@@ -22,8 +22,8 @@ public class Note {
         return this.description;
     }
 
-    public String getTime() {
-        return this.time;
+    public String getDate() {
+        return this.date;
     }
 
     public int getAccessCount() {
