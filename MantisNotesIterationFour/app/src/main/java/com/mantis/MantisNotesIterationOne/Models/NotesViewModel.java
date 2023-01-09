@@ -88,8 +88,9 @@ public class NotesViewModel extends ViewModel {
         ArrayList<Note> notesWithoutTitle = getNotesWithoutTitles();
         Comparator<Note> titleAscendingComparator = new TitleAscendingComparator();
         Collections.sort( notesWithTitle, titleAscendingComparator );
-        notesList = notesWithTitle;
+        notesList = new ArrayList<>();
         addNotesWithoutTitleBackToNotesList( notesWithoutTitle );
+        notesList.addAll( notesWithTitle );
     }
 
     private void sortNotesListAccordingToTitleDescending() {
@@ -129,7 +130,6 @@ public class NotesViewModel extends ViewModel {
         }
         return notesWithoutTitle;
     }
-    // ---------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private void sortNotesListAccordingToDateCreated() {
