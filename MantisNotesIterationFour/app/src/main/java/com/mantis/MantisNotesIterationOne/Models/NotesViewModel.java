@@ -84,35 +84,52 @@ public class NotesViewModel extends ViewModel {
     }
 
     private void sortNotesListAccordingToTitleAscending() {
-        ArrayList<Note> notesWithoutTitle = removeNotesWithoutTitle();
+        ArrayList<Note> notesWithTitle = getNotesWithTitles();
+        ArrayList<Note> notesWithoutTitle = getNotesWithoutTitles();
         Comparator<Note> titleAscendingComparator = new TitleAscendingComparator();
-        Collections.sort( notesList, titleAscendingComparator );
+        Collections.sort( notesWithTitle, titleAscendingComparator );
+        notesList = notesWithTitle;
         addNotesWithoutTitleBackToNotesList( notesWithoutTitle );
     }
 
     private void sortNotesListAccordingToTitleDescending() {
-        ArrayList<Note> notesWithoutTitle = removeNotesWithoutTitle();
+        ArrayList<Note> notesWithTitle = getNotesWithTitles();
+        ArrayList<Note> notesWithoutTitle = getNotesWithoutTitles();
         Comparator<Note> titleDescendingComparator = new TitleDescendingComparator();
-        Collections.sort( notesList, titleDescendingComparator );
+        Collections.sort( notesWithTitle, titleDescendingComparator );
+        notesList = notesWithTitle;
         addNotesWithoutTitleBackToNotesList( notesWithoutTitle );
-    }
-
-    private ArrayList<Note> removeNotesWithoutTitle() {
-        ArrayList<Note> notesWithoutTitle = new ArrayList<>();
-        Iterator i = notesList.iterator();
-        while ( i.hasNext() ) {
-            Note note = ( Note ) i.next();
-            if ( note.getTitle().equals( "" ) ) {
-                notesWithoutTitle.add( note );
-                notesList.remove( note );
-            }
-        }
-        return notesWithoutTitle;
     }
 
     private void addNotesWithoutTitleBackToNotesList( ArrayList<Note> notesWithoutTitle ) {
         notesList.addAll( notesWithoutTitle );
     }
+
+    // ---------------------------------------------------------------
+    private ArrayList<Note> getNotesWithTitles() {
+        ArrayList<Note> notesWithTitle = new ArrayList<>();
+        Iterator i = notesList.iterator();
+        while ( i.hasNext() ) {
+            Note note = ( Note ) i. next();
+            if ( !note.getTitle().equals( "" ) ) {
+                notesWithTitle.add( note );
+            }
+        }
+        return notesWithTitle;
+    }
+
+    private ArrayList<Note> getNotesWithoutTitles() {
+        ArrayList<Note> notesWithoutTitle = new ArrayList<>();
+        Iterator i = notesList.iterator();
+        while ( i.hasNext() ) {
+            Note note = ( Note ) i. next();
+            if ( note.getTitle().equals( "" ) ) {
+                notesWithoutTitle.add( note );
+            }
+        }
+        return notesWithoutTitle;
+    }
+    // ---------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private void sortNotesListAccordingToDateCreated() {
