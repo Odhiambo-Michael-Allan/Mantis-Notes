@@ -161,25 +161,23 @@ public class HomeFragment extends Fragment {
                 actionDialog.addListener(new NoteActionDialog.NoteActionDialogListener() {
                     @Override
                     public void deleteSelected() {
-                        notesViewModel.deleteNoteFromNotesList( viewHolderPosition );
+                        notesViewModel.trashNoteFromNotesList( viewHolderPosition );
                     }
 
                     @Override
                     public void onArchiveSelected() {
-                        notesViewModel.archiveNoteAt( viewHolderPosition );
+                        notesViewModel.archiveNoteFromNotesListAt( viewHolderPosition );
                     }
 
                     @Override
                     public void onUnarchiveSelected() {
-                        // Do nothing..
+                        // Not possible here..
                     }
                 } );
-
                 actionDialog.show( ((AppCompatActivity) getContext()).getSupportFragmentManager(), "note-actions" );
             }
         } );
     }
-
 
     private void observeNotes() {
         notesViewModel.getNotes().observe( getViewLifecycleOwner(), new Observer<ArrayList<Note>>() {
@@ -241,7 +239,6 @@ public class HomeFragment extends Fragment {
                             @Override
                             public void onDescendingSelected() {
                                 notesViewModel.setAscending( false );
-
                             }
                         } );
                         sortOptionDialog.show( ( (AppCompatActivity) getContext() )
@@ -250,8 +247,6 @@ public class HomeFragment extends Fragment {
                     }
                 } );
     }
-
-
 
     @Override
     public void onResume() {

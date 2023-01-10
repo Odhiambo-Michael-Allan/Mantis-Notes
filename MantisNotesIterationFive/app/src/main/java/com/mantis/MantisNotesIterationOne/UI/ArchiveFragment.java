@@ -183,7 +183,7 @@ public class ArchiveFragment extends Fragment {
                 actionDialog.addListener( new NoteActionDialog.NoteActionDialogListener() {
                     @Override
                     public void deleteSelected() {
-                        notesViewModel.deleteNoteFromArchiveList( viewHolderPosition );
+                        notesViewModel.trashNoteFromArchiveList( viewHolderPosition );
                     }
 
                     @Override
@@ -193,8 +193,7 @@ public class ArchiveFragment extends Fragment {
 
                     @Override
                     public void onUnarchiveSelected() {
-                        Logger.log( "UNARCHIVE NOTE AT POSITION: " + viewHolderPosition );
-                        Toast.makeText( getContext(), "Not yet implemented", Toast.LENGTH_SHORT ).show();
+                        notesViewModel.unarchiveNoteAt( viewHolderPosition );
                     }
                 } );
                 actionDialog.show( ((AppCompatActivity) getContext()).getSupportFragmentManager(), "note-actions" );

@@ -15,7 +15,6 @@ import androidx.navigation.ui.NavigationUI;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.mantis.MantisNotesIterationOne.Logger;
 import com.mantis.MantisNotesIterationOne.Models.DateProvider;
@@ -25,17 +24,7 @@ import com.mantis.MantisNotesIterationOne.databinding.FragmentAddNoteBinding;
 
 import java.util.Date;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AddNoteFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AddNoteFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     public static final int HOME_FRAGMENT = 1;
     public static final int FREQUENT_FRAGMENT = 2;
@@ -49,10 +38,6 @@ public class AddNoteFragment extends Fragment {
     private int position;
     private int fragmentNavigatedFrom;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public AddNoteFragment() {
         // Required empty public constructor
     }
@@ -60,28 +45,18 @@ public class AddNoteFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment AddNoteFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static AddNoteFragment newInstance(String param1, String param2) {
+    public static AddNoteFragment newInstance() {
         AddNoteFragment fragment = new AddNoteFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        fragment.setArguments( args );
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        super.onCreate( savedInstanceState );
     }
 
     @Override
@@ -131,25 +106,10 @@ public class AddNoteFragment extends Fragment {
     private void handleBackNavigation() {
         if ( !isEditing )
             addNoteToModel();
-        else if (  binding.noteTitle.getText().toString().equals( "" ) &&
-                binding.addNoteEditText.getText().toString().equals( "" ) ) {
-            Logger.log( "EDITED NOTE IS BEING DELETED" );
-            deleteNoteFromModel();
-        }
-        else {
+        else
             editNote();
-        }
         isEditing = false;
         controller.navigateUp();
-    }
-
-    private void deleteNoteFromModel() {
-        if ( fragmentNavigatedFrom == HOME_FRAGMENT )
-            notesViewModel.deleteNoteFromNotesList( position );
-        else if ( fragmentNavigatedFrom == FREQUENT_FRAGMENT )
-            notesViewModel.deleteNoteFromFrequentList( position );
-        else
-            notesViewModel.deleteNoteFromArchiveList( position );
     }
 
     private void editNote() {
@@ -167,15 +127,9 @@ public class AddNoteFragment extends Fragment {
     private void addNoteToModel() {
         String noteTitle = binding.noteTitle.getText().toString();
         String noteDescription = binding.addNoteEditText.getText().toString();
-        if ( noteTitle.equals( "" ) &&
-                noteDescription.equals( "" ) ) {
-            return;
-        }
-        else {
-            Note note = new Note( noteTitle, noteDescription, DateProvider.getCurrentDate(),
-                    new Date() );
-            notesViewModel.addNote( note );
-        }
+        Note note = new Note( noteTitle, noteDescription, DateProvider.getCurrentDate(),
+                new Date() );
+        notesViewModel.addNote( note );  // View model will perform the necessary checks..
     }
 
     @Override

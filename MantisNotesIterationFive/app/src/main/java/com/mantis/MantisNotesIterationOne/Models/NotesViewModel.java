@@ -29,7 +29,6 @@ public class NotesViewModel extends ViewModel {
     private int currentLayoutState = LAYOUT_STATE_SIMPLE_LIST;
     private MutableLiveData<Integer> layoutState = new MutableLiveData<>();
 
-    // ----------------- Variables holding the sorting strategy -------------------
     private boolean ascending;
     private int currentSortingStrategy;
 
@@ -82,7 +81,6 @@ public class NotesViewModel extends ViewModel {
         notes.postValue( notesList );
     }
 
-
     public int getCurrentSortingStrategy() {
         return currentSortingStrategy;
     }
@@ -96,23 +94,39 @@ public class NotesViewModel extends ViewModel {
     }
 
     public void addNote( Note note ) {
+        if ( note.getTitle().equals( "" ) && note.getDescription().equals( "" ) )
+            return;
         notesList.add( note );
         sortNotesList();
     }
 
 
+    public void archiveNoteFromNotesListAt( int position ) {
+        this.archiveNote( notesList, position );
+    }
 
+    public void archiveNoteFromFrequentedListAt( int position ) {
+        this.archiveNote( frequentedNotesList, position );
+    }
 
-
-    public void archiveNoteAt( int position ) {
-        Note note = notesList.get( position );
-        archivedNotesList.add( note );
-        frequentedNotesList.remove( note );
+    private void archiveNote( ArrayList<Note> list, int position ) {
+        Note note = list.get( position );
         notesList.remove( note );
+        sortNotesList();
+        frequentedNotesList.remove( note );
+        archivedNotesList.add( note );
         frequentedNotes.postValue( frequentedNotesList );
         archivedNotes.postValue( archivedNotesList );
+    }
+
+    public void unarchiveNoteAt( int position ) {
+        Note note = archivedNotesList.get( position );
+        archivedNotesList.remove( note );
+        archivedNotes.postValue( archivedNotesList );
+        notesList.add( note );
         sortNotesList();
     }
+
 
     public Note getNoteAt( int position ) {
         return notesList.get( position );
@@ -130,6 +144,10 @@ public class NotesViewModel extends ViewModel {
         return deletedNotesList.get( position );
     }
 
+    public int getCurrentLayoutState() {
+        return this.currentLayoutState;
+    }
+
     public LiveData<ArrayList<Note>> getNotes() {
         return notes;
     }
@@ -142,21 +160,51 @@ public class NotesViewModel extends ViewModel {
         return this.archivedNotes;
     }
 
-    public int getCurrentLayoutState() {
-        return this.currentLayoutState;
+    public LiveData<ArrayList<Note>> getDeletedNotes() {
+        return this.deletedNotes;
     }
 
-
-    public Note getNoteAtPosition( int position ) {
-        return notesList.get( position );
+    public void permanentlyDeleteNote( Note note ) {
+        deletedNotesList.remove( note );
+        deletedNotes.postValue( deletedNotesList );
     }
 
-    public void editNote( Note note, int position, ArrayList<Note> notesList ) {
+    public void trashNoteFromNotesList( int position ) {
+        this.trashNote( notesList, position );
+    }
+
+    public void trashNoteFromFrequentList( int position ) {
+        this.trashNote( frequentedNotesList, position );
+    }
+
+    public void trashNoteFromArchiveList( int position ) {
+        this.trashNote( archivedNotesList, position );
+    }
+
+    private void trashNote( ArrayList<Note> notesList, int position ) {
+        Note note = notesList.get( position );
+        this.notesList.remove( note );
+        frequentedNotesList.remove( note );
+        archivedNotesList.remove( note );
+        deletedNotesList.add( note );
+        sortNotesList();
+        frequentedNotes.postValue( frequentedNotesList );
+        deletedNotes.postValue( deletedNotesList );
+        archivedNotes.postValue( archivedNotesList );
+    }
+
+    public void editNoteInNotesList( Note note, int position ) {
         Note currentNoteAtPosition = notesList.get( position );
-
-        if ( !( note.getTitle().equals( currentNoteAtPosition.getTitle() ) && note.getDescription().equals( currentNoteAtPosition.getDescription() ) ) )
+        if ( note.getTitle().equals( "" ) && note.getDescription().equals( "" ) ) {
+            notesList.remove( currentNoteAtPosition );
+            sortNotesList();
+            frequentedNotesList.remove( currentNoteAtPosition );
+            frequentedNotes.postValue( frequentedNotesList );
+            return;
+        }
+        if ( noteHasBeenModified( note, currentNoteAtPosition ) ) {
             currentNoteAtPosition.setDateLastModified( note.getDateCreated() );
-
+        }
         currentNoteAtPosition.incrementAccessCount();
         currentNoteAtPosition.setTitle( note.getTitle() );
         currentNoteAtPosition.setDescription( note.getDescription() );
@@ -169,75 +217,41 @@ public class NotesViewModel extends ViewModel {
         sortNotesList();
     }
 
-    public LiveData<ArrayList<Note>> getDeletedNotes() {
-        return this.deletedNotes;
-    }
-
-    public void deleteNote( Note note ) {
-        if ( noteInDeletedNotes( note ) )
-            permanentlyDeleteNote( note );
-        else
-            addNoteToTrash( note );
-    }
-
-    private boolean noteInDeletedNotes( Note note ) {
-        return deletedNotesList.contains( note );
-    }
-
-    private void permanentlyDeleteNote( Note note ) {
-        deletedNotesList.remove( note );
-        deletedNotes.postValue( deletedNotesList );
-    }
-
-    private void addNoteToTrash( Note note ) {
-        notesList.remove( note );
-        frequentedNotesList.remove( note );
-        archivedNotesList.remove( note );
-        deletedNotesList.add( note );
-        sortNotesList();
-        frequentedNotes.postValue( frequentedNotesList );
-        archivedNotes.postValue( archivedNotesList );
-        deletedNotes.postValue( deletedNotesList );
-    }
-
-    public void deleteNoteFromNotesList( int position ) {
-        Note note = notesList.get( position );
-        notesList.remove( note );
-        frequentedNotesList.remove( note );
-        deletedNotesList.add( note );
-        sortNotesList();
-        frequentedNotes.postValue( frequentedNotesList );
-        deletedNotes.postValue( deletedNotesList );
-    }
-
-    public void deleteNoteFromFrequentList( int position ) {
-        Note note = notesList.get( position );
-        frequentedNotesList.remove( note );
-        notesList.remove( note );
-        deletedNotesList.add( note );
-        sortNotesList();
-        frequentedNotes.postValue( frequentedNotesList );
-        deletedNotes.postValue( deletedNotesList );
-    }
-
-    public void deleteNoteFromArchiveList( int position ) {
-        Note note = archivedNotesList.get( position );
-        archivedNotesList.remove( note );
-        deletedNotesList.add( note );
-        archivedNotes.postValue( archivedNotesList );
-        deletedNotes.postValue( deletedNotesList );
-    }
-
-    public void editNoteInNotesList( Note note, int position ) {
-        this.editNote( note, position, notesList );
-    }
-
     public void editNoteInFrequentsList( Note note, int position ) {
-        this.editNote( note, position, frequentedNotesList );
+        Note currentNoteAtPosition = frequentedNotesList.get( position );
+        if ( note.getTitle().equals( "" ) && note.getDescription().equals( "" ) ) {
+            notesList.remove( currentNoteAtPosition );
+            sortNotesList();
+            frequentedNotesList.remove( currentNoteAtPosition );
+        }
+        if ( noteHasBeenModified( note, currentNoteAtPosition ) ) {
+            currentNoteAtPosition.setDateLastModified( note.getDateCreated() );
+        }
+        currentNoteAtPosition.incrementAccessCount();
+        currentNoteAtPosition.setTitle( note.getTitle() );
+        currentNoteAtPosition.setDescription( note.getDescription() );
+        frequentedNotes.postValue( frequentedNotesList );
+        sortNotesList();
     }
+
 
     public void editNoteInArchivesList( Note note, int position ) {
-        this.editNote( note, position, archivedNotesList );
+        Note currentNoteAtPosition = archivedNotesList.get( position );
+        if ( note.getTitle().equals( "" ) && note.getDescription().equals( "" ) ) {
+            archivedNotesList.remove( currentNoteAtPosition );
+        }
+        if ( noteHasBeenModified( note, currentNoteAtPosition ) ) {
+            currentNoteAtPosition.setDateLastModified( note.getDateCreated() );
+        }
+        currentNoteAtPosition.incrementAccessCount();
+        currentNoteAtPosition.setTitle( note.getTitle() );
+        currentNoteAtPosition.setDescription( note.getDescription() );
+        archivedNotes.postValue( archivedNotesList );
+    }
+
+    private boolean noteHasBeenModified( Note note, Note currentNoteAtPosition ) {
+        return !( note.getTitle().equals( currentNoteAtPosition.getTitle() )
+                && note.getDescription().equals( currentNoteAtPosition.getDescription() ) );
     }
 
 }

@@ -28,7 +28,7 @@ public class ViewModelTest {
     private NotesViewModel notesViewModel;
     private MockNotesViewModelListener listener;
     private MockMenuConfigurator mockMenuConfigurator;
-    private Note note1, note2, note3, note4, note5, note6, note7, note8, note9, note10;
+    private Note note1, note2, note3, note4, note5, note6, note7, note8, note9, note10, emptyNote;
 
     @Before
     public void setup() {
@@ -47,6 +47,23 @@ public class ViewModelTest {
             @Override
             public void onChanged( ArrayList<Note> notes ) {
                 listener.notesListChanged();
+                listener.setNotesList( notes );
+            }
+        } );
+
+        notesViewModel.getArchivedNotes().observeForever(new Observer<ArrayList<Note>>() {
+            @Override
+            public void onChanged( ArrayList<Note> notes ) {
+                listener.archiveNotesListChanged();
+                listener.setArchiveList( notes );
+            }
+        } );
+
+        notesViewModel.getFrequentedNotes().observeForever( new Observer<ArrayList<Note>>() {
+            @Override
+            public void onChanged(ArrayList<Note> notes) {
+                listener.frequentsListChanged();
+                listener.setFrequentList( notes );
             }
         } );
 
@@ -88,6 +105,8 @@ public class ViewModelTest {
                 DateProvider.getCurrentDate(), new Date() );
         note10 = new Note( "Tenth Note", "This is the tenth note",
                 DateProvider.getCurrentDate(), new Date() );
+        emptyNote = new Note( "", "", DateProvider.getCurrentDate(),
+                new Date() );
     }
 
     @Test
@@ -147,6 +166,192 @@ public class ViewModelTest {
                 listener.isReceivedLayoutStateChange() );
     }
 
+    @Test
+    public void testSendsNotesChangedNotificationAfterAddingNote() {
+        notesViewModel.addNote( note1 );
+        Assert.assertTrue( "Listener should have received notes change notification " +
+                "after adding a note.", listener.isReceivedNotesListChangeNotification() );
+    }
+
+    @Test
+    public void testArchivesNoteFromNotesListProperly() {
+        notesViewModel.addNote( note1 );
+        notesViewModel.archiveNoteFromNotesListAt( 0 );
+        Assert.assertTrue( "Listener should have received archive notes change notification " +
+                "after note is archived from notes list",
+                listener.isReceivedArchiveNotesListChangeNotification() );
+        Assert.assertTrue( "Listener should have received notes list change notification " +
+                "after archive action", listener.isReceivedNotesListChangeNotification() );
+        Assert.assertTrue( "Listener should have received frequented list change " +
+                "notification after archive action",
+                listener.isReceivedFrequentsListChangeNotification() );
+    }
+
+    @Test
+    public void testNoteIsProperlyAddedToNotesList() {
+        notesViewModel.addNote( note1 );
+        notesViewModel.addNote( note2 );
+        notesViewModel.addNote( emptyNote );
+        Assert.assertTrue( "Notes size should be two",
+                listener.notesList.size() == 2 );
+    }
+
+    @Test
+    public void testNoteIsProperlyAddedToFrequentNotesList() {
+        note1.incrementAccessCount();
+        note1.incrementAccessCount();
+        note1.incrementAccessCount();
+        note1.incrementAccessCount();
+        notesViewModel.addNote( note1 );
+        notesViewModel.editNoteInNotesList( new Note( "edited note 1", "",
+                DateProvider.getCurrentDate(), new Date() ), 0 );
+        Assert.assertTrue( "Notes list size should be one",
+                listener.notesList.size() == 1 );
+        Assert.assertTrue( "Frequents list size should be one",
+                listener.frequentList.size() == 1 );
+
+    }
+
+    @Test
+    public void testNoteIsProperlyRemovedFromFrequentNotesListWhenEditedFromNotesList() {
+        note1.incrementAccessCount();
+        note1.incrementAccessCount();
+        note1.incrementAccessCount();
+        note1.incrementAccessCount();
+        notesViewModel.addNote( note1 );
+        notesViewModel.editNoteInNotesList( new Note( "edited note 1", "",
+                DateProvider.getCurrentDate(), new Date() ), 0 );
+        notesViewModel.editNoteInNotesList( emptyNote, 0 );
+        Assert.assertTrue( "Frequent notes list size should be zero",
+                listener.frequentList.size() == 0 );
+    }
+
+    @Test
+    public void testNoteProperlyRemovedFromNotesListWhenEditedFromFrequentsList() {
+        note3.incrementAccessCount();
+        note3.incrementAccessCount();
+        note3.incrementAccessCount();
+        notesViewModel.addNote( note1 );
+        notesViewModel.addNote( note2 );
+        notesViewModel.addNote( note3 );
+        Assert.assertTrue( "Notes list size should be three",
+                listener.notesList.size() == 3 );
+        notesViewModel.editNoteInNotesList( new Note( "edited note 3", "",
+                DateProvider.getCurrentDate(), new Date() ), 2 );
+        Assert.assertTrue( "Frequents list size should be one",
+                listener.frequentList.size() == 1 );
+        notesViewModel.editNoteInFrequentsList( emptyNote, 0 );
+        Assert.assertTrue( "Notes list size should be zero",
+                listener.notesList.size() == 2 );
+        Assert.assertTrue( "Frequent list size should be zero",
+                listener.frequentList.size() == 0 );
+    }
+
+    @Test
+    public void testNoteIsProperlyArchivedFromNotesList() {
+        for ( int i = 0; i < 5; i++ )
+            note1.incrementAccessCount();
+        notesViewModel.addNote( note1 );
+        notesViewModel.addNote( note2 );
+        notesViewModel.editNoteInNotesList( note8, 0 );
+        Assert.assertTrue( "Frequents list size should be one",
+                listener.frequentList.size() == 1 );
+        notesViewModel.archiveNoteFromNotesListAt( 0 );
+        Assert.assertTrue( "Notes list size should be one",
+                listener.notesList.size() == 1 );
+        Assert.assertTrue( "Frequents list size should be zero",
+                listener.frequentList.size() == 0 );
+        Assert.assertTrue( "Archive list size should be one",
+                listener.archiveList.size() == 1 );
+    }
+
+    @Test
+    public void testNoteIsProperlyArchivedFromFrequentsList() {
+        for ( int i = 0; i < 5; i++ )
+            note1.incrementAccessCount();
+        notesViewModel.addNote( note1 );
+        notesViewModel.addNote( note2 );
+        notesViewModel.editNoteInNotesList( note8, 0 );
+        Assert.assertTrue( "Frequents list size should be one",
+                listener.frequentList.size() == 1 );
+        notesViewModel.archiveNoteFromFrequentedListAt( 0 );
+        Assert.assertTrue( "Notes list size should be one",
+                listener.notesList.size() == 1 );
+        Assert.assertTrue( "Frequents list size should be zero",
+                listener.frequentList.size() == 0 );
+        Assert.assertTrue( "Archive list size should be one",
+                listener.archiveList.size() == 1 );
+    }
+
+    @Test
+    public void testNoteProperlyUnarchived() {
+        notesViewModel.addNote( note1 );
+        notesViewModel.addNote( note2 );
+        notesViewModel.archiveNoteFromNotesListAt( 0 );
+        Assert.assertTrue( "Notes list size should be 1",
+                listener.notesList.size() == 1 );
+        notesViewModel.unarchiveNoteAt( 0 );
+        Assert.assertTrue( "Notes list size should be 2",
+                listener.notesList.size() == 2 );
+        Assert.assertTrue( "Archive list size should be 0",
+                listener.archiveList.size() == 0 );
+    }
+
+    @Test
+    public void testNoteProperlyTrashedFromNotesList() {
+        for ( int i = 0; i <= 4; i++ ) {
+            note2.incrementAccessCount();
+            note3.incrementAccessCount();
+        }
+        notesViewModel.addNote( note1 );
+        notesViewModel.addNote( note2 );
+        notesViewModel.addNote( note3 );
+        notesViewModel.editNoteInNotesList( note7, 1 );
+        notesViewModel.editNoteInNotesList( note8, 2 );
+        Assert.assertTrue( "Frequented list size should be 2",
+                listener.frequentList.size() == 2 );
+        // After trashing, the notes list is sorted..
+        notesViewModel.trashNoteFromNotesList( 2 );
+        notesViewModel.trashNoteFromNotesList( 0 );
+        Assert.assertTrue( "Notes list size should be 1",
+                listener.notesList.size() == 1 );
+        Assert.assertTrue( "Frequented list size should be 0",
+                listener.frequentList.size() == 0 );
+    }
+
+    @Test
+    public void testNoteProperlyTrashedFromFrequentsList() {
+        for ( int i = 0; i <= 4; i++ ) {
+            note2.incrementAccessCount();
+            note3.incrementAccessCount();
+        }
+        notesViewModel.addNote( note1 );
+        notesViewModel.addNote( note2 );
+        notesViewModel.addNote( note3 );
+        notesViewModel.editNoteInNotesList( note7, 1 );
+        notesViewModel.editNoteInNotesList( note8, 2 );
+        Assert.assertTrue( "Frequented list size should be 2",
+                listener.frequentList.size() == 2 );
+        notesViewModel.trashNoteFromFrequentList( 1 );
+        notesViewModel.trashNoteFromFrequentList( 0 );
+        Assert.assertTrue( "Frequents notes list should be 0",
+                listener.frequentList.size() == 0 );
+        Assert.assertTrue( "Notes list should be 1",
+                listener.notesList.size() == 1 );
+    }
+
+    @Test
+    public void testNoteProperlyTrashedFromArchiveList() {
+        notesViewModel.addNote( note1 );
+        notesViewModel.addNote( note2 );
+        notesViewModel.archiveNoteFromNotesListAt( 0 );
+        Assert.assertTrue( "Archive list size should be 1",
+                listener.archiveList.size() == 1 );
+        notesViewModel.trashNoteFromArchiveList( 0 );
+        Assert.assertTrue( "Archive list size should be 0",
+                listener.archiveList.size() == 0 );
+    }
+
 
     /**
      * This class mocks a ViewModel listener. We'll use it to verify that the view model sends the
@@ -156,6 +361,11 @@ public class ViewModelTest {
 
         private boolean receivedLayoutStateChange = false;
         private boolean receivedNotesListChangeNotification = false;
+        private boolean receivedArchiveNotesListChangeNotification = false;
+        private boolean receivedFrequentsListChangeNotification = false;
+        private ArrayList<Note> notesList;
+        private ArrayList<Note> frequentList;
+        private ArrayList<Note> archiveList;
 
         MockNotesViewModelListener() {}
 
@@ -167,12 +377,41 @@ public class ViewModelTest {
             receivedNotesListChangeNotification = true;
         }
 
+        void archiveNotesListChanged() {
+            receivedArchiveNotesListChangeNotification = true;
+        }
+
+        void frequentsListChanged() {
+            receivedFrequentsListChangeNotification = true;
+        }
+
         boolean isReceivedLayoutStateChange() {
             return receivedLayoutStateChange;
         }
 
         boolean isReceivedNotesListChangeNotification() {
             return this.receivedNotesListChangeNotification;
+        }
+
+        boolean isReceivedArchiveNotesListChangeNotification() {
+            return this.receivedArchiveNotesListChangeNotification;
+        }
+
+        boolean isReceivedFrequentsListChangeNotification() {
+            return this.receivedFrequentsListChangeNotification;
+        }
+
+        void setNotesList( ArrayList<Note> notesList ) {
+            this.notesList = notesList;
+            System.out.println( "Notes list size: " + this.notesList.size() );
+        }
+
+        void setFrequentList( ArrayList<Note> frequentList ) {
+            this.frequentList = frequentList;
+            System.out.println( "Frequents list size from listener: " + this.frequentList.size() );
+        }
+        void setArchiveList( ArrayList<Note> archiveList ) {
+            this.archiveList = archiveList;
         }
     }
 

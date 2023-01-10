@@ -184,17 +184,17 @@ public class FrequentlyUsedFragment extends Fragment {
                 actionDialog.addListener(new NoteActionDialog.NoteActionDialogListener() {
                     @Override
                     public void deleteSelected() {
-                        notesViewModel.deleteNoteFromFrequentList( viewHolderPosition );
+                        notesViewModel.trashNoteFromFrequentList( viewHolderPosition );
                     }
 
                     @Override
                     public void onArchiveSelected() {
-                        notesViewModel.archiveNoteAt( viewHolderPosition );
+                        notesViewModel.archiveNoteFromFrequentedListAt( viewHolderPosition );
                     }
 
                     @Override
                     public void onUnarchiveSelected() {
-                        // Do nothing..
+                        // Not possible here..
                     }
                 } );
                 actionDialog.show( ((AppCompatActivity) getContext()).getSupportFragmentManager(), "note-actions" );

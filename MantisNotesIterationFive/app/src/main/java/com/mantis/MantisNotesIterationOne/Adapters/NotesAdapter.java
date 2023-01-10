@@ -1,6 +1,5 @@
 package com.mantis.MantisNotesIterationOne.Adapters;
 
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mantis.MantisNotesIterationOne.Models.Note;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModel;
-import com.mantis.MantisNotesIterationOne.R;
 import com.mantis.MantisNotesIterationOne.ViewHolders.NoteViewHolder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
+
 
     private ArrayList<Note> data;
     private View emptyView;
@@ -120,11 +119,7 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
 
     public void deleteNoteAt( int position ) {
         Note note = this.data.get( position );
-        this.viewModel.deleteNote( note );
-    }
-
-    public void archiveNoteAt( int position ) {
-        this.viewModel.archiveNoteAt( position );
+        this.viewModel.permanentlyDeleteNote( note );
     }
 
     public void addListener( NoteAdapterListener listener ) {
