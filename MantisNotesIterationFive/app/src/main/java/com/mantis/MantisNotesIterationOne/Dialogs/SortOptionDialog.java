@@ -20,16 +20,16 @@ import java.util.Iterator;
 public class SortOptionDialog extends BottomSheetDialogFragment {
 
     private static final String CURRENT_SORTING_STRATEGY = "Current Sorting Strategy";
-    private static final String ASCENDING_OR_DESCENDING = "Ascending Or Descending";
+    private static final String ASCENDING = "Ascending";
 
     private SortMenuItemActionDialogBinding binding;
     private ArrayList<SortOptionDialogListener> listeners = new ArrayList<>();
 
     public static SortOptionDialog newInstance( int currentSortingStrategy,
-                                                int ascendingOrDescending ) {
+                                                boolean ascending ) {
         Bundle arguments = new Bundle();
         arguments.putInt( CURRENT_SORTING_STRATEGY, currentSortingStrategy );
-        arguments.putInt( ASCENDING_OR_DESCENDING, ascendingOrDescending );
+        arguments.putBoolean( ASCENDING, ascending );
         SortOptionDialog sortOptionDialog = new SortOptionDialog();
         sortOptionDialog.setArguments( arguments );
         return sortOptionDialog;
@@ -127,11 +127,11 @@ public class SortOptionDialog extends BottomSheetDialogFragment {
 
     private void checkAppropriateOptions( Bundle arguments ) {
         int sortingStrategy = ( int ) arguments.get( CURRENT_SORTING_STRATEGY );
-        int ascendingOrDescending = ( int ) arguments.get( ASCENDING_OR_DESCENDING );
+        boolean ascending = ( boolean ) arguments.get( ASCENDING );
         Logger.log( "CURRENT SORTING STRATEGY: " + sortingStrategy );
-        Logger.log( "ASCENDING OR DESCENDING: " + ascendingOrDescending );
+        Logger.log( "ASCENDING : " + ascending );
         checkAppropriateOptionOnSortingStrategySection( sortingStrategy );
-        checkAppropriateOptionOnAscendingOrDescendingSection( ascendingOrDescending );
+        checkAppropriateOptionOnAscendingOrDescendingSection( ascending );
     }
 
     private void checkAppropriateOptionOnSortingStrategySection( int sortingStrategy ) {
@@ -155,8 +155,8 @@ public class SortOptionDialog extends BottomSheetDialogFragment {
         binding.dateModifiedRadiobutton.setChecked( true );
     }
 
-    private void checkAppropriateOptionOnAscendingOrDescendingSection( int ascendingOrDescending ) {
-        if ( ascendingOrDescending == NotesViewModel.ASCENDING )
+    private void checkAppropriateOptionOnAscendingOrDescendingSection( boolean ascending ) {
+        if ( ascending )
             checkAscendingOption();
         else
             checkDescendingOption();

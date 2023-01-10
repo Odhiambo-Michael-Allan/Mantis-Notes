@@ -1,20 +1,12 @@
 package com.mantis.MantisNotesIterationOne.Utils;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.icu.text.Normalizer2;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.mantis.MantisNotesIterationOne.Dialogs.NoteActionDialog;
-import com.mantis.MantisNotesIterationOne.Dialogs.SortOptionDialog;
-import com.mantis.MantisNotesIterationOne.Logger;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModel;
 import com.mantis.MantisNotesIterationOne.R;
 
@@ -101,9 +93,9 @@ public class MenuConfigurator {
     public static void checkSelectedLayoutType( int layoutType, Menu menu ) {
         SubMenu viewOptionSubMenu = menu.findItem( R.id.view_option ).getSubMenu();
         uncheckAllMenuItems( viewOptionSubMenu );
-        if ( layoutType == NotesViewModel.VIEW_STATE_GRID )
+        if ( layoutType == NotesViewModel.LAYOUT_STATE_GRID)
             checkGridOption( viewOptionSubMenu );
-        else if ( layoutType == NotesViewModel.VIEW_STATE_LIST )
+        else if ( layoutType == NotesViewModel.LAYOUT_STATE_LIST)
             checkListOption( viewOptionSubMenu );
         else
             checkSimpleListOption( viewOptionSubMenu );

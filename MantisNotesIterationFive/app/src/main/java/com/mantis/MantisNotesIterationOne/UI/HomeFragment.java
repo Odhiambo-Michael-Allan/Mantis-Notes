@@ -1,6 +1,5 @@
 package com.mantis.MantisNotesIterationOne.UI;
 
-import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -78,7 +77,7 @@ public class HomeFragment extends Fragment {
         Logger.log( "HOME FRAGMENT VIEW CREATED" );
         setupNotesViewModel();
         setupToolbar();
-        configureRecyclerView( notesViewModel.getCurrentLayoutType() );
+        configureRecyclerView( notesViewModel.getCurrentLayoutState() );
         setupFloatingActionButton();
     }
 
@@ -111,9 +110,9 @@ public class HomeFragment extends Fragment {
 
 
     private void createAppropriateLayoutType( int layoutType, RecyclerView recyclerView ) {
-        if ( layoutType == NotesViewModel.VIEW_STATE_SIMPLE_LIST )
+        if ( layoutType == NotesViewModel.LAYOUT_STATE_SIMPLE_LIST)
             createSimpleListLayout( recyclerView );
-        else if ( layoutType == NotesViewModel.VIEW_STATE_GRID )
+        else if ( layoutType == NotesViewModel.LAYOUT_STATE_GRID)
             createGridLayout( recyclerView );
         else
             createListLayout( recyclerView );
@@ -217,7 +216,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public boolean onMenuItemClick( MenuItem item ) {
                         SortOptionDialog sortOptionDialog = SortOptionDialog.newInstance(
-                                notesViewModel.getCurrentSortingStrategy(), notesViewModel.getAscendingOrDescending() );
+                                notesViewModel.getCurrentSortingStrategy(), notesViewModel.getAscending() );
                         sortOptionDialog.addListener( new SortOptionDialog.SortOptionDialogListener() {
                             @Override
                             public void onTitleSelected() {
@@ -236,12 +235,12 @@ public class HomeFragment extends Fragment {
 
                             @Override
                             public void onAscendingSelected() {
-                                notesViewModel.setAscendingOrDescending( NotesViewModel.ASCENDING );
+                                notesViewModel.setAscending( true );
                             }
 
                             @Override
                             public void onDescendingSelected() {
-                                notesViewModel.setAscendingOrDescending( NotesViewModel.DESCENDING );
+                                notesViewModel.setAscending( false );
 
                             }
                         } );

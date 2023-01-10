@@ -132,9 +132,9 @@ public class FrequentlyUsedFragment extends Fragment {
     }
 
     private void createAppropriateLayoutType( int layoutType, RecyclerView recyclerView ) {
-        if ( layoutType == NotesViewModel.VIEW_STATE_SIMPLE_LIST )
+        if ( layoutType == NotesViewModel.LAYOUT_STATE_SIMPLE_LIST)
             createSimpleListLayout( recyclerView );
-        else if ( layoutType == NotesViewModel.VIEW_STATE_GRID )
+        else if ( layoutType == NotesViewModel.LAYOUT_STATE_GRID)
             createGridLayout( recyclerView );
         else
             createListLayout( recyclerView );
