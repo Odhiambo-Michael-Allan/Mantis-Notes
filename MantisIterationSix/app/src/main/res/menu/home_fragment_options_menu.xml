@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/edit_option"
+        android:title="@string/edit" >
+    </item>
+
+    <item android:id="@+id/sort_option"
+        android:title="@string/sort" />
+
+    <item android:id="@+id/view_option"
+        android:title="@string/view">
+        <menu>
+            <item android:id="@+id/grid_option"
+                android:title="@string/grid"/>
+            <item android:id="@+id/list_option"
+                android:title="@string/list" />
+            <item android:id="@+id/simple_list_option"
+                android:title="@string/simple_list" />
+        </menu>
+    </item>
+
+</menu>
