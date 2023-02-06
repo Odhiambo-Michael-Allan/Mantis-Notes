@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData;
 import com.mantis.MantisNotesIterationOne.Logger;
 import com.mantis.MantisNotesIterationOne.data.source.NoteDataSource;
 import com.mantis.MantisNotesIterationOne.data.source.local.Dao.ArchiveNotesDao;
+import com.mantis.MantisNotesIterationOne.data.source.local.Dao.ConfigurationsDao;
 import com.mantis.MantisNotesIterationOne.data.source.local.Dao.FrequentNotesDao;
 import com.mantis.MantisNotesIterationOne.data.source.local.Dao.HomeNotesDao;
 import com.mantis.MantisNotesIterationOne.data.source.local.Dao.NoteDao;
@@ -15,6 +16,7 @@ import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.HomeN
 import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.NoteReference;
 import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.TrashNoteReference;
 
+import java.util.Date;
 import java.util.List;
 
 public class LocalDataSource implements NoteDataSource {
@@ -24,15 +26,17 @@ public class LocalDataSource implements NoteDataSource {
     private FrequentNotesDao frequentNotesDao;
     private ArchiveNotesDao archiveNotesDao;
     private TrashNotesDao trashNotesDao;
+    private ConfigurationsDao configurationsDao;
 
     public LocalDataSource( NoteDao noteDao, HomeNotesDao homeNotesDao, FrequentNotesDao
                             frequentNotesDao, ArchiveNotesDao archiveNotesDao,
-                            TrashNotesDao trashNotesDao ) {
+                            TrashNotesDao trashNotesDao, ConfigurationsDao configurationsDao ) {
         this.noteDao = noteDao;
         this.homeNotesDao = homeNotesDao;
         this.frequentNotesDao = frequentNotesDao;
         this.archiveNotesDao = archiveNotesDao;
         this.trashNotesDao = trashNotesDao;
+        this.configurationsDao = configurationsDao;
     }
 
     @Override
@@ -47,7 +51,6 @@ public class LocalDataSource implements NoteDataSource {
 
     @Override
     public void insertNote( Note note ) {
-        Logger.log( "INSERTING NOTE TO DATABASE" );
         noteDao.insertNote( note );
     }
 
@@ -62,13 +65,23 @@ public class LocalDataSource implements NoteDataSource {
     }
 
     @Override
+    public void updateNote( int noteId, String newTitle, String newDescription,
+                            Date dateLastModified, int newAccessCount ) {
+        noteDao.updateNote( noteId, newTitle, newDescription, dateLastModified, newAccessCount );
+    }
+
+    @Override
+    public void updateNoteOwner(int noteId, int newOwner) {
+        noteDao.updateNoteOwner( noteId, newOwner );
+    }
+
+    @Override
     public LiveData<List<NoteReference>> getHomeNotesReferences() {
         return homeNotesDao.getHomeNotes();
     }
 
     @Override
     public void insertHomeNoteReference( NoteReference homeNoteReference ) {
-        Logger.log( "INSERTING HOME NOTE REFERENCE TO DATABASE" );
         homeNotesDao.insertHomeNote( ( HomeNoteReference ) homeNoteReference );
     }
 
@@ -140,5 +153,30 @@ public class LocalDataSource implements NoteDataSource {
     @Override
     public void deleteAllTrashNotesReferences() {
         trashNotesDao.deleteAllTrashNotes();
+    }
+
+    @Override
+    public void insertConfiguration( Configuration configuration ) {
+        configurationsDao.insertConfiguration( configuration );
+    }
+
+    @Override
+    public LiveData<Integer> getAscending() {
+        return configurationsDao.getAscending();
+    }
+
+    @Override
+    public LiveData<Integer> getSortingStrategy() {
+        return configurationsDao.getSortingStrategy();
+    }
+
+    @Override
+    public LiveData<Integer> getLayoutType() {
+        return configurationsDao.getLayoutType();
+    }
+
+    @Override
+    public void updateLayoutTypeConfig( int newLayoutTypeConfig ) {
+        configurationsDao.updateLayoutTypeConfig( newLayoutTypeConfig );
     }
 }

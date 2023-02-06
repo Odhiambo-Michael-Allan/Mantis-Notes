@@ -2,6 +2,7 @@ package com.mantis.MantisNotesIterationOne.data.source;
 
 import androidx.lifecycle.LiveData;
 
+import com.mantis.MantisNotesIterationOne.data.source.local.Configuration;
 import com.mantis.MantisNotesIterationOne.data.source.local.Note;
 import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.ArchiveNoteReference;
 import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.FrequentNoteReference;
@@ -9,6 +10,7 @@ import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.HomeN
 import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.NoteReference;
 import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.TrashNoteReference;
 
+import java.util.Date;
 import java.util.List;
 
 public interface NoteRepository {
@@ -17,6 +19,9 @@ public interface NoteRepository {
     LiveData<List<Note>> getAllNotes();
     void deleteNote( int noteId );
     void deleteAllNotes();
+    void updateNote( int noteId, String newTitle, String newDescription, Date dateLastModified,
+                     int newAccessCount );
+    void updateNoteOwner( int noteId, int newOwner );
 
 
     // ----------- Home Notes Table --------------
@@ -42,4 +47,11 @@ public interface NoteRepository {
     LiveData<List<NoteReference>> getTrashNotesReferences();
     void deleteTrashNoteReference( int noteReferencedId );
     void deleteAllTrashNotesReferences();
+
+    // -------------- Configuration Options ----------------
+    void insertConfiguration( Configuration configuration );
+    LiveData<Integer> getAscending();
+    LiveData<Integer> getSortingStrategy();
+    LiveData<Integer> getLayoutType();
+    void updateLayoutTypeConfig( int newLayoutTypeConfig );
 }

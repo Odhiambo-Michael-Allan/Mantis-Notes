@@ -7,11 +7,13 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
+import com.mantis.MantisNotesIterationOne.data.source.local.Configuration;
 import com.mantis.MantisNotesIterationOne.data.source.local.LocalDataSource;
 import com.mantis.MantisNotesIterationOne.data.source.local.Note;
 import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.NoteReference;
 import com.mantis.MantisNotesIterationOne.data.source.local.NoteRoomDatabase;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,7 +34,8 @@ public class DefaultNoteRepository implements NoteRepository {
                     NoteRoomDatabase database = NoteRoomDatabase.getDatabase( application );
                     INSTANCE = new DefaultNoteRepository( new LocalDataSource( database.noteDao(),
                             database.homeNotesDao(), database.frequentNotesDao(),
-                            database.archiveNotesDao(), database.trashNotesDao() ) );
+                            database.archiveNotesDao(), database.trashNotesDao(),
+                            database.configurationsDao() ) );
                 }
             }
         }
@@ -67,6 +70,22 @@ public class DefaultNoteRepository implements NoteRepository {
     public void deleteAllNotes() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit( () -> { this.noteDataSource.deleteAllNotes(); } );
+        executor.shutdown();
+    }
+
+    @Override
+    public void updateNote( int noteId, String newTitle, String newDescription,
+                            Date dateLastModified, int newAccessCount ) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit( () -> { this.noteDataSource.updateNote( noteId, newTitle, newDescription,
+                dateLastModified, newAccessCount ); } );
+        executor.shutdown();
+    }
+
+    @Override
+    public void updateNoteOwner( int noteId, int newOwner ) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit( () -> { this.noteDataSource.updateNoteOwner( noteId, newOwner ); } );
         executor.shutdown();
     }
 
@@ -171,6 +190,35 @@ public class DefaultNoteRepository implements NoteRepository {
     public void deleteAllTrashNotesReferences() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit( () -> { this.noteDataSource.deleteAllTrashNotesReferences(); } );
+        executor.shutdown();
+    }
+
+    @Override
+    public void insertConfiguration( Configuration configuration ) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit( () -> { this.noteDataSource.insertConfiguration( configuration ); } );
+        executor.shutdown();
+    }
+
+    @Override
+    public LiveData<Integer> getAscending() {
+        return noteDataSource.getAscending();
+    }
+
+    @Override
+    public LiveData<Integer> getSortingStrategy() {
+        return noteDataSource.getSortingStrategy();
+    }
+
+    @Override
+    public LiveData<Integer> getLayoutType() {
+        return noteDataSource.getLayoutType();
+    }
+
+    @Override
+    public void updateLayoutTypeConfig( int newLayoutTypeConfig ) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit( () -> { this.noteDataSource.updateLayoutTypeConfig( newLayoutTypeConfig ); } );
         executor.shutdown();
     }
 }

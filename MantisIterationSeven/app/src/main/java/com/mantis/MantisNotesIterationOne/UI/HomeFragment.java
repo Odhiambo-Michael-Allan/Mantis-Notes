@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -27,6 +28,7 @@ import com.mantis.MantisNotesIterationOne.Dialogs.NoteActionDialog;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModel;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModelFactory;
 import com.mantis.MantisNotesIterationOne.data.source.DefaultNoteRepository;
+import com.mantis.MantisNotesIterationOne.data.source.NoteRepository;
 import com.mantis.MantisNotesIterationOne.data.source.local.Note;
 import com.mantis.MantisNotesIterationOne.R;
 import com.mantis.MantisNotesIterationOne.Utils.MenuConfigurator;
@@ -77,27 +79,30 @@ public class HomeFragment extends Fragment {
     public void onViewCreated( View view, Bundle savedInstanceState ) {
         setupNotesViewModel();
         setupToolbar();
-        //configureRecyclerView( notesViewModel.getCurrentLayoutState() );
-        configureRecyclerView( NotesViewModel.LAYOUT_STATE_SIMPLE_LIST );
+        configureRecyclerView( notesViewModel.getCurrentLayoutTypeConfig() );
+        //configureRecyclerView( NotesViewModel.LAYOUT_STATE_SIMPLE_LIST );
         setupFloatingActionButton();
     }
 
     private void setupNotesViewModel() {
-        notesViewModel = new NotesViewModelFactory( DefaultNoteRepository.getRepository(
-                this.getActivity().getApplication() ) ).create( NotesViewModel.class );
-        //observeLayoutState();
+        NoteRepository noteRepository = DefaultNoteRepository.getRepository(
+                this.getActivity().getApplication() );
+        NotesViewModelFactory factory = new NotesViewModelFactory( noteRepository );
+        notesViewModel = new ViewModelProvider( requireActivity(), factory ).get(
+                NotesViewModel.class );
+        observeLayoutState();
         observeNotes();
     }
 
-//    private void observeLayoutState() {
-//        notesViewModel.getLayoutState().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-//            @Override
-//            public void onChanged( Integer integer ) {
-//                configureRecyclerView( integer );
-//                MenuConfigurator.checkSelectedLayoutType( integer, binding.homeFragmentContent.appBarLayout.toolbar.getMenu() );
-//            }
-//        } );
-//    }
+    private void observeLayoutState() {
+        notesViewModel.getLayoutTypeConfig().observe( getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged( Integer integer ) {
+                configureRecyclerView( integer );
+                MenuConfigurator.checkSelectedLayoutType( integer, binding.homeFragmentContent.appBarLayout.toolbar.getMenu() );
+            }
+        } );
+    }
 
     private void configureRecyclerView( int layoutType ) {
         RecyclerView recyclerView = binding.homeFragmentContent.notesRecyclerView.recyclerview;
@@ -158,17 +163,17 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onViewHolderLongClicked( int viewHolderPosition ) {
-                Note noteSelected = notesAdapter.getData().get( viewHolderPosition );
+                 int noteSelectedId = notesAdapter.getData().get( viewHolderPosition ).getId();
                 NoteActionDialog actionDialog = NoteActionDialog.newInstance( SHOW_ARCHIVE_OPTION );
                 actionDialog.addListener( new NoteActionDialog.NoteActionDialogListener() {
                     @Override
                     public void deleteSelected() {
-                        notesViewModel.deleteHomeFragmentNoteReference( noteSelected.getId() );
+                        notesViewModel.deleteHomeFragmentNoteReference( noteSelectedId );
                     }
 
                     @Override
                     public void onArchiveSelected() {
-                        notesViewModel.archiveHomeFragmentNote( noteSelected.getId() );
+                        notesViewModel.archiveHomeFragmentNote( noteSelectedId );
                     }
 
                     @Override
