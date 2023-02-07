@@ -1,10 +1,12 @@
 package com.mantis.MantisNotesIterationOne.ViewHolders;
 
 import android.view.View;
+import android.widget.CheckBox;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mantis.MantisNotesIterationOne.Adapters.NotesAdapter;
+import com.mantis.MantisNotesIterationOne.R;
 import com.mantis.MantisNotesIterationOne.data.source.local.Note;
 
 import java.util.ArrayList;
@@ -43,6 +45,16 @@ public abstract class NoteViewHolder extends RecyclerView.ViewHolder {
                 return true;
             }
         } );
+    }
+
+    public void showCheckBox() {
+        CheckBox checkBox = this.noteView.findViewById( R.id.note_check_box );
+        checkBox.setVisibility( View.VISIBLE );
+    }
+
+    public void hideCheckBox() {
+        CheckBox checkBox = this.noteView.findViewById( R.id.note_check_box );
+        checkBox.setVisibility( View.GONE );
     }
 
     public abstract void bindData( Note note );

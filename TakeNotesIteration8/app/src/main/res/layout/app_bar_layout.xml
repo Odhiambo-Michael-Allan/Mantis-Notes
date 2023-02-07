@@ -40,7 +40,19 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="bottom"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:layout_collapseMode="pin" />
+            app:layout_collapseMode="pin">
+
+            <RadioButton
+                android:id="@+id/all_radiobutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/all"
+                android:textColorHighlight="@color/teal_200"
+                android:padding="16dp"
+                android:layout_marginStart="16dp"
+                android:visibility="gone"/>
+
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.CollapsingToolbarLayout>
 

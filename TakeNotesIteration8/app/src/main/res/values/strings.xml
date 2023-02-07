@@ -59,4 +59,6 @@ your code readers and your own, you should follow the coding conventions
         deleted after 15 days</string>
     <string name="trash_content_bottom_banner">This content will be deleted in
         { Time remaining }</string>
+
+    <string name="all">All</string>
 </resources>

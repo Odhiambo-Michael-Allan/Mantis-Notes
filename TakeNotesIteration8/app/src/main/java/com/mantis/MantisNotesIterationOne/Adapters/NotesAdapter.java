@@ -24,6 +24,7 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
     private View emptyView;
     private NotesViewModel notesViewModel;
     private ArrayList<NoteAdapterListener> listeners = new ArrayList<>();
+    private ArrayList<NoteViewHolder> noteViewHolders = new ArrayList<>();
 
     @NonNull
     @Override
@@ -40,6 +41,7 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
                 notifyListenersOfViewHolderLongClick( viewHolderPosition );
             }
         } );
+        noteViewHolders.add( noteViewHolder );
         return noteViewHolder;
     }
 
@@ -87,14 +89,14 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
         notifyDataSetChanged();
     }
 
-    private void hide( Menu menu ) {
+    public void hide( Menu menu ) {
         if ( menu == null )
             return;
         for ( int i = 0; i < menu.size(); i++ )
             menu.getItem( i ).setVisible( false );
     }
 
-    private void show( Menu menu ) {
+    public void show( Menu menu ) {
         if ( menu == null )
             return;
         for ( int i = 0; i < menu.size(); i++ )
@@ -110,8 +112,10 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
     }
 
     private void showEmptyView( boolean show ) {
-        if ( show )
-            this.emptyView.setVisibility( View.VISIBLE );
+        if ( show ) {
+            this.emptyView.setVisibility(View.VISIBLE);
+            this.noteViewHolders.clear();
+        }
         else
             this.emptyView.setVisibility( View.GONE );
     }
@@ -125,13 +129,28 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
     }
 
     public void sortData() {
-        Logger.log( "SORTING DATA.." );
         List<Note> data = SortingUtil.sortList( getData(),
                 notesViewModel.getCurrentAscendingConfigOption(),
                 notesViewModel.getCurrentSortingStrategyConfigOption() );
         this.data = data;
         notifyDataSetChanged();
 
+    }
+
+    public void notifyViewHoldersToShowCheckBox() {
+        Iterator i = noteViewHolders.iterator();
+        while ( i.hasNext() ) {
+            NoteViewHolder noteViewHolder = ( NoteViewHolder ) i.next();
+            noteViewHolder.showCheckBox();
+        }
+    }
+
+    public void notifyViewHoldersToHideCheckBox() {
+        Iterator i = noteViewHolders.iterator();
+        while ( i.hasNext() ) {
+            NoteViewHolder noteViewHolder = ( NoteViewHolder ) i.next();
+            noteViewHolder.hideCheckBox();
+        }
     }
 
     public interface NoteAdapterListener {

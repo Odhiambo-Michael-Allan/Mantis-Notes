@@ -47,8 +47,7 @@ public class NotesViewModel extends ViewModel {
     private Observer<List<Note>> notesTableObserver;
     private ConfigOptionsModel configOptionsModel;
 
-    private boolean ascending;
-    private int currentSortingStrategy;
+    private MutableLiveData<Boolean> observableEditStatus = new MutableLiveData<>();
 
     public NotesViewModel( NoteRepository noteRepository ) {
         this.noteRepository = noteRepository;
@@ -82,6 +81,11 @@ public class NotesViewModel extends ViewModel {
     private void addListenerToMenuConfigurator() {
         MenuConfigurator.addListener( new MenuConfigurator.MenuConfigurationListener() {
             @Override
+            public void onEditOptionSelected() {
+                observableEditStatus.postValue( true );
+            }
+
+            @Override
             public void onSimpleListOptionSelected() {
                 configOptionsModel.updateLayoutTypeConfig( LAYOUT_STATE_SIMPLE_LIST );
             }
@@ -103,6 +107,10 @@ public class NotesViewModel extends ViewModel {
             note.setOwner( HOME_FRAGMENT );
             this.noteRepository.insertNote( note );
         }
+    }
+
+    public LiveData<Boolean> getObservableEditStatus() {
+        return observableEditStatus;
     }
 
     public boolean noteInHome( int noteId ) {

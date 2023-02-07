@@ -1,7 +1,10 @@
 package com.mantis.MantisNotesIterationOne.UI;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -52,6 +55,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private NotesViewModel notesViewModel;
     private NotesAdapter notesAdapter;
+    private boolean editMenuItemHasBeenSelected = false;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -241,8 +245,24 @@ public class HomeFragment extends Fragment {
         NavigationUI.setupWithNavController( navigationView, controller );
         binding.homeFragmentContent.appBarLayout.toolbar.inflateMenu( R.menu.home_fragment_options_menu);
         MenuConfigurator.configureMenu( binding.homeFragmentContent.appBarLayout.toolbar.getMenu() );
+        observeEditStatus();
+        configureEditMenuItem();
         configureSortMenuItem();
     }
+
+//    private void configureEditMenuItem() {
+//        MenuItem editMenuItem = binding.homeFragmentContent.appBarLayout.toolbar
+//                .getMenu().findItem( R.id.edit_option );
+//        editMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
+//                editMenuItemHasBeenSelected = true;
+//                notesAdapter.hide( binding.homeFragmentContent.appBarLayout.toolbar.getMenu() );
+//                notesAdapter.notifyViewHoldersToShowCheckBox();
+//                return true;
+//            }
+//        } );
+//    }
 
     private void configureSortMenuItem() {
         MenuItem sortMenuItem = binding.homeFragmentContent
@@ -257,25 +277,21 @@ public class HomeFragment extends Fragment {
                         sortOptionDialog.addListener( new SortOptionDialog.SortOptionDialogListener() {
                             @Override
                             public void onTitleSelected() {
-                                Logger.log( "TITLE SELECTED. UPDATING SORTING STRATEGY" );
                                 notesViewModel.updateSortingStrategyConfig( NotesViewModel.TITLE );
                             }
 
                             @Override
                             public void onDateCreatedSelected() {
-                                Logger.log( "DATE CREATED SELECTED. UPDATING SORTING STRATEGY" );
                                 notesViewModel.updateSortingStrategyConfig( NotesViewModel.DATE_CREATED );
                             }
 
                             @Override
                             public void onDateModifiedSelected() {
-                                Logger.log( "DATE MODIFIED SELECTED. UPDATING SORTING STRATEGY" );
                                 notesViewModel.updateSortingStrategyConfig( NotesViewModel.DATE_MODIFIED );
                             }
 
                             @Override
                             public void onAscendingSelected() {
-                                Logger.log( "UPDATING ASCENDING" );
                                 notesViewModel.updateAscendingConfig( NotesViewModel.ASCENDING );
                             }
 
@@ -308,5 +324,27 @@ public class HomeFragment extends Fragment {
                 Navigation.findNavController( v ).navigate( action );
             }
         } );
+    }
+
+    @Override
+    public void onAttach( @NonNull Context context ) {
+        super.onAttach( context );
+        OnBackPressedCallback callback = new OnBackPressedCallback( true ) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBackNavigation();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback( this, callback );
+    }
+
+    private void handleBackNavigation() {
+        if ( editMenuItemHasBeenSelected ) {
+            notesAdapter.notifyViewHoldersToHideCheckBox();
+            notesAdapter.show( binding.homeFragmentContent.appBarLayout.toolbar.getMenu() );
+            editMenuItemHasBeenSelected = false;
+            return;
+        }
+        requireActivity().finish();
     }
 }
