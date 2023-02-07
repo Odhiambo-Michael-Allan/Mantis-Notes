@@ -113,6 +113,10 @@ public class NotesViewModel extends ViewModel {
         return observableEditStatus;
     }
 
+    public void doneEditing() {
+        observableEditStatus.postValue( false );
+    }
+
     public boolean noteInHome( int noteId ) {
         return homeFragmentModel.noteInList( noteId );
     }

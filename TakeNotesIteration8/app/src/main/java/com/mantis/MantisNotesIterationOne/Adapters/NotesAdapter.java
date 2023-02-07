@@ -5,6 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mantis.MantisNotesIterationOne.Logger;
@@ -135,6 +138,17 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
         this.data = data;
         notifyDataSetChanged();
 
+    }
+
+    public void editStatusChanged( Boolean edit, Toolbar toolbar ) {
+        if ( edit ) {
+            hide( toolbar.getMenu() );
+            notifyViewHoldersToShowCheckBox();
+        }
+        else {
+            show( toolbar.getMenu() );
+            notifyViewHoldersToHideCheckBox();
+        }
     }
 
     public void notifyViewHoldersToShowCheckBox() {

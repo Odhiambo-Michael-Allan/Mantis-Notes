@@ -61,4 +61,7 @@ your code readers and your own, you should follow the coding conventions
         { Time remaining }</string>
 
     <string name="all">All</string>
+
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_closed">Closed</string>
 </resources>

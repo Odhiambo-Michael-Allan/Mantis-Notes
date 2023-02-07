@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.mantis.MantisNotesIterationOne.databinding.NoteViewActionDialogBinding;
+import com.mantis.MantisNotesIterationOne.databinding.NoteViewActionDialogVerticalBinding;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,7 +16,7 @@ import java.util.Iterator;
 public class NoteActionDialog extends BottomSheetDialogFragment {
 
     private static final String SHOW_ARCHIVE_OPTION = "True";
-    private NoteViewActionDialogBinding binding;
+    private NoteViewActionDialogVerticalBinding binding;
     private int noteSelectedPosition;
     private ArrayList<NoteActionDialogListener> listeners = new ArrayList<>();
 
@@ -37,7 +37,8 @@ public class NoteActionDialog extends BottomSheetDialogFragment {
     @Override
     public View onCreateView( LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState ) {
-        binding = NoteViewActionDialogBinding.inflate( inflater, container, false );
+
+        binding = NoteViewActionDialogVerticalBinding.inflate( inflater, container, false );
 
         boolean showArchiveOption = getArguments().getBoolean( SHOW_ARCHIVE_OPTION );
         if ( showArchiveOption )
