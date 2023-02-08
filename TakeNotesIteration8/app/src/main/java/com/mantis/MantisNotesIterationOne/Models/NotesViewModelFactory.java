@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.mantis.MantisNotesIterationOne.Logger;
 import com.mantis.MantisNotesIterationOne.data.source.NoteRepository;
 
 public class NotesViewModelFactory implements ViewModelProvider.Factory {

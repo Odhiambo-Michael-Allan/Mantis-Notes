@@ -12,12 +12,14 @@
         <entry key="app/src/main/res/drawable/ic_edit.xml" value="0.1855" />
         <entry key="app/src/main/res/drawable/ic_star_border.xml" value="0.1855" />
         <entry key="app/src/main/res/drawable/share_icon.xml" value="0.192" />
+        <entry key="app/src/main/res/drawable/unarchive_icon.xml" value="0.222" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.328125" />
         <entry key="app/src/main/res/layout/app_bar_layout.xml" value="0.2760416666666667" />
         <entry key="app/src/main/res/layout/archive_fragment_content.xml" value="0.2390625" />
         <entry key="app/src/main/res/layout/bottom_sheet.xml" value="0.3421875" />
         <entry key="app/src/main/res/layout/dialog_actions.xml" value="0.3421875" />
         <entry key="app/src/main/res/layout/drawer_layout.xml" value="0.28125" />
+        <entry key="app/src/main/res/layout/edit_options_toolbar.xml" value="0.2375" />
         <entry key="app/src/main/res/layout/fragment_add_note.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_archive.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/fragment_frequently_used.xml" value="0.34322916666666664" />
@@ -25,7 +27,7 @@
         <entry key="app/src/main/res/layout/fragment_trash.xml" value="0.328125" />
         <entry key="app/src/main/res/layout/frequently_used_fragment_content.xml" value="0.3421875" />
         <entry key="app/src/main/res/layout/grid_note_view.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/home_fragment_content.xml" value="0.3223844282238443" />
+        <entry key="app/src/main/res/layout/home_fragment_content.xml" value="0.25" />
         <entry key="app/src/main/res/layout/list_note_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/nav_header.xml" value="0.3421875" />
         <entry key="app/src/main/res/layout/note_card_view.xml" value="0.34322916666666664" />

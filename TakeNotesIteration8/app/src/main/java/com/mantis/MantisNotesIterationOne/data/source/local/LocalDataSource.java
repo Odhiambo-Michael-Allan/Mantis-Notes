@@ -2,7 +2,6 @@ package com.mantis.MantisNotesIterationOne.data.source.local;
 
 import androidx.lifecycle.LiveData;
 
-import com.mantis.MantisNotesIterationOne.Logger;
 import com.mantis.MantisNotesIterationOne.data.source.NoteDataSource;
 import com.mantis.MantisNotesIterationOne.data.source.local.Dao.ArchiveNotesDao;
 import com.mantis.MantisNotesIterationOne.data.source.local.Dao.ConfigurationsDao;

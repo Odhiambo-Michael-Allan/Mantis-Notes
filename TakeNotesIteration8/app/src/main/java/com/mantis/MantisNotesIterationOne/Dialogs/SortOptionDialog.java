@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import com.mantis.MantisNotesIterationOne.Logger;
+import com.mantis.MantisNotesIterationOne.Utils.Logger;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModel;
 import com.mantis.MantisNotesIterationOne.R;
 import com.mantis.MantisNotesIterationOne.databinding.SortMenuItemActionDialogBinding;

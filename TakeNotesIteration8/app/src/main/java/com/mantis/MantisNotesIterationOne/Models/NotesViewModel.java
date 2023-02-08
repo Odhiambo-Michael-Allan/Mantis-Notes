@@ -5,17 +5,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
-import com.mantis.MantisNotesIterationOne.Logger;
 import com.mantis.MantisNotesIterationOne.Utils.MenuConfigurator;
 import com.mantis.MantisNotesIterationOne.data.source.NoteRepository;
 import com.mantis.MantisNotesIterationOne.data.source.local.Note;
-import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.ArchiveNoteReference;
-import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.FrequentNoteReference;
-import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.HomeNoteReference;
-import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.NoteReference;
-import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.TrashNoteReference;
 
 import java.util.ArrayList;
 import java.util.Iterator;

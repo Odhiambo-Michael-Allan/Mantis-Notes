@@ -2,7 +2,6 @@ package com.mantis.MantisNotesIterationOne.Models;
 
 import androidx.lifecycle.Observer;
 
-import com.mantis.MantisNotesIterationOne.Logger;
 import com.mantis.MantisNotesIterationOne.data.source.NoteRepository;
 import com.mantis.MantisNotesIterationOne.data.source.local.Note;
 import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.HomeNoteReference;

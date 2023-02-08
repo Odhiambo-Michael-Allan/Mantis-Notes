@@ -1,4 +1,4 @@
-package com.mantis.MantisNotesIterationOne;
+package com.mantis.MantisNotesIterationOne.Utils;
 
 import android.util.Log;
 

@@ -1,12 +1,10 @@
 package com.mantis.MantisNotesIterationOne.UI;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -17,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -31,7 +30,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.mantis.MantisNotesIterationOne.Adapters.NotesAdapter;
 import com.mantis.MantisNotesIterationOne.Dialogs.NoteActionDialog;
 import com.mantis.MantisNotesIterationOne.Dialogs.SortOptionDialog;
-import com.mantis.MantisNotesIterationOne.Logger;
+import com.mantis.MantisNotesIterationOne.Utils.Logger;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModel;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModelFactory;
 import com.mantis.MantisNotesIterationOne.data.source.DefaultNoteRepository;
@@ -46,11 +45,6 @@ import com.mantis.MantisNotesIterationOne.databinding.FragmentHomeBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class HomeFragment extends Fragment {
 
     private static final boolean SHOW_ARCHIVE_OPTION = true;
@@ -84,14 +78,11 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onViewCreated( View view, Bundle savedInstanceState ) {
-
-        binding.homeFragmentContent.bottomToolbar.inflateMenu( R.menu.bottom_toolbar_menu );
-
         setupNotesViewModel();
         setupToolbar();
         configureRecyclerView( notesViewModel.getCurrentLayoutTypeConfig() );
-        //configureRecyclerView( NotesViewModel.LAYOUT_STATE_SIMPLE_LIST );
         setupFloatingActionButton();
+        setupEditOptionsToolbar();
     }
 
     private void setupNotesViewModel() {
@@ -165,35 +156,47 @@ public class HomeFragment extends Fragment {
         notesAdapter.addListener( new NotesAdapter.NoteAdapterListener() {
             @Override
             public void onViewHolderClicked( View view, int viewHolderPosition ) {
-                HomeFragmentDirections.ActionNavHomeToNavAddNote action =
-                        HomeFragmentDirections.actionNavHomeToNavAddNote(
-                                notesAdapter.getData().get( viewHolderPosition ).getId(),
-                                AddNoteFragment.HOME_FRAGMENT );
-                Navigation.findNavController( view ).navigate( action );
+                navigationToAddNoteFragment( view, viewHolderPosition );
             }
 
             @Override
             public void onViewHolderLongClicked( int viewHolderPosition ) {
-                 int noteSelectedId = notesAdapter.getData().get( viewHolderPosition ).getId();
-                NoteActionDialog actionDialog = NoteActionDialog.newInstance( SHOW_ARCHIVE_OPTION );
-                actionDialog.addListener( new NoteActionDialog.NoteActionDialogListener() {
-                    @Override
-                    public void deleteSelected() {
-                        notesViewModel.deleteHomeFragmentNoteReference( noteSelectedId );
-                    }
+                showNoteActionDialog( viewHolderPosition );
+            }
+        } );
+    }
 
-                    @Override
-                    public void onArchiveSelected() {
-                        notesViewModel.archiveHomeFragmentNote( noteSelectedId );
-                    }
+    private void navigationToAddNoteFragment( View view, int viewHolderPosition ) {
+        HomeFragmentDirections.ActionNavHomeToNavAddNote action =
+                HomeFragmentDirections.actionNavHomeToNavAddNote(
+                        notesAdapter.getData().get( viewHolderPosition ).getId(),
+                        AddNoteFragment.HOME_FRAGMENT );
+        Navigation.findNavController( view ).navigate( action );
+    }
 
-                    @Override
-                    public void onUnarchiveSelected() {
-                        // Not possible here..
-                    }
-                } );
-                actionDialog.show( ((AppCompatActivity) getContext()).getSupportFragmentManager(),
-                        "note-actions" );
+    private void showNoteActionDialog( int viewHolderPosition ) {
+        int noteSelectedId = notesAdapter.getData().get( viewHolderPosition ).getId();
+        NoteActionDialog noteActionDialog = NoteActionDialog.newInstance( SHOW_ARCHIVE_OPTION );
+        addNoteActionDialogListener( noteActionDialog, noteSelectedId );
+        noteActionDialog.show( ((AppCompatActivity) getContext()).getSupportFragmentManager(),
+                "note-actions" );
+    }
+
+    private void addNoteActionDialogListener( NoteActionDialog noteActionDialog, int noteSelectedId ) {
+        noteActionDialog.addListener( new NoteActionDialog.NoteActionDialogListener() {
+            @Override
+            public void deleteSelected() {
+                notesViewModel.deleteHomeFragmentNoteReference( noteSelectedId );
+            }
+
+            @Override
+            public void onArchiveSelected() {
+                notesViewModel.archiveHomeFragmentNote( noteSelectedId );
+            }
+
+            @Override
+            public void onUnarchiveSelected() {
+                // Not possible here..
             }
         } );
     }
@@ -237,7 +240,6 @@ public class HomeFragment extends Fragment {
 
 
     private void setupToolbar() {
-
         NavController controller = NavHostFragment.findNavController( this );
         DrawerLayout drawerLayout = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
@@ -259,22 +261,45 @@ public class HomeFragment extends Fragment {
         notesViewModel.getObservableEditStatus().observe(getViewLifecycleOwner(),
                 new Observer<Boolean>() {
                     @Override
-                    public void onChanged( Boolean aBoolean ) {
-                        notesAdapter.editStatusChanged( aBoolean,
-                                binding.homeFragmentContent.appBarLayout
-                                        .toolbar );
-                        if ( aBoolean ) {
-                            binding.homeFragmentContent.appBarLayout.toolbar.setVisibility( View.GONE );
-                            binding.homeFragmentContent.appBarLayout.collapsingToolbar.setTitle( "Select Notes" );
-                            binding.homeFragmentContent.appBarLayout.editOptions.setVisibility( View.VISIBLE );
-                        }
-                        else {
-                            binding.homeFragmentContent.appBarLayout.toolbar.setVisibility( View.VISIBLE );
-                            binding.homeFragmentContent.appBarLayout.collapsingToolbar.setTitle( "Home" );
-                            binding.homeFragmentContent.appBarLayout.editOptions.setVisibility( View.GONE );
-                        }
+                    public void onChanged( Boolean isEditing ) {
+                        respondToEditStatusChange( isEditing );
                     }
                 } );
+    }
+
+    private void respondToEditStatusChange( boolean isEditing ) {
+        notesAdapter.editStatusChanged( isEditing,
+                binding.homeFragmentContent.appBarLayout
+                        .toolbar );
+        if ( isEditing )
+            configureEditingViews();
+        else
+            hideEditingViews();
+    }
+
+    private void configureEditingViews() {
+        binding.homeFragmentContent.appBarLayout.toolbar.setVisibility( View.GONE );
+        binding.homeFragmentContent.appBarLayout.collapsingToolbar.setTitle( "Select Notes" );
+        binding.homeFragmentContent.appBarLayout.editOptions.setVisibility( View.VISIBLE );
+        binding.homeFragmentContent.editOptionToolbar.setVisibility( View.VISIBLE );
+        MenuItem unarchiveOption = binding.homeFragmentContent.editOptionToolbar.getMenu().findItem( R.id.unarchive );
+        unarchiveOption.setVisible( false );
+        binding.homeFragmentContent.fab.setVisibility( View.GONE );
+        binding.homeFragmentContent.notesRecyclerView.recyclerview.setBottom( 56 );
+        ViewGroup.MarginLayoutParams layoutParams = ( ViewGroup.MarginLayoutParams ) binding.homeFragmentContent.notesRecyclerView.recyclerview.getLayoutParams();
+        layoutParams.bottomMargin = 150;
+        binding.homeFragmentContent.notesRecyclerView.recyclerview.setLayoutParams( layoutParams );
+    }
+
+    private void hideEditingViews() {
+        binding.homeFragmentContent.appBarLayout.toolbar.setVisibility( View.VISIBLE );
+        binding.homeFragmentContent.appBarLayout.collapsingToolbar.setTitle( "Home" );
+        binding.homeFragmentContent.appBarLayout.editOptions.setVisibility( View.GONE );
+        binding.homeFragmentContent.editOptionToolbar.setVisibility( View.GONE );
+        binding.homeFragmentContent.fab.setVisibility( View.VISIBLE );
+        ViewGroup.MarginLayoutParams layoutParams = ( ViewGroup.MarginLayoutParams ) binding.homeFragmentContent.notesRecyclerView.recyclerview.getLayoutParams();
+        layoutParams.bottomMargin = 0;
+        binding.homeFragmentContent.notesRecyclerView.recyclerview.setLayoutParams( layoutParams );
     }
 
     private void configureSortMenuItem() {
@@ -320,6 +345,17 @@ public class HomeFragment extends Fragment {
                 } );
     }
 
+    private void setupEditOptionsToolbar() {
+
+        binding.homeFragmentContent.editOptionToolbar.inflateMenu( R.menu.bottom_toolbar_menu );
+        binding.homeFragmentContent.appBarLayout.allCheckBox.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged( CompoundButton compoundButton, boolean isChecked ) {
+                notesAdapter.checkAllNotes( isChecked );
+            }
+        } );
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -354,6 +390,7 @@ public class HomeFragment extends Fragment {
     private void handleBackNavigation() {
         if ( notesViewModel.getObservableEditStatus().getValue() ) {
             notesViewModel.doneEditing();
+            binding.homeFragmentContent.appBarLayout.allCheckBox.setChecked( false );
             return;
         }
         requireActivity().finish();

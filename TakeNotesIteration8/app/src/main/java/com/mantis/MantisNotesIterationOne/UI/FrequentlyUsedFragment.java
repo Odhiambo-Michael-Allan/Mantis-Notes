@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import com.google.android.material.navigation.NavigationView;
 import com.mantis.MantisNotesIterationOne.Adapters.NotesAdapter;
 import com.mantis.MantisNotesIterationOne.Dialogs.NoteActionDialog;
-import com.mantis.MantisNotesIterationOne.Logger;
+import com.mantis.MantisNotesIterationOne.Utils.Logger;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModel;
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModelFactory;
 import com.mantis.MantisNotesIterationOne.data.source.DefaultNoteRepository;
