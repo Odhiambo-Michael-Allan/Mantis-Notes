@@ -154,9 +154,9 @@ public class FrequentlyUsedFragment extends Fragment {
         Menu menu = binding.frequentlyUsedFragmentContent.
                 frequentlyUsedFragmentAppBarLayout.toolbar.getMenu();
         if ( oldAdapter == null )
-            notesAdapter.setData( new ArrayList<>(), menu );
+            notesAdapter.setData( new ArrayList<>() );
         else
-            notesAdapter.setData( oldAdapter.getData(), menu );
+            notesAdapter.setData( oldAdapter.getData() );
     }
 
     private void configureListenerOnNotesAdapter() {
@@ -193,6 +193,11 @@ public class FrequentlyUsedFragment extends Fragment {
                 } );
                 actionDialog.show( ((AppCompatActivity) getContext()).getSupportFragmentManager(), "note-actions" );
             }
+
+            @Override
+            public void onRecyclerViewEmpty(boolean isEmpty) {
+
+            }
         } );
     }
 
@@ -202,7 +207,7 @@ public class FrequentlyUsedFragment extends Fragment {
                     @Override
                     public void onChanged( List<Note> notes ) {
                         Logger.log( "SETTING FREQUENTLY USED NOTES LIST" );
-                        notesAdapter.setData( notes, binding.frequentlyUsedFragmentContent.frequentlyUsedFragmentAppBarLayout.toolbar.getMenu() );
+                        notesAdapter.setData( notes );
                     }
                 } );
     }

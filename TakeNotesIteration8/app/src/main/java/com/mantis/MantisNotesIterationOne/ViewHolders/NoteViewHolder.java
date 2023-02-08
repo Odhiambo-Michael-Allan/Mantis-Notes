@@ -62,6 +62,7 @@ public abstract class NoteViewHolder extends RecyclerView.ViewHolder {
                 return true;
             }
         } );
+
     }
 
     public void check( boolean check ) {
@@ -71,15 +72,21 @@ public abstract class NoteViewHolder extends RecyclerView.ViewHolder {
 
     private void setupListenerOnCheckBox() {
         CheckBox checkBox = this.noteView.findViewById( R.id.note_check_box );
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        checkBox.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged( CompoundButton compoundButton, boolean isChecked ) {
-                if ( isChecked )
-                    viewIsChecked = true;
-                else
-                    viewIsChecked = false;
+                viewIsChecked = isChecked;
+                notifyListenersOfCheckBoxChange( isChecked );
             }
         } );
+    }
+
+    public boolean isChecked() {
+        return viewIsChecked;
+    }
+
+    public void reset() {
+        hideCheckBox();
     }
 
     public void showCheckBox() {
@@ -116,8 +123,17 @@ public abstract class NoteViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    private void notifyListenersOfCheckBoxChange( boolean checked ) {
+        Iterator i = listeners.iterator();
+        while ( i.hasNext() ) {
+            NoteViewHolderListener listener = ( NoteViewHolderListener ) i.next();
+            listener.onCheckButtonChange( checked );
+        }
+    }
+
     public interface NoteViewHolderListener {
         void onClick( View view, int viewHolderPosition );
         void onLongClick( int viewHolderPosition );
+        void onCheckButtonChange( boolean check );
     }
 }

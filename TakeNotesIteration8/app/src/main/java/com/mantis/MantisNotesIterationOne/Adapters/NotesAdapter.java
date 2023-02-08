@@ -9,6 +9,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mantis.MantisNotesIterationOne.Models.NotesViewModel;
+import com.mantis.MantisNotesIterationOne.Utils.Logger;
 import com.mantis.MantisNotesIterationOne.Utils.SortingUtil;
 import com.mantis.MantisNotesIterationOne.data.source.local.Note;
 import com.mantis.MantisNotesIterationOne.ViewHolders.NoteViewHolder;
@@ -23,6 +24,7 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
     private List<Note> data;
     private View emptyView;
     private NotesViewModel notesViewModel;
+    private boolean editInProgress;
     private ArrayList<NoteAdapterListener> listeners = new ArrayList<>();
     private ArrayList<NoteViewHolder> noteViewHolders = new ArrayList<>();
 
@@ -39,6 +41,13 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
             @Override
             public void onLongClick( int viewHolderPosition ) {
                 notifyListenersOfViewHolderLongClick( viewHolderPosition );
+            }
+
+            @Override
+            public void onCheckButtonChange( boolean check ) {
+                int adapterPosition = noteViewHolder.getAdapterPosition();
+                if ( adapterPosition >= 0 )
+                    getData().get( adapterPosition ).setChecked( check );
             }
         } );
         noteViewHolders.add( noteViewHolder );
@@ -67,6 +76,13 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
 
     @Override
     public void onBindViewHolder( @NonNull NoteViewHolder holder, int position ) {
+        Note noteAtPosition = getData().get( position );
+        if ( editInProgress )
+            holder.showCheckBox();
+        if ( noteAtPosition.isChecked() )
+            holder.check( true );
+        else
+            holder.check( false );
         holder.bindData( data.get( position ) );
         holder.setPosition( position );
     }
@@ -76,32 +92,27 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
         return data.size();
     }
 
-    public void setData( List<Note> data, Menu menu ) {
+    public void setData( List<Note> data ) {
         this.data = data;
         if ( data.size() == 0 ) {
-            showEmptyView(true);
-            hide( menu );
+            notifyListenersRecyclerViewEmpty( true );
+            showEmptyView( true );
         }
         else {
-            showEmptyView(false);
-            show( menu );
+            notifyListenersRecyclerViewEmpty( false );
+            showEmptyView( false );
         }
         notifyDataSetChanged();
     }
 
-    public void hide( Menu menu ) {
-        if ( menu == null )
-            return;
-        for ( int i = 0; i < menu.size(); i++ )
-            menu.getItem( i ).setVisible( false );
+    private void notifyListenersRecyclerViewEmpty( boolean empty ) {
+        Iterator i = listeners.iterator();
+        while ( i.hasNext() ) {
+            NoteAdapterListener listener = ( NoteAdapterListener ) i.next();
+            listener.onRecyclerViewEmpty( empty );
+        }
     }
 
-    public void show( Menu menu ) {
-        if ( menu == null )
-            return;
-        for ( int i = 0; i < menu.size(); i++ )
-            menu.getItem( i ).setVisible( true );
-    }
 
     public List<Note> getData() {
         return this.data;
@@ -112,10 +123,8 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
     }
 
     private void showEmptyView( boolean show ) {
-        if ( show ) {
-            this.emptyView.setVisibility(View.VISIBLE);
-            this.noteViewHolders.clear();
-        }
+        if ( show )
+            this.emptyView.setVisibility( View.VISIBLE );
         else
             this.emptyView.setVisibility( View.GONE );
     }
@@ -138,20 +147,27 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
     }
 
     public void checkAllNotes( boolean check ) {
-        Iterator i = noteViewHolders.iterator();
+        Iterator i = getData().iterator();
         while ( i.hasNext() ) {
-            NoteViewHolder noteViewHolder = ( NoteViewHolder ) i.next();
-            noteViewHolder.check( check );
+            Note note = ( Note ) i.next();
+            note.setChecked( check );
         }
+        notifyDataSetChanged();
+
+//        Iterator i = noteViewHolders.iterator();
+//        while ( i.hasNext() ) {
+//            NoteViewHolder noteViewHolder = ( NoteViewHolder ) i.next();
+//            noteViewHolder.check( check );
+//        }
     }
 
-    public void editStatusChanged( Boolean edit, Toolbar toolbar ) {
+    public void editStatusChanged( Boolean edit ) {
+        this.editInProgress = edit;
         if ( edit ) {
-            hide( toolbar.getMenu() );
             notifyViewHoldersToShowCheckBox();
         }
         else {
-            show( toolbar.getMenu() );
+            checkAllNotes( false );
             notifyViewHoldersToHideCheckBox();
         }
     }
@@ -172,8 +188,23 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
         }
     }
 
+    public void deleteSelectedNotes() {
+        List<Note> unselectedNotes = new ArrayList<>(), selectedNotes = new ArrayList<>();
+        Iterator i = getData().iterator();
+        while ( i.hasNext() ) {
+            Note note = ( Note ) i.next();
+            if ( note.isChecked() )
+                selectedNotes.add( note );
+            else
+                unselectedNotes.add( note );
+        }
+        setData( unselectedNotes );
+        notesViewModel.deleteReferencesIn( selectedNotes );
+    }
+
     public interface NoteAdapterListener {
         void onViewHolderClicked( View view, int viewHolderPosition );
         void onViewHolderLongClicked( int viewHolderPosition );
+        void onRecyclerViewEmpty( boolean isEmpty );
     }
 }

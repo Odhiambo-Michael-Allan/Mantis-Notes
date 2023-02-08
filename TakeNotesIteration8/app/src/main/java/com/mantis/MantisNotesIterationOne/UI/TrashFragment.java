@@ -145,9 +145,9 @@ public class TrashFragment extends Fragment {
         Menu menu = binding.trashFragmentContent.trashFragmentAppBarLayout.
                 toolbar.getMenu();
         if ( oldAdapter == null )
-            adapter.setData( new ArrayList<>(), menu );
+            adapter.setData( new ArrayList<>() );
         else
-            adapter.setData( oldAdapter.getData(), menu );
+            adapter.setData( oldAdapter.getData() );
     }
 
     private void configureListenerOnNotesAdapter() {
@@ -166,6 +166,11 @@ public class TrashFragment extends Fragment {
                 Toast.makeText( getContext(), "Not yet implemented",
                         Toast.LENGTH_SHORT ).show();
             }
+
+            @Override
+            public void onRecyclerViewEmpty( boolean isEmpty ) {
+
+            }
         } );
     }
 
@@ -174,8 +179,7 @@ public class TrashFragment extends Fragment {
                 new Observer<List<Note>>() {
                     @Override
                     public void onChanged( List<Note> notes ) {
-                        adapter.setData( notes, binding.trashFragmentContent
-                                .trashFragmentAppBarLayout.toolbar.getMenu() );
+                        adapter.setData( notes );
                     }
                 } );
     }

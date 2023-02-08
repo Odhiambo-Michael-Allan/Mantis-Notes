@@ -4,6 +4,7 @@ import java.util.Date;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity( tableName = "notes_table" )
@@ -17,6 +18,8 @@ public class Note {
     private int accessCount;
     private Date dateCreated, dateLastModified;
     private int owner;
+    @Ignore
+    private boolean isChecked;
 
     public Note( String title, String description, String date, Date dateCreated ) {
         this.title = title;
@@ -89,6 +92,14 @@ public class Note {
 
     public void resetAccessCount() {
         this.accessCount = 0;
+    }
+
+    public void setChecked( boolean checked ) {
+        this.isChecked = checked;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
     }
 
 }

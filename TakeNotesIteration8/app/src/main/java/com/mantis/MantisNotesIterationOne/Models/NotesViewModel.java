@@ -254,6 +254,17 @@ public class NotesViewModel extends ViewModel {
         configOptionsModel.updateAscendingConfig( newAscendingConfig );
     }
 
+    public void deleteReferencesIn( List<Note> notes ) {
+        Iterator i = notes.iterator();
+        while ( i.hasNext() ) {
+            Note note = ( Note ) i.next();
+            homeFragmentModel.deleteReference( note.getId() );
+            frequentFragmentModel.deleteReference( note.getId() );
+            archiveFragmentModel.deleteReference( note.getId() );
+            trashFragmentModel.deleteReference( note.getId() );
+        }
+    }
+
 
 
     @Override

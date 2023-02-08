@@ -148,9 +148,9 @@ public class ArchiveFragment extends Fragment {
     private void reloadAdapterData( NotesAdapter oldAdapter ) {
         Menu menu = binding.archiveFragmentContent.archiveFragmentAppBarLayout.toolbar.getMenu();
         if ( oldAdapter == null )
-            notesAdapter.setData( new ArrayList<>(), menu );
+            notesAdapter.setData( new ArrayList<>() );
         else
-            notesAdapter.setData( oldAdapter.getData(), menu );
+            notesAdapter.setData( oldAdapter.getData() );
     }
 
     private void configureListenerOnNotesAdapter() {
@@ -188,6 +188,11 @@ public class ArchiveFragment extends Fragment {
                 actionDialog.show( ((AppCompatActivity) getContext()).getSupportFragmentManager(),
                         "note-actions" );
             }
+
+            @Override
+            public void onRecyclerViewEmpty( boolean isEmpty ) {
+
+            }
         } );
     }
 
@@ -197,7 +202,7 @@ public class ArchiveFragment extends Fragment {
                     @Override
                     public void onChanged( List<Note> notes ) {
                         Logger.log( "SETTING ARCHIVED NOTES LIST" );
-                        notesAdapter.setData( notes, binding.archiveFragmentContent.archiveFragmentAppBarLayout.toolbar.getMenu() );
+                        notesAdapter.setData( notes );
                     }
                 } );
     }

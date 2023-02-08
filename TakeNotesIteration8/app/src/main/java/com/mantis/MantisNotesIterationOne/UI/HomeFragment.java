@@ -147,9 +147,9 @@ public class HomeFragment extends Fragment {
     private void reloadAdapterData( NotesAdapter oldAdapter ) {
         Menu menu = binding.homeFragmentContent.appBarLayout.toolbar.getMenu();
         if ( oldAdapter == null )
-            notesAdapter.setData( new ArrayList<>(), menu );
+            notesAdapter.setData( new ArrayList<>() );
         else
-            notesAdapter.setData( oldAdapter.getData(), menu );
+            notesAdapter.setData( oldAdapter.getData() );
     }
 
     private void configureListenerOnNotesAdapter() {
@@ -162,6 +162,14 @@ public class HomeFragment extends Fragment {
             @Override
             public void onViewHolderLongClicked( int viewHolderPosition ) {
                 showNoteActionDialog( viewHolderPosition );
+            }
+
+            @Override
+            public void onRecyclerViewEmpty( boolean isEmpty ) {
+                if ( isEmpty )
+                    hideMenu();
+                else
+                    showMenu();
             }
         } );
     }
@@ -206,8 +214,7 @@ public class HomeFragment extends Fragment {
                 observe( getViewLifecycleOwner(), new Observer<List<Note>>() {
             @Override
             public void onChanged( List<Note> notes ) {
-                notesAdapter.setData( notes,
-                        binding.homeFragmentContent.appBarLayout.toolbar.getMenu() );
+                notesAdapter.setData( notes );
             }
         } );
     }
@@ -238,6 +245,22 @@ public class HomeFragment extends Fragment {
                 } );
     }
 
+    private void hideMenu() {
+        Menu menu = binding.homeFragmentContent.appBarLayout.toolbar.getMenu();
+        if ( menu == null )
+            return;
+        for ( int i = 0; i < menu.size(); i++ )
+            menu.getItem( i ).setVisible( false );
+    }
+
+    private void showMenu() {
+        Menu menu = binding.homeFragmentContent.appBarLayout.toolbar.getMenu();
+        if ( menu == null )
+            return;
+        for ( int i = 0; i < menu.size(); i++ )
+            menu.getItem( i ).setVisible( true );
+    }
+
 
     private void setupToolbar() {
         NavController controller = NavHostFragment.findNavController( this );
@@ -258,7 +281,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void observeEditStatus() {
-        notesViewModel.getObservableEditStatus().observe(getViewLifecycleOwner(),
+        notesViewModel.getObservableEditStatus().observe( getViewLifecycleOwner(),
                 new Observer<Boolean>() {
                     @Override
                     public void onChanged( Boolean isEditing ) {
@@ -268,9 +291,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void respondToEditStatusChange( boolean isEditing ) {
-        notesAdapter.editStatusChanged( isEditing,
-                binding.homeFragmentContent.appBarLayout
-                        .toolbar );
+        notesAdapter.editStatusChanged( isEditing );
         if ( isEditing )
             configureEditingViews();
         else
@@ -278,6 +299,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void configureEditingViews() {
+        hideMenu();
         binding.homeFragmentContent.appBarLayout.toolbar.setVisibility( View.GONE );
         binding.homeFragmentContent.appBarLayout.collapsingToolbar.setTitle( "Select Notes" );
         binding.homeFragmentContent.appBarLayout.editOptions.setVisibility( View.VISIBLE );
@@ -292,6 +314,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void hideEditingViews() {
+        showMenu();
         binding.homeFragmentContent.appBarLayout.toolbar.setVisibility( View.VISIBLE );
         binding.homeFragmentContent.appBarLayout.collapsingToolbar.setTitle( "Home" );
         binding.homeFragmentContent.appBarLayout.editOptions.setVisibility( View.GONE );
@@ -300,6 +323,7 @@ public class HomeFragment extends Fragment {
         ViewGroup.MarginLayoutParams layoutParams = ( ViewGroup.MarginLayoutParams ) binding.homeFragmentContent.notesRecyclerView.recyclerview.getLayoutParams();
         layoutParams.bottomMargin = 0;
         binding.homeFragmentContent.notesRecyclerView.recyclerview.setLayoutParams( layoutParams );
+        binding.homeFragmentContent.appBarLayout.allCheckBox.setChecked( false );
     }
 
     private void configureSortMenuItem() {
@@ -346,12 +370,29 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupEditOptionsToolbar() {
-
         binding.homeFragmentContent.editOptionToolbar.inflateMenu( R.menu.bottom_toolbar_menu );
+        Menu editOptionToolbarMenu = binding.homeFragmentContent.editOptionToolbar.getMenu();
+        configureListenersOnEditOptionToolbarMenu( editOptionToolbarMenu );
         binding.homeFragmentContent.appBarLayout.allCheckBox.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged( CompoundButton compoundButton, boolean isChecked ) {
                 notesAdapter.checkAllNotes( isChecked );
+            }
+        } );
+    }
+
+    private void configureListenersOnEditOptionToolbarMenu( Menu editOptionToolbarMenu ) {
+        MenuItem deleteOption = editOptionToolbarMenu.findItem( R.id.delete );
+        configureListenerOnDeleteOption( deleteOption );
+    }
+
+    private void configureListenerOnDeleteOption( MenuItem deleteOption ) {
+        deleteOption.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
+                notesAdapter.deleteSelectedNotes();
+                notesViewModel.doneEditing();
+                return true;
             }
         } );
     }
