@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mantis.TakeNotes.Models.NotesViewModel;
+import com.mantis.TakeNotes.Utils.Logger;
 import com.mantis.TakeNotes.Utils.SortingUtil;
 import com.mantis.TakeNotes.data.source.local.Note;
 import com.mantis.TakeNotes.ViewHolders.NoteViewHolder;
@@ -25,9 +26,13 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
     private NotesViewModel notesViewModel;
     private boolean editInProgress;
     private MutableLiveData<Boolean> allNotesAreChecked = new MutableLiveData<>();
+    private MutableLiveData<Boolean> noNotesAreChecked = new MutableLiveData<>();
+    private MutableLiveData<Integer> observableNumberOfCheckedNotes = new MutableLiveData<>();
     private int numberOfCheckedNotes = 0;
     private ArrayList<NoteAdapterListener> listeners = new ArrayList<>();
     private ArrayList<NoteViewHolder> noteViewHolders = new ArrayList<>();
+
+    private MutableLiveData<Boolean> observableNoNoteIsChecked = new MutableLiveData<>();
 
     private boolean allNotesCheckedStatusChangeAsAResultOfUserAction = true;
 
@@ -56,11 +61,30 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
                     else
                         numberOfCheckedNotes--;
                 }
-                allNotesAreChecked.postValue( numberOfCheckedNotes == getData().size() );
+                Logger.log( "NUMBER OF CHECKED NOTES: " + numberOfCheckedNotes );
+                sendNoNoteIsCheckedNotification();
+
+
+                allNotesAreChecked.setValue( numberOfCheckedNotes == getData().size() );
+                observableNumberOfCheckedNotes.postValue( numberOfCheckedNotes );
+                if ( numberOfCheckedNotes == getData().size() )
+                    Logger.log( "ALL NOTES ARE CHECKED" );
             }
         } );
         noteViewHolders.add( noteViewHolder );
         return noteViewHolder;
+    }
+
+    private void sendNoNoteIsCheckedNotification() {
+        observableNoNoteIsChecked.postValue( numberOfCheckedNotes == 0 );
+    }
+
+    public LiveData<Boolean> getObservableNoNoteIsChecked() {
+        return observableNoNoteIsChecked;
+    }
+
+    public LiveData<Integer> getObservableNumberOfCheckedNotes() {
+        return observableNumberOfCheckedNotes;
     }
 
     protected abstract View getNoteView( @NonNull ViewGroup parent );
@@ -205,10 +229,13 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
         notesViewModel.deleteReferencesIn( selectedNotes );
     }
 
-    public LiveData<Boolean> getAllNotesCheckedStatus() {
+    public LiveData<Boolean> getAllNotesAreCheckedStatus() {
         return allNotesAreChecked;
     }
 
+    public LiveData<Boolean> getNoNoteAreChecked() {
+        return noNotesAreChecked;
+    }
     public interface NoteAdapterListener {
         void onViewHolderClicked( View view, int viewHolderPosition );
         void onViewHolderLongClicked( int viewHolderPosition );

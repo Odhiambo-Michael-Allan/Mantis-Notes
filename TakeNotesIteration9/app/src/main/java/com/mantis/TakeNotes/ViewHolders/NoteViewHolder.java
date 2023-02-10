@@ -91,7 +91,6 @@ public abstract class NoteViewHolder extends RecyclerView.ViewHolder {
 
     public void showCheckBox() {
         editingInProgress = true;
-        Logger.log( "VIEW HOLDER SHOWING CHECKBOX" );
         CheckBox checkBox = this.noteView.findViewById( R.id.note_check_box );
         checkBox.setVisibility( View.VISIBLE );
     }

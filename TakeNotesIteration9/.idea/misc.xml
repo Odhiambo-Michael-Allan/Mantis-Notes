@@ -11,6 +11,7 @@
         <entry key="app/src/main/res/drawable/ic_delete.xml" value="0.1855" />
         <entry key="app/src/main/res/drawable/ic_edit.xml" value="0.1855" />
         <entry key="app/src/main/res/drawable/ic_star_border.xml" value="0.1855" />
+        <entry key="app/src/main/res/drawable/search_icon.xml" value="0.2175" />
         <entry key="app/src/main/res/drawable/share_icon.xml" value="0.192" />
         <entry key="app/src/main/res/drawable/unarchive_icon.xml" value="0.222" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.328125" />

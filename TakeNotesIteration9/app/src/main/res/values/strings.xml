@@ -25,6 +25,7 @@ your code readers and your own, you should follow the coding conventions
         button to create a note.]]>
     </string>
     <string name="my_email">odhiambomichaelallan@gmail.com</string>
+    <string name="all_notes">All Notes</string>
     <string name="home">Home</string>
     <string name="frequently_used_fragment">Frequently Used</string>
     <string name="frequent">Frequent</string>
@@ -65,4 +66,6 @@ your code readers and your own, you should follow the coding conventions
 
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_closed">Closed</string>
+
+    <string name="search">Search</string>
 </resources>

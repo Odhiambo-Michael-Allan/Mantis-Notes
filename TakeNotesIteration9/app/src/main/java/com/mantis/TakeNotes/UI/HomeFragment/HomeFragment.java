@@ -94,7 +94,6 @@ public class HomeFragment extends Fragment {
         observeLayoutState();
         observeNotes();
         observeSortingConfiguration();
-        observeEditStatus();
     }
 
     private void createNotesViewModel() {
@@ -288,34 +287,10 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupEditMenuManager() {
-        editMenuManager = new HomeFragmentEditMenuManager( notesAdapter, notesViewModel, binding );
+        editMenuManager = new HomeFragmentEditMenuManager( this,
+                notesAdapter, notesViewModel, binding );
     }
 
-    private void observeEditStatus() {
-        notesViewModel.getObservableEditStatus().observe( getViewLifecycleOwner(),
-                new Observer<Boolean>() {
-                    @Override
-                    public void onChanged( Boolean isEditing ) {
-                        editMenuManager.updateAdapter( HomeFragment.this.notesAdapter );
-                        editMenuManager.editStatusChanged( isEditing );
-                        attachAllNotesCheckedObserver( isEditing );
-                    }
-                } );
-    }
-
-    private void attachAllNotesCheckedObserver( boolean isEditing ) {
-        if ( !isEditing )
-            return;
-        LiveData<Boolean> allNotesAreChecked = this.notesAdapter.getAllNotesCheckedStatus();
-        allNotesAreChecked.removeObservers( getViewLifecycleOwner() );
-        allNotesAreChecked.observe( getViewLifecycleOwner(),
-                new Observer<Boolean>() {
-                    @Override
-                    public void onChanged( Boolean checked ) {
-                        editMenuManager.allNotesChecked( checked );
-                    }
-                } );
-    }
 
     private void configureSortMenuItem() {
         MenuItem sortMenuItem = binding.homeFragmentContent
