@@ -3,6 +3,7 @@ package com.mantis.MantisNotesIterationOne.data.source;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.mantis.MantisNotesIterationOne.data.source.local.Configuration;
 import com.mantis.MantisNotesIterationOne.data.source.local.Note;
 import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.NoteReference;
 
@@ -226,6 +227,11 @@ public class FakeDataSource implements NoteDataSource {
     }
 
     @Override
+    public void insertConfiguration(Configuration configuration) {
+
+    }
+
+    @Override
     public LiveData<Integer> getAscending() {
         return observableAscendingConfig;
     }
@@ -243,5 +249,15 @@ public class FakeDataSource implements NoteDataSource {
     @Override
     public void updateLayoutTypeConfig( int newLayoutTypeConfig ) {
         observableLayoutTypeConfig.postValue( newLayoutTypeConfig );
+    }
+
+    @Override
+    public void updateAscendingConfig(int newAscendingConfig) {
+
+    }
+
+    @Override
+    public void updateSortingStrategyConfig(int newSortingStrategyConfig) {
+
     }
 }

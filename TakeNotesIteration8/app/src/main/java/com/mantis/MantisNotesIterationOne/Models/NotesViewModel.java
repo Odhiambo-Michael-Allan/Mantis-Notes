@@ -138,12 +138,6 @@ public class NotesViewModel extends ViewModel {
         return trashFragmentModel.getObservableNotesList();
     }
 
-
-    /**
-     * When a note is deleted from the home fragment notes list, it is added to the trash
-     * fragment notes list..
-     * @param referencedNoteId
-     */
     public void deleteHomeFragmentNoteReference( int referencedNoteId ) {
         homeFragmentModel.deleteReference( referencedNoteId );
         trashFragmentModel.addNote( referencedNoteId );
@@ -151,17 +145,14 @@ public class NotesViewModel extends ViewModel {
 
     public void deleteFrequentFragmentNoteReference( int referencedNoteId ) {
         frequentFragmentModel.deleteReference( referencedNoteId );
+        trashFragmentModel.addNote( referencedNoteId );
     }
 
-    public void deleteArchiveFragmentNoteReference( int noteId ) {
-        archiveFragmentModel.deleteReference( noteId );
+    public void deleteArchiveFragmentNoteReference( int referencedNoteId ) {
+        archiveFragmentModel.deleteReference( referencedNoteId );
+        trashFragmentModel.addNote( referencedNoteId );
     }
 
-    /**
-     * When a note is archived from the home fragment notes list, it is removed from the home
-     * fragment notes list and added to the archive fragment notes list..
-     * @param noteId
-     */
     public void archiveHomeFragmentNote( int noteId ) {
         homeFragmentModel.deleteReference( noteId );
         archiveFragmentModel.addNote( noteId );
@@ -258,10 +249,9 @@ public class NotesViewModel extends ViewModel {
         Iterator i = notes.iterator();
         while ( i.hasNext() ) {
             Note note = ( Note ) i.next();
-            homeFragmentModel.deleteReference( note.getId() );
-            frequentFragmentModel.deleteReference( note.getId() );
-            archiveFragmentModel.deleteReference( note.getId() );
-            trashFragmentModel.deleteReference( note.getId() );
+            deleteHomeFragmentNoteReference( note.getId() );
+            deleteFrequentFragmentNoteReference( note.getId() );
+            deleteArchiveFragmentNoteReference( note.getId() );
         }
     }
 

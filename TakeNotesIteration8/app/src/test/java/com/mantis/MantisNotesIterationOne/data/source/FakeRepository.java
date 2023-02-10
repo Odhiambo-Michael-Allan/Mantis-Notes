@@ -3,6 +3,7 @@ package com.mantis.MantisNotesIterationOne.data.source;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.mantis.MantisNotesIterationOne.data.source.local.Configuration;
 import com.mantis.MantisNotesIterationOne.data.source.local.Note;
 import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.ArchiveNoteReference;
 import com.mantis.MantisNotesIterationOne.data.source.local.NoteReferences.FrequentNoteReference;
@@ -139,6 +140,11 @@ public class FakeRepository implements NoteRepository {
     }
 
     @Override
+    public void insertConfiguration( Configuration configuration ) {
+
+    }
+
+    @Override
     public LiveData<Integer> getAscending() {
         return noteDataSource.getAscending();
     }
@@ -156,5 +162,15 @@ public class FakeRepository implements NoteRepository {
     @Override
     public void updateLayoutTypeConfig( int newLayoutTypeConfig ) {
         noteDataSource.updateLayoutTypeConfig( newLayoutTypeConfig );
+    }
+
+    @Override
+    public void updateAscendingConfig(int newAscendingConfig) {
+
+    }
+
+    @Override
+    public void updateSortingStrategyConfig(int newSortingStrategyConfig) {
+
     }
 }

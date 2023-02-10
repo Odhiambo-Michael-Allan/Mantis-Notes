@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -166,6 +167,26 @@ public class NotesViewModelTest {
         int layoutTypeConfig = LiveDataTestUtil.getValue( notesViewModel.getLayoutTypeConfig() );
         Assert.assertTrue( "Layout type should have changed",
                 layoutTypeConfig == NotesViewModel.LAYOUT_STATE_GRID );
+    }
+
+    @Test
+    public void testDeleteReferencesInHomeTable_referencesMoveToTrashTable() throws Exception {
+        notesViewModel.addNote( note1 );
+        notesViewModel.addNote( note2 );
+        notesViewModel.addNote( note3 );
+        notesViewModel.addNote( note4 );
+        notesViewModel.addNote( note5 );
+        List<Note> referenceIds = new ArrayList<>();
+        referenceIds.add( note1 );
+        referenceIds.add( note2 );
+        referenceIds.add( note3 );
+        notesViewModel.deleteReferencesIn( referenceIds );
+        List<Note> homeNotes = LiveDataTestUtil.getValue( notesViewModel.getHomeFragmentNotesList() );
+        List<Note> trashNotes = LiveDataTestUtil.getValue( notesViewModel.getTrashFragmentNotesList() );
+        Assert.assertTrue( "Home notes should be 2",
+                homeNotes.size() == 2 );
+        Assert.assertTrue( "Trash notes should be 3",
+                trashNotes.size() == 3 );
     }
 
 

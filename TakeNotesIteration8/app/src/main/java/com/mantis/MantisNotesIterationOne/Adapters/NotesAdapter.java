@@ -102,6 +102,7 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
             notifyListenersRecyclerViewEmpty( false );
             showEmptyView( false );
         }
+        sortData();
         notifyDataSetChanged();
     }
 
@@ -153,12 +154,6 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
             note.setChecked( check );
         }
         notifyDataSetChanged();
-
-//        Iterator i = noteViewHolders.iterator();
-//        while ( i.hasNext() ) {
-//            NoteViewHolder noteViewHolder = ( NoteViewHolder ) i.next();
-//            noteViewHolder.check( check );
-//        }
     }
 
     public void editStatusChanged( Boolean edit ) {
