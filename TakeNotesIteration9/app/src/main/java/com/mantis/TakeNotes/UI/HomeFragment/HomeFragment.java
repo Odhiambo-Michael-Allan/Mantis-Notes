@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -87,6 +86,7 @@ public class HomeFragment extends Fragment {
         setupFloatingActionButton();
         setupEditOptionsToolbar();
         setupEditMenuManager();
+        //setupSearchMenuManager();
     }
 
     private void setupNotesViewModel() {
@@ -274,7 +274,8 @@ public class HomeFragment extends Fragment {
         DrawerLayout drawerLayout = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration
-                .Builder( R.id.nav_home, R.id.nav_frequently_used, R.id.nav_trash, R.id.nav_archive )
+                .Builder( R.id.nav_home, R.id.nav_frequently_used, R.id.nav_trash,
+                R.id.nav_archive )
                 .setOpenableLayout( drawerLayout )
                 .build();
         NavigationUI.setupWithNavController( binding.homeFragmentContent.appBarLayout.toolbar,
@@ -283,13 +284,27 @@ public class HomeFragment extends Fragment {
         binding.homeFragmentContent.appBarLayout.toolbar.inflateMenu(
                 R.menu.home_fragment_options_menu );
         MenuConfigurator.configureMenu( binding.homeFragmentContent.appBarLayout.toolbar.getMenu() );
+        configureSearchMenuItem();
         configureSortMenuItem();
+    }
+
+    private void configureSearchMenuItem() {
+        MenuItem searchMenuItem = binding.homeFragmentContent.appBarLayout.toolbar.getMenu().
+                findItem( R.id.nav_search );
+        searchMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
+                navigateToSearchFragment();
+                return true;
+            }
+        } );
     }
 
     private void setupEditMenuManager() {
         editMenuManager = new HomeFragmentEditMenuManager( this,
                 notesAdapter, notesViewModel, binding );
     }
+
 
 
     private void configureSortMenuItem() {
@@ -378,5 +393,10 @@ public class HomeFragment extends Fragment {
             return;
         }
         requireActivity().finish();
+    }
+
+    private void navigateToSearchFragment() {
+        NavHostFragment.findNavController( this ).navigate(
+                HomeFragmentDirections.actionNavHomeToNavSearch() );
     }
 }

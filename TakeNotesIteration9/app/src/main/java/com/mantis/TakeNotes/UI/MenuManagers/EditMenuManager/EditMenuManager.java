@@ -67,6 +67,7 @@ public abstract class EditMenuManager {
         showEditOptions( editingEnabled );
         showMainToolbar( editingEnabled );
         showFloatingActionButton( editingEnabled );
+        showEditingToolBar( editingEnabled );
     }
 
     void setCollapsingToolbarLayoutTitle( boolean editingEnabled ) {
@@ -123,7 +124,15 @@ public abstract class EditMenuManager {
         if ( show )
             toolbar.setVisibility( View.VISIBLE );
         else
-            toolbar.setVisibility(View.GONE);
+            toolbar.setVisibility( View.GONE );
+        hideArchiveOption( toolbar, false );
+    }
+
+    private void hideArchiveOption( Toolbar toolbar, boolean hide ) {
+        MenuItem archiveMenuItem = toolbar.getMenu().findItem( R.id.archive );
+        MenuItem unarchiveMenuItem = toolbar.getMenu().findItem( R.id.unarchive );
+        archiveMenuItem.setVisible( !hide );
+        unarchiveMenuItem.setVisible( hide );
     }
 
     private void adjustRecyclerViewMargin( boolean editingEnabled ) {

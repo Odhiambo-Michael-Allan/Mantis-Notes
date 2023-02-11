@@ -56,10 +56,7 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
                 int adapterPosition = noteViewHolder.getAdapterPosition();
                 if ( adapterPosition >= 0 ) {
                     getData().get( adapterPosition ).setChecked( check );
-                    if ( check )
-                        numberOfCheckedNotes++;
-                    else
-                        numberOfCheckedNotes--;
+                    updateNumberOfCheckedNotes();
                 }
                 Logger.log( "NUMBER OF CHECKED NOTES: " + numberOfCheckedNotes );
                 sendNoNoteIsCheckedNotification();
@@ -73,6 +70,17 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
         } );
         noteViewHolders.add( noteViewHolder );
         return noteViewHolder;
+    }
+
+    private void updateNumberOfCheckedNotes() {
+        numberOfCheckedNotes = 0;
+        Iterator i = getData().iterator();
+        while ( i.hasNext() ) {
+            Note note = ( Note ) i.next();
+            if ( note.isChecked() )
+                numberOfCheckedNotes++;
+        }
+        observableNumberOfCheckedNotes.postValue( numberOfCheckedNotes );
     }
 
     private void sendNoNoteIsCheckedNotification() {
@@ -127,6 +135,7 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
 
     public void setData( List<Note> data ) {
         this.data = data;
+        //numberOfCheckedNotes = 0;
         if ( data.size() == 0 ) {
             notifyListenersRecyclerViewEmpty( true );
             showEmptyView( true );
@@ -191,6 +200,8 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
 
     public void editStatusChanged( boolean edit ) {
         this.editInProgress = edit;
+        numberOfCheckedNotes = 0;
+        sendNoNoteIsCheckedNotification();
         if ( edit )
             notifyViewHoldersToShowCheckBox();
         else {

@@ -17,6 +17,9 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_search"
+            app:destination="@id/nav_search" />
     </fragment>
 
 
@@ -77,5 +80,12 @@
             android:id="@+id/action_nav_archive_to_nav_add_note"
             app:destination="@id/nav_add_note" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_search"
+        android:name="com.mantis.TakeNotes.UI.SearchFragment.SearchFragment"
+        android:label="@string/search"
+        tools:layout="@layout/fragment_search" />
+
 
 </navigation>
