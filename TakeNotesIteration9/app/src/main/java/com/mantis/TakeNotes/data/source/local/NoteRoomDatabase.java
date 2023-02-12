@@ -10,19 +10,10 @@ import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.mantis.TakeNotes.data.source.local.Dao.ArchiveNotesDao;
 import com.mantis.TakeNotes.data.source.local.Dao.ConfigurationsDao;
-import com.mantis.TakeNotes.data.source.local.Dao.FrequentNotesDao;
-import com.mantis.TakeNotes.data.source.local.Dao.HomeNotesDao;
 import com.mantis.TakeNotes.data.source.local.Dao.NoteDao;
-import com.mantis.TakeNotes.data.source.local.Dao.TrashNotesDao;
-import com.mantis.TakeNotes.data.source.local.NoteReferences.ArchiveNoteReference;
-import com.mantis.TakeNotes.data.source.local.NoteReferences.FrequentNoteReference;
-import com.mantis.TakeNotes.data.source.local.NoteReferences.HomeNoteReference;
-import com.mantis.TakeNotes.data.source.local.NoteReferences.TrashNoteReference;
 
-@Database( entities = { Note.class, HomeNoteReference.class, FrequentNoteReference.class,
-        ArchiveNoteReference.class, TrashNoteReference.class, Configuration.class }, version = 4 )
+@Database( entities = { Note.class, Configuration.class }, version = 5 )
 @TypeConverters( {Converters.class} )
 public abstract class NoteRoomDatabase extends RoomDatabase {
 
@@ -56,13 +47,24 @@ public abstract class NoteRoomDatabase extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_4_5 = new Migration( 4, 5 ) {
+
+        @Override
+        public void migrate( @NonNull SupportSQLiteDatabase database ) {
+            database.execSQL( "DROP TABLE 'home_notes_table'" );
+            database.execSQL( "DROP TABLE 'trash_table'" );
+            database.execSQL( "DROP TABLE 'archive_table'" );
+            database.execSQL( "DROP TABLE 'frequent_notes'" );
+        }
+    };
+
     public static NoteRoomDatabase getDatabase( final Context context ) {
         if ( INSTANCE == null ) {
             synchronized ( NoteRoomDatabase.class ) {
                 if ( INSTANCE == null ) {
                     INSTANCE = Room.databaseBuilder( context.getApplicationContext(),
                             NoteRoomDatabase.class, "Notes-Database" )
-                            .addMigrations( MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4 )
+                            .addMigrations( MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5 )
                             .build();
                 }
             }
@@ -71,9 +73,5 @@ public abstract class NoteRoomDatabase extends RoomDatabase {
     }
 
     public abstract NoteDao noteDao();
-    public abstract HomeNotesDao homeNotesDao();
-    public abstract FrequentNotesDao frequentNotesDao();
-    public abstract ArchiveNotesDao archiveNotesDao();
-    public abstract TrashNotesDao trashNotesDao();
     public abstract ConfigurationsDao configurationsDao();
 }

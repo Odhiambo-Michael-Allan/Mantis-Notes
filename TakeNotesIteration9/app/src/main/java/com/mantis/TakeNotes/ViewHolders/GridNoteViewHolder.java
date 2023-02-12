@@ -14,6 +14,7 @@ public class GridNoteViewHolder extends NoteViewHolder {
         super( view, adapter );
     }
 
+    @Override
     public void bindData( Note note ) {
         TextView noteTitleTextView = this.noteView.findViewById(
                 R.id.note_title_text_view );

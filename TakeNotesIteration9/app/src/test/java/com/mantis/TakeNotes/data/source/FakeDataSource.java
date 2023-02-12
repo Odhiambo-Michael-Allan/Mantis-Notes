@@ -3,8 +3,8 @@ package com.mantis.TakeNotes.data.source;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.mantis.TakeNotes.data.source.local.Configuration;
 import com.mantis.TakeNotes.data.source.local.Note;
+import com.mantis.TakeNotes.data.source.local.Configuration;
 import com.mantis.TakeNotes.data.source.local.NoteReferences.NoteReference;
 
 import java.util.ArrayList;
@@ -46,11 +46,11 @@ public class FakeDataSource implements NoteDataSource {
     }
 
     @Override
-    public LiveData<List<Note>> getNotesById( int[] ids ) {
+    public LiveData<List<Note>> getNotesById(int[] ids ) {
         ArrayList<Note> notesWithGivenIds = new ArrayList<>();
         Iterator i = notesTable.iterator();
         while ( i.hasNext() ) {
-            Note note_i = ( Note ) i.next();
+            Note note_i = (Note) i.next();
             for ( int j = 0; j < ids.length; j++ ) {
                 if ( note_i.getId() == ids[ j ] )
                     notesWithGivenIds.add( note_i );
@@ -77,7 +77,7 @@ public class FakeDataSource implements NoteDataSource {
     public void deleteNote( int noteId ) {
         Iterator i = notesTable.iterator();
         while ( i.hasNext() ) {
-            Note note = ( Note ) i.next();
+            Note note = (Note) i.next();
             if ( note.getId() == noteId )
                 i.remove();
         }
@@ -95,7 +95,7 @@ public class FakeDataSource implements NoteDataSource {
                             Date dateLastModified, int newAccessCount ) {
         Iterator i = notesTable.iterator();
         while ( i.hasNext() ) {
-            Note note = ( Note ) i.next();
+            Note note = (Note) i.next();
             if ( note.getId() == noteId ) {
                 note.setTitle( newTitle );
                 note.setDescription( newDescription );
@@ -110,7 +110,7 @@ public class FakeDataSource implements NoteDataSource {
     public void updateNoteOwner( int noteId, int newOwner ) {
         Iterator i = notesTable.iterator();
         while ( i.hasNext() ) {
-            Note note = ( Note ) i.next();
+            Note note = (Note) i.next();
             if ( note.getId() == noteId )
                 note.setOwner( newOwner );
         }

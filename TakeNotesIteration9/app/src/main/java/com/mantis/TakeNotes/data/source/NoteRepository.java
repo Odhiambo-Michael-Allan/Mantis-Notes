@@ -2,15 +2,15 @@ package com.mantis.TakeNotes.data.source;
 
 import androidx.lifecycle.LiveData;
 
-import com.mantis.TakeNotes.data.source.local.Configuration;
 import com.mantis.TakeNotes.data.source.local.Note;
+import com.mantis.TakeNotes.data.source.local.Configuration;
 
 import java.util.Date;
 import java.util.List;
 
 public interface NoteRepository {
     void insertNote( Note note );
-    LiveData<List<Note>> getNotesById( int[] ids );
+    LiveData<List<Note>> getNotesById(int[] ids );
     LiveData<List<Note>> getAllNotes();
     void deleteNote( int noteId );
     void deleteAllNotes();

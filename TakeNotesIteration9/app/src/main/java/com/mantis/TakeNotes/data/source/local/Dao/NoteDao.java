@@ -14,7 +14,7 @@ import java.util.List;
 public interface NoteDao {
 
     @Query( "SELECT * FROM notes_table WHERE id IN(:ids)" )
-    LiveData<List<Note>> getNotesById( int[] ids );
+    LiveData<List<Note>> getNotesById(int[] ids );
 
     @Query( "SELECT * FROM notes_table" )
     LiveData<List<Note>> getAllNotes();

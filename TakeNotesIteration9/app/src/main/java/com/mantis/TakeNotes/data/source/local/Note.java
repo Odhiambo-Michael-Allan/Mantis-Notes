@@ -20,7 +20,7 @@ public class Note {
     @Ignore
     private boolean isChecked;
 
-    public Note( String title, String description, String date, Date dateCreated ) {
+    public Note(String title, String description, String date, Date dateCreated ) {
         this.title = title;
         this.description = description;
         this.date = date;

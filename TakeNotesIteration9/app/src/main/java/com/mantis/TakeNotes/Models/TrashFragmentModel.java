@@ -30,7 +30,7 @@ public class TrashFragmentModel extends FragmentModel {
     public void deleteAll() {
         Iterator i = cachedNotesList.iterator();
         while ( i.hasNext() ) {
-            Note note = ( Note ) i.next();
+            Note note = (Note) i.next();
             if ( note.getOwner() == NotesViewModel.TRASH_FRAGMENT )
                 this.noteRepository.deleteNote( note.getId() );
         }

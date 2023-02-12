@@ -162,7 +162,7 @@ public class NotesViewModelTest {
         notesViewModel.addNote( note3 );
         notesViewModel.addNote( note4 );
         notesViewModel.addNote( note5 );
-        List<Note> referenceIds = new ArrayList<>();
+        List<BindableData> referenceIds = new ArrayList<>();
         referenceIds.add( note1 );
         referenceIds.add( note2 );
         referenceIds.add( note3 );

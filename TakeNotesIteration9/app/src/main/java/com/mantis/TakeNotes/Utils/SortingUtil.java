@@ -11,8 +11,8 @@ import java.util.List;
 
 public class SortingUtil {
 
-    public static List<Note> sortList( List<Note> notesList, boolean ascending,
-                                      int sortingStrategy ) {
+    public static List<Note> sortList(List<Note> notesList, boolean ascending,
+                                              int sortingStrategy ) {
         if ( sortingStrategy == NotesViewModel.TITLE )
             notesList = sortNotesListAccordingToTitle( notesList, ascending );
         else if ( sortingStrategy == NotesViewModel.DATE_CREATED )
@@ -24,8 +24,8 @@ public class SortingUtil {
 
     // ----------------------------- TITLE ----------------------------------
 
-    private static List<Note> sortNotesListAccordingToTitle( List<Note> notesList,
-                                                       boolean ascending ) {
+    private static List<Note> sortNotesListAccordingToTitle(List<Note> notesList,
+                                                            boolean ascending ) {
         if ( ascending )
             notesList = sortNotesListAccordingToTitleAscending( notesList );
         else
@@ -33,7 +33,7 @@ public class SortingUtil {
         return notesList;
     }
 
-    private static List<Note> sortNotesListAccordingToTitleAscending( List<Note> notesList ) {
+    private static List<Note> sortNotesListAccordingToTitleAscending(List<Note> notesList ) {
         List<Note> notesWithTitle = getNotesWithTitlesFrom( notesList );
         List<Note> notesWithoutTitle = getNotesWithoutTitlesFrom( notesList );
         Comparator<Note> titleAscendingComparator = new TitleAscendingComparator();
@@ -44,11 +44,11 @@ public class SortingUtil {
         return notesList;
     }
 
-    private static ArrayList<Note> getNotesWithTitlesFrom( List<Note> notesList ) {
+    private static ArrayList<Note> getNotesWithTitlesFrom(List<Note> notesList ) {
         ArrayList<Note> notesWithTitle = new ArrayList<>();
         Iterator i = notesList.iterator();
         while ( i.hasNext() ) {
-            Note note = ( Note ) i. next();
+            Note note = (Note) i. next();
             if ( !note.getTitle().equals( "" ) ) {
                 notesWithTitle.add( note );
             }
@@ -56,11 +56,11 @@ public class SortingUtil {
         return notesWithTitle;
     }
 
-    private static List<Note> getNotesWithoutTitlesFrom( List<Note> notesList ) {
+    private static List<Note> getNotesWithoutTitlesFrom(List<Note> notesList ) {
         ArrayList<Note> notesWithoutTitle = new ArrayList<>();
         Iterator i = notesList.iterator();
         while ( i.hasNext() ) {
-            Note note = ( Note ) i. next();
+            Note note = (Note) i. next();
             if ( note.getTitle().equals( "" ) ) {
                 notesWithoutTitle.add( note );
             }
@@ -68,7 +68,7 @@ public class SortingUtil {
         return notesWithoutTitle;
     }
 
-    private static List<Note> sortNotesListAccordingToTitleDescending( List<Note> notesList ) {
+    private static List<Note> sortNotesListAccordingToTitleDescending(List<Note> notesList ) {
         List<Note> notesWithTitle = getNotesWithTitlesFrom( notesList );
         List<Note> notesWithoutTitle = getNotesWithoutTitlesFrom( notesList );
         Comparator<Note> titleDescendingComparator = new TitleDescendingComparator();
@@ -86,8 +86,8 @@ public class SortingUtil {
     // ----------------------------- DATE CREATED ----------------------------------------
 
 
-    private static List<Note> sortNotesListAccordingToDateCreated( List<Note> notesList,
-                                                      boolean ascending ) {
+    private static List<Note> sortNotesListAccordingToDateCreated(List<Note> notesList,
+                                                                  boolean ascending ) {
         if ( ascending )
             notesList = sortNotesListAccordingToDateCreatedAscending( notesList );
         else
@@ -140,7 +140,7 @@ public class SortingUtil {
     private static class TitleAscendingComparator implements Comparator<Note> {
 
         @Override
-        public int compare( Note o1, Note o2 ) {
+        public int compare(Note o1, Note o2 ) {
             return o1.getTitle().compareTo( o2.getTitle() );
         }
     }
@@ -148,7 +148,7 @@ public class SortingUtil {
     private static class TitleDescendingComparator implements Comparator<Note> {
 
         @Override
-        public int compare( Note o1, Note o2 ) {
+        public int compare(Note o1, Note o2 ) {
             return o2.getTitle().compareTo( o1.getTitle() );
         }
     }
@@ -156,7 +156,7 @@ public class SortingUtil {
     private static class DateCreatedAscendingComparator implements Comparator<Note> {
 
         @Override
-        public int compare( Note o1, Note o2 ) {
+        public int compare(Note o1, Note o2 ) {
             if ( o1.getDateCreated().after( o2.getDateCreated() ) )
                 return 1;
             else if ( o1.getDateCreated().before( o2.getDateCreated() ) )
@@ -169,7 +169,7 @@ public class SortingUtil {
     private static class DateCreatedDescendingComparator implements Comparator<Note> {
 
         @Override
-        public int compare( Note o1, Note o2 ) {
+        public int compare(Note o1, Note o2 ) {
             if ( o1.getDateCreated().before( o2.getDateCreated() ) )
                 return 1;
             else if ( o1.getDateCreated().after( o2.getDateCreated() ) )
@@ -182,7 +182,7 @@ public class SortingUtil {
     private static class DateLastModifiedAscendingComparator implements Comparator<Note> {
 
         @Override
-        public int compare( Note o1, Note o2 ) {
+        public int compare(Note o1, Note o2 ) {
             if ( o1.getDateLastModified().after( o2.getDateLastModified() ) )
                 return 1;
             else if ( o1.getDateLastModified().before( o2.getDateLastModified() ) )
@@ -195,7 +195,7 @@ public class SortingUtil {
     private static class DateLastModifiedDescendingComparator implements Comparator<Note> {
 
         @Override
-        public int compare( Note o1, Note o2 ) {
+        public int compare(Note o1, Note o2 ) {
             if ( o1.getDateLastModified().before( o2.getDateLastModified() ) )
                 return 1;
             else if ( o1.getDateLastModified().after( o2.getDateLastModified() ) )

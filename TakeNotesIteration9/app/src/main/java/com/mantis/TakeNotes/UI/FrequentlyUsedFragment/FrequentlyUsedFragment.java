@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.navigation.NavigationView;
+import com.mantis.TakeNotes.data.source.local.Note;
 import com.mantis.TakeNotes.databinding.FragmentFrequentlyUsedBinding;
 import com.mantis.TakeNotes.Adapters.NotesAdapter;
 import com.mantis.TakeNotes.Dialogs.NoteActionDialog;
@@ -29,7 +30,6 @@ import com.mantis.TakeNotes.Models.NotesViewModel;
 import com.mantis.TakeNotes.Models.NotesViewModelFactory;
 import com.mantis.TakeNotes.data.source.DefaultNoteRepository;
 import com.mantis.TakeNotes.data.source.NoteRepository;
-import com.mantis.TakeNotes.data.source.local.Note;
 import com.mantis.TakeNotes.Utils.MenuConfigurator;
 import com.mantis.TakeNotes.Utils.RecyclerViewConfigurator;
 import com.mantis.TakeNotes.R;

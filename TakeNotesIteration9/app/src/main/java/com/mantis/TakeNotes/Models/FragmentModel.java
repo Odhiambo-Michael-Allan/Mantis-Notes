@@ -40,7 +40,7 @@ public abstract class FragmentModel {
         List<Note> myNotes = new ArrayList<>();
         Iterator i = cachedNotesList.iterator();
         while ( i.hasNext() ) {
-            Note note = ( Note ) i.next();
+            Note note = (Note) i.next();
             if ( noteIsMine( note ) )
                 myNotes.add( note );
         }
@@ -73,10 +73,10 @@ public abstract class FragmentModel {
             notesViewModel.addFrequentFragmentNote( currentNote );
     }
 
-    protected Note getNoteWithId( int noteId ) {
+    protected Note getNoteWithId(int noteId ) {
         Iterator i = cachedNotesList.iterator();
         while ( i.hasNext() ) {
-            Note note = ( Note ) i.next();
+            Note note = (Note) i.next();
             if ( note.getId() == noteId )
                 return note;
         }

@@ -76,7 +76,7 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
         numberOfCheckedNotes = 0;
         Iterator i = getData().iterator();
         while ( i.hasNext() ) {
-            Note note = ( Note ) i.next();
+            Note note = (Note) i.next();
             if ( note.isChecked() )
                 numberOfCheckedNotes++;
         }
@@ -135,7 +135,6 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
 
     public void setData( List<Note> data ) {
         this.data = data;
-        //numberOfCheckedNotes = 0;
         if ( data.size() == 0 ) {
             notifyListenersRecyclerViewEmpty( true );
             showEmptyView( true );
@@ -192,7 +191,7 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
     public void checkAllNotes( boolean check ) {
         Iterator i = getData().iterator();
         while ( i.hasNext() ) {
-            Note note = ( Note ) i.next();
+            Note note = (Note) i.next();
             note.setChecked( check );
         }
         notifyDataSetChanged();
@@ -230,7 +229,7 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
         List<Note> unselectedNotes = new ArrayList<>(), selectedNotes = new ArrayList<>();
         Iterator i = getData().iterator();
         while ( i.hasNext() ) {
-            Note note = ( Note ) i.next();
+            Note note = (Note) i.next();
             if ( note.isChecked() )
                 selectedNotes.add( note );
             else

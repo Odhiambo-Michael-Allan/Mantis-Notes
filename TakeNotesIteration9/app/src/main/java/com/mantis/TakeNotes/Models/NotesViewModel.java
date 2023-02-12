@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.mantis.TakeNotes.Utils.MenuConfigurator;
 import com.mantis.TakeNotes.data.source.NoteRepository;
 import com.mantis.TakeNotes.data.source.local.Note;
+import com.mantis.TakeNotes.data.source.local.Query;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -38,8 +39,13 @@ public class NotesViewModel extends ViewModel {
             archiveFragmentModel, trashFragmentModel;
     private Observer<List<Note>> notesTableObserver;
     private ConfigOptionsModel configOptionsModel;
-
     private MutableLiveData<Boolean> observableEditStatus = new MutableLiveData<>();
+
+    // TODO: Move to database..
+    private List<Query> recentQueryList = new ArrayList<>();
+    private MutableLiveData<List<Query>> observableRecentQueryList = new MutableLiveData<>();
+
+
 
     public NotesViewModel( NoteRepository noteRepository ) {
         this.noteRepository = noteRepository;
@@ -174,10 +180,10 @@ public class NotesViewModel extends ViewModel {
         archiveFragmentModel.editNote( noteId, placeHolder );
     }
 
-    public Note getNoteWithId( int noteId ) {
+    public Note getNoteWithId(int noteId ) {
         Iterator i = cachedNotesList.iterator();
         while ( i.hasNext() ) {
-            Note note = ( Note ) i.next();
+            Note note = (Note) i.next();
             if ( note.getId() == noteId )
                 return note;
         }
@@ -227,7 +233,7 @@ public class NotesViewModel extends ViewModel {
     public void deleteReferencesIn( List<Note> notes ) {
         Iterator i = notes.iterator();
         while ( i.hasNext() ) {
-            Note note = ( Note ) i.next();
+            Note note = (Note) i.next();
             deleteHomeFragmentNote( note.getId() );
             deleteFrequentFragmentNote( note.getId() );
             deleteArchiveFragmentNote( note.getId() );
@@ -239,6 +245,26 @@ public class NotesViewModel extends ViewModel {
         trashFragmentModel.deleteNoteWithId( noteId );
     }
 
+    public List<Note> searchNotesMatching(String queryString ) {
+        if ( queryString.equals( "" ) )
+            return new ArrayList<>();
+        List<Note> notesMatchingQuery = new ArrayList<>();
+        Iterator i = cachedNotesList.iterator();
+        while ( i.hasNext() ) {
+            Note note = (Note) i.next();
+            if ( noteMatchesQuery( note, queryString.toLowerCase() ) )
+                notesMatchingQuery.add( note );
+        }
+        return notesMatchingQuery;
+    }
+
+    private boolean noteMatchesQuery(Note note, String queryString ) {
+        if ( note.getTitle().toLowerCase().contains( queryString ) ||
+                note.getDescription().toLowerCase().contains( queryString ) )
+            return true;
+        return false;
+    }
+
     @Override
     public void onCleared() {
         // DON'T FORGET TO REMOVE THE OBSERVERS!!
@@ -248,6 +274,16 @@ public class NotesViewModel extends ViewModel {
         archiveFragmentModel.onCleared();
         trashFragmentModel.onCleared();
         configOptionsModel.onCleared();
+    }
+
+
+    public void addQuery( Query query ) {
+        recentQueryList.add( query );
+        observableRecentQueryList.postValue( recentQueryList );
+    }
+
+    public LiveData<List<Query>> getSearchHistory() {
+        return observableRecentQueryList;
     }
 
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mantis Notes</string>
+    <string name="app_name">Take Notes</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="main_title">All Notes</string>
@@ -68,4 +68,7 @@ your code readers and your own, you should follow the coding conventions
     <string name="navigation_drawer_closed">Closed</string>
 
     <string name="search">Search</string>
+    <string name="no_recent_searches">No Recent Searches</string>
+    <string name="clear_search_history">Clear Search History</string>
+    <string name="no_search_results_found">No Results Found</string>
 </resources>

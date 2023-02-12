@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mantis.TakeNotes.Adapters.NotesAdapter;
 import com.mantis.TakeNotes.R;
-import com.mantis.TakeNotes.Utils.Logger;
 import com.mantis.TakeNotes.data.source.local.Note;
 
 import java.util.ArrayList;
@@ -101,7 +100,7 @@ public abstract class NoteViewHolder extends RecyclerView.ViewHolder {
         checkBox.setVisibility( View.GONE );
     }
 
-    public abstract void bindData( Note note );
+    public abstract void bindData( Note bindableObject );
 
     public void addListener( NoteViewHolderListener listener ) {
         listeners.add( listener );

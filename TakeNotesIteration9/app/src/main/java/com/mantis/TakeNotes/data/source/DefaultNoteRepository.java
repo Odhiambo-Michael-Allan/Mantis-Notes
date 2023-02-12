@@ -7,9 +7,9 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
+import com.mantis.TakeNotes.data.source.local.Note;
 import com.mantis.TakeNotes.data.source.local.Configuration;
 import com.mantis.TakeNotes.data.source.local.LocalDataSource;
-import com.mantis.TakeNotes.data.source.local.Note;
 import com.mantis.TakeNotes.data.source.local.NoteRoomDatabase;
 
 import java.util.Date;
@@ -32,8 +32,6 @@ public class DefaultNoteRepository implements NoteRepository {
                 if ( INSTANCE == null ) {
                     NoteRoomDatabase database = NoteRoomDatabase.getDatabase( application );
                     INSTANCE = new DefaultNoteRepository( new LocalDataSource( database.noteDao(),
-                            database.homeNotesDao(), database.frequentNotesDao(),
-                            database.archiveNotesDao(), database.trashNotesDao(),
                             database.configurationsDao() ) );
                 }
             }
@@ -42,7 +40,7 @@ public class DefaultNoteRepository implements NoteRepository {
     }
 
     @Override
-    public LiveData<List<Note>> getNotesById( int[] ids) {
+    public LiveData<List<Note>> getNotesById(int[] ids) {
         return this.noteDataSource.getNotesById( ids );
     }
 

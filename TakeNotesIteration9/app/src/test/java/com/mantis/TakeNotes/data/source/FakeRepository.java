@@ -20,7 +20,7 @@ public class FakeRepository implements NoteRepository {
     }
 
     @Override
-    public LiveData<List<Note>> getNotesById( int[] ids ) {
+    public LiveData<List<Note>> getNotesById(int[] ids ) {
         return noteDataSource.getNotesById( ids );
     }
 

@@ -3,12 +3,8 @@ package com.mantis.TakeNotes.data.source.local;
 import androidx.lifecycle.LiveData;
 
 import com.mantis.TakeNotes.data.source.NoteDataSource;
-import com.mantis.TakeNotes.data.source.local.Dao.ArchiveNotesDao;
 import com.mantis.TakeNotes.data.source.local.Dao.ConfigurationsDao;
-import com.mantis.TakeNotes.data.source.local.Dao.FrequentNotesDao;
-import com.mantis.TakeNotes.data.source.local.Dao.HomeNotesDao;
 import com.mantis.TakeNotes.data.source.local.Dao.NoteDao;
-import com.mantis.TakeNotes.data.source.local.Dao.TrashNotesDao;
 
 import java.util.Date;
 import java.util.List;
@@ -16,25 +12,15 @@ import java.util.List;
 public class LocalDataSource implements NoteDataSource {
 
     private NoteDao noteDao;
-    private HomeNotesDao homeNotesDao;
-    private FrequentNotesDao frequentNotesDao;
-    private ArchiveNotesDao archiveNotesDao;
-    private TrashNotesDao trashNotesDao;
     private ConfigurationsDao configurationsDao;
 
-    public LocalDataSource( NoteDao noteDao, HomeNotesDao homeNotesDao, FrequentNotesDao
-                            frequentNotesDao, ArchiveNotesDao archiveNotesDao,
-                            TrashNotesDao trashNotesDao, ConfigurationsDao configurationsDao ) {
+    public LocalDataSource( NoteDao noteDao, ConfigurationsDao configurationsDao ) {
         this.noteDao = noteDao;
-        this.homeNotesDao = homeNotesDao;
-        this.frequentNotesDao = frequentNotesDao;
-        this.archiveNotesDao = archiveNotesDao;
-        this.trashNotesDao = trashNotesDao;
         this.configurationsDao = configurationsDao;
     }
 
     @Override
-    public LiveData<List<Note>> getNotesById( int[] ids ) {
+    public LiveData<List<Note>> getNotesById(int[] ids ) {
         return noteDao.getNotesById( ids );
     }
 
