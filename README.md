@@ -6,6 +6,7 @@ A note taking android app
 
 ![Screenshot_20230213-195643_Take Notes](https://user-images.githubusercontent.com/111270923/219694990-a84eb660-68f5-42eb-91cd-ee9471a5951b.jpg width = {250)
 
+
 ![Screenshot_20230213-195846_Take Notes](https://user-images.githubusercontent.com/111270923/219695022-1c422246-fcfb-4eb3-8867-180c37b6027c.jpg)
 
 ![Screenshot_20230215-090306_Take Notes](https://user-images.githubusercontent.com/111270923/219695050-e774f762-5fdc-43c7-bc41-bf6f8d184f11.jpg)
