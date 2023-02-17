@@ -79,7 +79,7 @@ public class HomeFragmentEditMenuManager extends EditMenuManager {
 
     @Override
     protected NotesAdapter getAdapter() {
-        return ( NotesAdapter  )binding.homeFragmentContent
+        return ( NotesAdapter  ) binding.homeFragmentContent
                 .notesRecyclerView.recyclerview.getAdapter();
     }
 }

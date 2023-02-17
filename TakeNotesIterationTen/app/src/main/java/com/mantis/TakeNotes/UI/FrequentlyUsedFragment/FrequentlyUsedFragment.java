@@ -49,10 +49,6 @@ public class FrequentlyUsedFragment extends Fragment {
     private NotesAdapter notesAdapter;
     private NotesViewModel notesViewModel;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public FrequentlyUsedFragment() {
         // Required empty public constructor
     }

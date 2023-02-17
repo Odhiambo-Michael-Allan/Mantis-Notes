@@ -162,7 +162,7 @@ public class NotesViewModelTest {
         notesViewModel.addNote( note3 );
         notesViewModel.addNote( note4 );
         notesViewModel.addNote( note5 );
-        List<BindableData> referenceIds = new ArrayList<>();
+        List<Note> referenceIds = new ArrayList<>();
         referenceIds.add( note1 );
         referenceIds.add( note2 );
         referenceIds.add( note3 );
@@ -183,6 +183,37 @@ public class NotesViewModelTest {
                 notesViewModel.getFrequentFragmentNotesList() );
         Assert.assertTrue( "Notes list size should be 0",
                 frequentNotesReferenceList.size() == 0 );
+    }
+
+    @Test
+    public void testNoteIsProperlyAddedToTheFrequentNotes() throws Exception {
+        notesViewModel.addNote( note1 );
+        notesViewModel.addNote( note2 );
+        notesViewModel.addNote( note3 );
+        notesViewModel.addNote( note4 );
+        Note placeHolder = new Note( "Edited third note", "This is the edited third" +
+                " note.", DateProvider.getCurrentDate(), new Date() );
+        for ( int i = 0; i < 5; i++ )
+            notesViewModel.editHomeFragmentNote( note3.getId(), placeHolder );
+        List<Note> frequentFragmentNotes = LiveDataTestUtil.getValue(
+                notesViewModel.getFrequentFragmentNotesList() );
+        Assert.assertTrue( "Frequent notes should be 1",
+                frequentFragmentNotes.size() == 1 );
+    }
+
+    @Test
+    public void testNoteIsProperlyEditedInFrequentNotes() throws Exception {
+        notesViewModel.addNote( note1 );
+        notesViewModel.addNote( note2 );
+        notesViewModel.addNote( note3 );
+        notesViewModel.addNote( note4 );
+        Note placeHolder = new Note( "Edited third note", "This is the edited third" +
+                " note.", DateProvider.getCurrentDate(), new Date() );
+        for ( int i = 0; i < 5; i++ )
+            notesViewModel.editHomeFragmentNote( note3.getId(), placeHolder );
+        Note newPlaceHolder = new Note( "Third note edited from frequents", "",
+                DateProvider.getCurrentDate(), new Date() );
+        notesViewModel.editFrequentFragmentNote( note3.getId(), newPlaceHolder );
     }
 
     // ------------------------------ Archive Fragment Model Tests -------------------------------

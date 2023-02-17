@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/cardview_default_radius" >
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/update_view_for_two_stories_first_card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/normal_layout_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:padding="@dimen/normal_padding"
+                    app:srcCompat="@drawable/sample_image" />
+                
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/update_view_for_two_stories_first_card_view_headline_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/normal_padding"
+                    android:layout_margin="@dimen/normal_layout_margin"
+                    android:text="@string/sample_title"
+                    android:textSize="@dimen/title_size"
+                    android:maxLines="4"
+                    android:ellipsize="end" />
+                
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/small_text_size"
+                    android:text="@string/sample_time"
+                    android:padding="@dimen/normal_padding"
+                    android:layout_marginStart="@dimen/normal_layout_margin"/>
+                    
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </com.google.android.material.card.MaterialCardView>
+        
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/update_view_for_two_stories_second_card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/normal_layout_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/update_view_for_two_stories_first_card_view">
+            
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+                
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/update_view_for_two_stories_second_card_view_headline_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sample_title"
+                    android:padding="@dimen/normal_padding"
+                    android:textSize="@dimen/title_size"
+                    android:layout_margin="@dimen/normal_layout_margin"
+                    android:maxLines="3"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/update_view_for_two_stories_second_card_view_image_view"/>
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/update_view_for_two_stories_second_card_view_image_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/normal_padding"
+                    android:layout_margin="@dimen/normal_layout_margin"
+                    app:srcCompat="@drawable/sample_image"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/update_view_for_two_stories_second_card_view_highlight_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sample_highlight"
+                    android:padding="@dimen/normal_padding"
+                    android:layout_marginStart="@dimen/normal_layout_margin"
+                    android:maxLines="3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/update_view_for_two_stories_second_card_view_headline_text_view" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/update_view_for_two_stories_second_card_view_time_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sample_time"
+                    android:padding="@dimen/normal_padding"
+                    android:layout_marginStart="@dimen/normal_layout_margin"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/update_view_for_two_stories_second_card_view_highlight_text_view" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            
+        </com.google.android.material.card.MaterialCardView>
+            
+            
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

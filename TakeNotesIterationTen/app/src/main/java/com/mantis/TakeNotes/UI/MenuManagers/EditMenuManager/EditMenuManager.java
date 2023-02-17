@@ -26,7 +26,7 @@ public abstract class EditMenuManager {
     private NotesAdapter notesAdapter;
     private NotesViewModel notesViewModel;
     private boolean allNotesCheckedStatusChangeResultedFromUserAction = true, editStatus = false;
-    private Fragment owner;
+    protected Fragment owner;
 
     public EditMenuManager( Fragment owner, NotesAdapter notesAdapter,
                             NotesViewModel notesViewModel ) {

@@ -85,7 +85,11 @@
         android:id="@+id/nav_search"
         android:name="com.mantis.TakeNotes.UI.SearchFragment.SearchFragment"
         android:label="@string/search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_nav_search_to_nav_add_note"
+            app:destination="@id/nav_add_note" />
+    </fragment>
 
 
 </navigation>

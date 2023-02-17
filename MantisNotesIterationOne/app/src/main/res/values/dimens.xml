@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="small_card_view_width">150dp</dimen>
+    <dimen name="mini_card_view_width">230dp</dimen>
+    <dimen name="normal_padding">16dp</dimen>
+    <dimen name="title_size">20sp</dimen>
+
+    <dimen name="first_grid_card_view_image_view_width">100dp</dimen>
+    <dimen name="first_grid_card_view_image_view_height">100dp</dimen>
+    <dimen name="card_corner_radius">25dp</dimen>
+    <dimen name="normal_layout_margin">10dp</dimen>
+
+    <dimen name="highlight_text_size">15sp</dimen>
+    <dimen name="small_text_size">10sp</dimen>
+</resources>

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/cardview_default_radius" >
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/first_grid_card_view"
+            android:layout_width="@dimen/mini_card_view_width"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/normal_layout_margin"
+            app:cardCornerRadius="@dimen/card_corner_radius"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/second_grid_card_view">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/first_grid_card_view_title_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="@string/sample_title"
+                    android:textSize="@dimen/title_size"
+                    android:maxLines="4"
+                    android:ellipsize="end"
+                    android:padding="@dimen/normal_padding"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/first_grid_card_view_highlight_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sample_highlight"
+                    android:padding="@dimen/normal_padding"
+                    android:textSize="@dimen/highlight_text_size"
+                    android:maxLines="10"
+                    android:ellipsize="end"
+                    app:layout_constraintTop_toBottomOf="@id/first_grid_card_view_title_text_view"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/second_grid_card_view"
+            android:layout_width="@dimen/small_card_view_width"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/normal_layout_margin"
+            app:cardCornerRadius="@dimen/card_corner_radius"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/second_grid_card_view_title_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="@string/sample_title"
+                    android:textSize="@dimen/title_size"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    android:padding="@dimen/normal_padding"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/second_grid_card_view_highlight_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sample_highlight"
+                    android:padding="@dimen/normal_padding"
+                    android:textSize="@dimen/highlight_text_size"
+                    android:maxLines="15"
+                    android:ellipsize="end"
+                    app:layout_constraintTop_toBottomOf="@id/second_grid_card_view_title_text_view"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/third_grid_card_view"
+            android:layout_width="@dimen/mini_card_view_width"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/normal_layout_margin"
+            app:cardCornerRadius="@dimen/card_corner_radius"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/first_grid_card_view"
+            app:layout_constraintEnd_toStartOf="@id/fourth_grid_card_view">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/third_grid_card_view_image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:padding="@dimen/normal_padding"
+                    app:srcCompat="@drawable/sample_image" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/third_grid_card_view_title_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="@string/sample_title"
+                    android:textSize="@dimen/title_size"
+                    android:maxLines="4"
+                    android:ellipsize="end"
+                    android:padding="@dimen/normal_padding"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/third_grid_card_view_image_view" />
+
+                <com.google.android.material.textview.MaterialTextView
+
+                    android:id="@+id/third_grid_card_view_highlight_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sample_highlight"
+                    android:padding="@dimen/normal_padding"
+                    android:textSize="@dimen/highlight_text_size"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    app:layout_constraintTop_toBottomOf="@id/third_grid_card_view_title_text_view"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/fourth_grid_card_view"
+            android:layout_width="@dimen/small_card_view_width"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/normal_layout_margin"
+            app:cardCornerRadius="@dimen/card_corner_radius"
+            app:layout_constraintTop_toBottomOf="@id/second_grid_card_view"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/fourth_grid_card_view_title_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="@string/sample_title"
+                    android:textSize="@dimen/title_size"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    android:padding="@dimen/normal_padding"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/fourth_grid_card_view_highlight_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sample_highlight"
+                    android:padding="@dimen/normal_padding"
+                    android:textSize="@dimen/highlight_text_size"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    app:layout_constraintTop_toBottomOf="@id/fourth_grid_card_view_title_text_view"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

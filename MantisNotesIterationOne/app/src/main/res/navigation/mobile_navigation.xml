@@ -3,31 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_home">
+    app:startDestination="@id/nav_discover">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.mantis.MantisNotesIterationOne.UI.HomeFragment"
-        android:label="@string/home_fragment"
-        tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_nav_home_to_nav_add_note"
-            app:destination="@id/nav_add_note"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right" />
+        android:id="@+id/nav_discover"
+        android:name="com.mantis.MantisNotesIterationOne.UI.DiscoverFragment"
+        android:label="@string/discover"
+        tools:layout="@layout/fragment_discover" >
     </fragment>
-
-    <fragment
-        android:id="@+id/nav_add_note"
-        android:name="com.mantis.MantisNotesIterationOne.UI.AddNoteFragment"
-        android:label="@string/add_note_fragment"
-        tools:layout="@layout/fragment_add_note" >
-        <argument
-            android:name="NotePosition"
-            app:argType="integer" />
-    </fragment>
-
 
 </navigation>
