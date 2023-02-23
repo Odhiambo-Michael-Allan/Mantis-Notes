@@ -7,22 +7,22 @@
     android:layout_height="match_parent"
     tools:context=".UI.AddNoteFragment.AddNoteFragment">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" >
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/trash_note_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/title"
             android:visibility="gone" />
-    </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.MaterialToolbar>
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/note_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"/>
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/add_note_edit_text"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -55,7 +55,7 @@
         app:layout_constraintBottom_toTopOf="@id/edit_option_toolbar"
         tools:text="@string/sample_note" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/trash_note_text_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -78,7 +78,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/trash_fragment_bottom_banner"/>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/trash_fragment_bottom_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

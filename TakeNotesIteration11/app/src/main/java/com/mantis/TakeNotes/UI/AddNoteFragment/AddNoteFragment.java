@@ -12,9 +12,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +26,7 @@ import com.mantis.TakeNotes.data.source.NoteRepository;
 import com.mantis.TakeNotes.data.source.local.Note;
 import com.mantis.TakeNotes.databinding.FragmentAddNoteBinding;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class AddNoteFragment extends Fragment {
 
@@ -50,11 +44,9 @@ public class AddNoteFragment extends Fragment {
     private int noteId;
     private int fragmentNavigatedFrom;
     private Note noteSelected;
-    private Thread executor;
     private boolean fragmentIsAlive = true;
-    private Calendar calendar = Calendar.getInstance();
 
-    Handler handler;
+
 
     public AddNoteFragment() {
         // Required empty public constructor
@@ -89,19 +81,9 @@ public class AddNoteFragment extends Fragment {
         binding.editOptionToolbar.inflateMenu( R.menu.bottom_toolbar_menu );
         setupNotesViewModel();
         setupToolbar();
-        setupHandler();
         showTrashFragmentComponents();
     }
 
-    private void setupHandler() {
-         handler = new Handler(Looper.getMainLooper() ) {
-            @Override
-            public void handleMessage( Message message ) {
-                String timeRemaining = message.getData().get( TIME_REMAINING ).toString();
-                binding.trashFragmentBottomBanner.setText( getString( R.string.trash_content_bottom_banner, timeRemaining ) );
-            }
-        };
-    }
 
     private void setupNotesViewModel() {
         NoteRepository noteRepository = DefaultNoteRepository.getRepository(
@@ -141,8 +123,6 @@ public class AddNoteFragment extends Fragment {
         binding.editOptionToolbar.setVisibility( View.GONE );
     }
 
-
-
     @Override
     public void onAttach( @NonNull Context context ) {
         super.onAttach( context );
@@ -164,28 +144,14 @@ public class AddNoteFragment extends Fragment {
         populateViews( noteSelected );
     }
 
-
-
     // --------------------------------- Behavioral Details --------------------------------------
 
-
-
     private void handleBackNavigation() {
-        if ( fragmentNavigatedFrom == TRASH_FRAGMENT ) {
-            fragmentIsAlive = false;
-            if ( executor != null )
-                executor.interrupt();
-            executor = null;
-            controller.navigateUp();
-            return;
-        }
         if ( !isEditing )
             addNoteToModel();
         else
             editNote();
         isEditing = false;
-
-
         controller.navigateUp();
     }
 
@@ -219,79 +185,8 @@ public class AddNoteFragment extends Fragment {
     private void populateTrashFragmentViews( Note note ) {
         binding.trashNoteTitle.setText( note.getTitle() );
         binding.trashNoteTextView.setText( note.getDescription() );
-        showTimeRemaining();
     }
 
-    private void showTimeRemaining() {
-        startReaper();
-    }
-
-    private void startReaper() {
-        if ( executor != null )
-            return;
-        executor = new Thread( createRunnable() );
-        executor.start();
-    }
-
-    private Runnable createRunnable() {
-        Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-
-                Date dateNoteCreated = noteSelected.getDateCreated();
-                calendar.setTime( dateNoteCreated );
-                calendar.add( Calendar.MINUTE, 3 );
-
-                Date dateNoteIsToBeDeleted = calendar.getTime();
-                long timeDifference = dateNoteIsToBeDeleted.getTime() - dateNoteCreated.getTime();
-                long daysRemaining = timeDifference / ( 24 * 60 * 60 * 1000 );
-                long hoursRemaining = timeDifference / ( 60 * 60 * 1000 );
-                long minutesRemaining = timeDifference / ( 60 * 1000 ) % 60;
-                long secondsRemaining = timeDifference / 1000 % 60;
-                String timeRemaining = String.format("%s days %s hours %s minutes %s seconds",
-                        daysRemaining,
-                        hoursRemaining,
-                        minutesRemaining,
-                        secondsRemaining);
-
-
-                Bundle newBundle = new Bundle();
-                Message newMessage = new Message();
-                newBundle.putString( TIME_REMAINING, timeRemaining );
-
-                newMessage.setData( newBundle );
-                handler.sendMessage( newMessage );
-
-                while ( fragmentIsAlive && dateNoteCreated.before( dateNoteIsToBeDeleted ) ) {
-                    calendar.setTime( dateNoteCreated );
-                    calendar.add( Calendar.SECOND, 1 );
-                    dateNoteCreated = calendar.getTime();
-                    timeDifference = dateNoteIsToBeDeleted.getTime() - dateNoteCreated.getTime();
-                    daysRemaining = timeDifference / ( 24 * 60 * 60 * 1000 );
-                    hoursRemaining = timeDifference / ( 60 * 60 * 1000 );
-                    minutesRemaining = timeDifference / ( 60 * 1000 ) % 60;
-                    secondsRemaining = timeDifference / 1000 % 60;
-
-                    timeRemaining = String.format("%s days %s hours %s minutes %s seconds",
-                            daysRemaining,
-                            hoursRemaining,
-                            minutesRemaining,
-                            secondsRemaining);
-                    newMessage = new Message();
-                    newBundle.clear();
-                    newBundle.putString( TIME_REMAINING, timeRemaining );
-                    newMessage.setData( newBundle );
-                    handler.sendMessage( newMessage );
-                    try {
-                        Thread.sleep( 1000 );
-                    } catch ( InterruptedException e ) {}
-
-                }
-            }
-        };
-        return runnable;
-    }
 
     private void populateOtherFragmentViews( Note note ) {
         isEditing = true;
@@ -302,9 +197,5 @@ public class AddNoteFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        fragmentIsAlive = false;
-        if ( executor != null )
-            executor.interrupt();
-        executor = null;
     }
 }

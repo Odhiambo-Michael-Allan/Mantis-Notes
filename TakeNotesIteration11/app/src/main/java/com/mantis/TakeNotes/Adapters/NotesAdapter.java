@@ -241,7 +241,7 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
         List<Note> unselectedNotes = new ArrayList<>(), selectedNotes = new ArrayList<>();
         Iterator i = getData().iterator();
         while ( i.hasNext() ) {
-            Note note = (Note) i.next();
+            Note note = ( Note ) i.next();
             if ( note.isChecked() )
                 selectedNotes.add( note );
             else
@@ -249,6 +249,20 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
         }
         setData( unselectedNotes );
         notesViewModel.deleteReferencesIn( selectedNotes );
+    }
+
+    public void permanentlyDeleteSelectedNotes() {
+        List<Note> unselectedNotes = new ArrayList<>(), selectedNotes = new ArrayList<>();
+        Iterator i = getData().iterator();
+        while ( i.hasNext() ) {
+            Note note = ( Note ) i.next();
+            if ( note.isChecked() )
+                selectedNotes.add( note );
+            else
+                unselectedNotes.add( note );
+        }
+        setData( unselectedNotes );
+        notesViewModel.permanentlyDeleteNotesIn( selectedNotes );
     }
 
     public LiveData<Boolean> getAllNotesAreCheckedStatus() {
@@ -260,9 +274,6 @@ public abstract class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> 
         notifyDataSetChanged();
     }
 
-    public LiveData<Boolean> getNoNoteAreChecked() {
-        return noNotesAreChecked;
-    }
     public interface NoteAdapterListener {
         void onViewHolderClicked( View view, int viewHolderPosition );
         void onViewHolderLongClicked( int viewHolderPosition );

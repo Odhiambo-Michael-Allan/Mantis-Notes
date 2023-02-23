@@ -8,6 +8,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mantis.TakeNotes.Adapters.NotesAdapter;
+import com.mantis.TakeNotes.Dialogs.ConfirmationDialog;
 import com.mantis.TakeNotes.Models.NotesViewModel;
 import com.mantis.TakeNotes.R;
 
@@ -23,8 +25,8 @@ import java.util.Locale;
 
 public abstract class EditMenuManager {
 
-    private NotesAdapter notesAdapter;
-    private NotesViewModel notesViewModel;
+    protected NotesAdapter notesAdapter;
+    protected NotesViewModel notesViewModel;
     private boolean allNotesCheckedStatusChangeResultedFromUserAction = true, editStatus = false;
     protected Fragment owner;
 
@@ -67,7 +69,7 @@ public abstract class EditMenuManager {
                 } );
     }
 
-    void showEditingToolBar( boolean show ) {
+    protected void showEditingToolBar( boolean show ) {
         Toolbar toolbar = getEditingToolbar();
         adjustRecyclerViewMargin( show );
         if ( show )
@@ -206,7 +208,7 @@ public abstract class EditMenuManager {
 
     protected abstract Toolbar getMainToolbar();
 
-    private void adjustRecyclerViewMargin( boolean editingEnabled ) {
+    protected void adjustRecyclerViewMargin( boolean editingEnabled ) {
         RecyclerView recyclerView = getRecyclerView();
         ViewGroup.MarginLayoutParams layoutParams = ( ViewGroup.MarginLayoutParams )
                 recyclerView.getLayoutParams();
@@ -224,11 +226,30 @@ public abstract class EditMenuManager {
         deleteMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
-                notesAdapter.deleteSelectedNotes();
-                notesViewModel.doneEditing();
+                showConfirmationDialog( notesAdapter.getObservableNumberOfCheckedNotes().getValue() );
                 return true;
             }
         } );
+    }
+
+    protected void showConfirmationDialog( int noteCount ) {
+        ConfirmationDialog confirmationDialog = ConfirmationDialog.newInstance(
+                owner.getString( R.string.move_notes_to_trash, noteCount ) );
+        confirmationDialog.addListener( new ConfirmationDialog.ConfirmationDialogListener() {
+            @Override
+            public void onCancelSelected() {
+                notesViewModel.doneEditing();
+                return;
+            }
+
+            @Override
+            public void onYesSelected() {
+                notesAdapter.deleteSelectedNotes();
+                notesViewModel.doneEditing();
+            }
+        } );
+        confirmationDialog.show( ( (AppCompatActivity) owner.getContext() ).getSupportFragmentManager(),
+                "confirmation" );
     }
 
     void notifyAdapterOfEditStatusChange( boolean editingEnabled ) {

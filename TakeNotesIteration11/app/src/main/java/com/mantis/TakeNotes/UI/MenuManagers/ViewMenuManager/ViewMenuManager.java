@@ -27,7 +27,7 @@ import java.util.List;
 public abstract class ViewMenuManager {
 
     protected Fragment owner;
-    private NotesViewModel notesViewModel;
+    protected NotesViewModel notesViewModel;
     private NotesAdapter notesAdapter;
     private List<ViewMenuManagerListener> listeners = new ArrayList<>();
 
@@ -46,7 +46,7 @@ public abstract class ViewMenuManager {
         } );
     }
 
-    private void configureRecyclerView( int layoutType ) {
+    protected void configureRecyclerView( int layoutType ) {
         RecyclerView recyclerView = getRecyclerView();
 
 

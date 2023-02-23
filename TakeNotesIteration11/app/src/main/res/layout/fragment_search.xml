@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp" >
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/main_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -58,7 +58,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
-            </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -107,7 +107,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:visibility="visible">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text_empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:visibility="visible">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

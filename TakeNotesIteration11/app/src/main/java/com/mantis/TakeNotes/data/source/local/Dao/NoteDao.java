@@ -14,7 +14,7 @@ import java.util.List;
 public interface NoteDao {
 
     @Query( "SELECT * FROM notes_table WHERE id IN(:ids)" )
-    LiveData<List<Note>> getNotesById(int[] ids );
+    LiveData<List<Note>> getNotesById( int[] ids );
 
     @Query( "SELECT * FROM notes_table" )
     LiveData<List<Note>> getAllNotes();
@@ -36,4 +36,7 @@ public interface NoteDao {
 
     @Query( "UPDATE notes_table SET owner = :newOwner WHERE id = :noteId" )
     void updateNoteOwner( int noteId, int newOwner );
+
+    @Query( "SELECT timeLeft FROM notes_table WHERE id = :noteId" )
+    LiveData<Long> getTimeLeftForNoteWithId( int noteId );
 }

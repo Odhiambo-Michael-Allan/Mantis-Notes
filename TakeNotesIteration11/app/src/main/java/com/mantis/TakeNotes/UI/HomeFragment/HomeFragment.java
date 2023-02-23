@@ -34,6 +34,7 @@ import com.mantis.TakeNotes.UI.MenuManagers.ViewMenuManager.ViewMenuManager;
 import com.mantis.TakeNotes.Models.NotesViewModel;
 import com.mantis.TakeNotes.Models.NotesViewModelFactory;
 import com.mantis.TakeNotes.Utils.Logger;
+import com.mantis.TakeNotes.Utils.ToastProvider;
 import com.mantis.TakeNotes.data.source.DefaultNoteRepository;
 import com.mantis.TakeNotes.data.source.NoteRepository;
 import com.mantis.TakeNotes.R;
@@ -218,6 +219,16 @@ public class HomeFragment extends Fragment {
             @Override
             public void onUnarchiveSelected() {
                 // Not possible here..
+            }
+
+            @Override
+            public void onShareSelected() {
+                ToastProvider.showToast( getContext(), "Not yet implemented" );
+            }
+
+            @Override
+            public void onSendFeedbackSelected() {
+                ToastProvider.showToast( getContext(), "Note yet implemented" );
             }
         } );
     }

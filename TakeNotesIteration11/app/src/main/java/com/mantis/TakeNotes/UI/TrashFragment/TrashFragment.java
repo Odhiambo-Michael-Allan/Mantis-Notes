@@ -1,7 +1,11 @@
 package com.mantis.TakeNotes.UI.TrashFragment;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -22,10 +26,11 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mantis.TakeNotes.Adapters.NotesAdapter;
+import com.mantis.TakeNotes.Dialogs.ConfirmationDialog;
 import com.mantis.TakeNotes.Models.NotesViewModel;
 import com.mantis.TakeNotes.Models.NotesViewModelFactory;
 import com.mantis.TakeNotes.UI.AddNoteFragment.AddNoteFragment;
-import com.mantis.TakeNotes.UI.HomeFragment.HomeFragmentDirections;
+import com.mantis.TakeNotes.UI.MenuManagers.EditMenuManager.EditMenuManager;
 import com.mantis.TakeNotes.UI.MenuManagers.ViewMenuManager.ViewMenuManager;
 import com.mantis.TakeNotes.data.source.DefaultNoteRepository;
 import com.mantis.TakeNotes.data.source.NoteRepository;
@@ -44,6 +49,8 @@ public class TrashFragment extends Fragment {
     private NotesAdapter notesAdapter;
     private NotesViewModel notesViewModel;
     private ViewMenuManager trashFragmentViewMenuManager;
+    private EditMenuManager trashFragmentEditMenuManager;
+    private List<Note> trashNotesList = new ArrayList<>();
 
     public TrashFragment() {
         // Required empty public constructor
@@ -72,9 +79,34 @@ public class TrashFragment extends Fragment {
     public void onViewCreated( View view, Bundle savedInstanceState ) {
         super.onViewCreated( view, savedInstanceState );
         setupNotesViewModel();
-        setupToolbar();
+        setupMainToolbar();
+        setupEditingToolbar();
         showTrashFragmentBanner();
-        configureRecyclerView( NotesViewModel.LAYOUT_STATE_SIMPLE_LIST );
+        setupViewMenuManager();
+        setupEditMenuManager();
+        observeNotes();
+    }
+
+    private void setupViewMenuManager() {
+        trashFragmentViewMenuManager = new TrashFragmentViewMenuManager( this, notesViewModel,
+                binding );
+        trashFragmentViewMenuManager.addListener( new ViewMenuManager.ViewMenuManagerListener() {
+            @Override
+            public void onAdapterChange( NotesAdapter newNotesAdapter ) {
+                notesAdapter = newNotesAdapter;
+                notesAdapter.setData( trashNotesList );
+                configureListenerOnNotesAdapter();
+            }
+        } );
+    }
+
+    private void setupEditMenuManager() {
+        trashFragmentEditMenuManager = new TrashFragmentEditMenuManager( this, notesAdapter,
+                notesViewModel, binding );
+    }
+
+    private void setupEditingToolbar() {
+        binding.trashFragmentContent.editOptionToolbar.inflateMenu( R.menu.trash_edit_options_menu );
     }
 
     private void showTrashFragmentBanner() {
@@ -88,65 +120,6 @@ public class TrashFragment extends Fragment {
         NotesViewModelFactory factory = new NotesViewModelFactory( noteRepository );
         notesViewModel = new ViewModelProvider( requireActivity(), factory ).get(
                 NotesViewModel.class );
-        observeLayoutState();
-        observeTrashedNotes();
-    }
-
-    private void observeLayoutState() {
-        notesViewModel.getLayoutTypeConfig().observe(getViewLifecycleOwner(),
-                new Observer<Integer>() {
-                    @Override
-                    public void onChanged(Integer integer) {
-                        configureRecyclerView( integer );
-                    }
-                } );
-    }
-
-    private void configureRecyclerView( int layoutType ) {
-        RecyclerView recyclerView = binding.trashFragmentContent.trashFragmentNotesRecyclerView
-                .recyclerview;
-        NotesAdapter oldAdapter = ( NotesAdapter ) recyclerView.getAdapter();
-        createAppropriateLayoutType( layoutType, recyclerView );
-        configureRecyclerViewComponents( recyclerView );
-        reloadAdapterData( oldAdapter );
-        configureListenerOnNotesAdapter();
-    }
-
-    private void createAppropriateLayoutType( int layoutType, RecyclerView recyclerView ) {
-        if ( layoutType == NotesViewModel.LAYOUT_STATE_SIMPLE_LIST)
-            createSimpleListLayout( recyclerView );
-        else if ( layoutType == NotesViewModel.LAYOUT_STATE_GRID)
-            createGridLayout( recyclerView );
-        else
-            createListLayout( recyclerView );
-    }
-
-    private void createSimpleListLayout( RecyclerView recyclerView ) {
-        RecyclerViewConfigurator.configureSimpleListRecyclerView( recyclerView, getContext() );
-    }
-
-    private void createGridLayout( RecyclerView recyclerView ) {
-        RecyclerViewConfigurator.configureGridLayoutRecyclerView( recyclerView, getContext() );
-    }
-
-    private void createListLayout( RecyclerView recyclerView ) {
-        RecyclerViewConfigurator.configureListRecyclerView( recyclerView, getContext() );
-    }
-
-    private void configureRecyclerViewComponents( RecyclerView recyclerView ) {
-        binding.trashFragmentContent.textEmpty.setText( R.string.no_notes );
-        notesAdapter = ( NotesAdapter ) recyclerView.getAdapter();
-        notesAdapter.setEmptyView( binding.trashFragmentContent.layoutEmpty );
-        notesAdapter.setNotesViewModel( notesViewModel );
-    }
-
-    private void reloadAdapterData( NotesAdapter oldAdapter ) {
-        Menu menu = binding.trashFragmentContent.trashFragmentAppBarLayout.
-                toolbar.getMenu();
-        if ( oldAdapter == null )
-            notesAdapter.setData( new ArrayList<>() );
-        else
-            notesAdapter.setData( oldAdapter.getData() );
     }
 
     private void configureListenerOnNotesAdapter() {
@@ -164,7 +137,7 @@ public class TrashFragment extends Fragment {
 
             @Override
             public void onRecyclerViewEmpty( boolean isEmpty ) {
-
+                showMenu( isEmpty );
             }
 
             @Override
@@ -172,6 +145,18 @@ public class TrashFragment extends Fragment {
                 displayNoteCount( newNotesSize );
             }
         } );
+    }
+
+    private void showMenu( boolean recyclerViewIsEmpty ) {
+        Menu menu = binding.trashFragmentContent.trashFragmentAppBarLayout
+                .toolbar.getMenu();
+        if ( menu == null )
+            return;
+        for ( int i = 0; i < menu.size(); i++ )
+            if ( recyclerViewIsEmpty )
+                menu.getItem( i ).setVisible( false );
+            else
+                menu.getItem( i ).setVisible( true );
     }
 
     private void displayNoteCount( int noteCount ) {
@@ -188,17 +173,18 @@ public class TrashFragment extends Fragment {
         }
     }
 
-    private void observeTrashedNotes() {
+    private void observeNotes() {
         notesViewModel.getTrashFragmentNotesList().observe( getViewLifecycleOwner(),
                 new Observer<List<Note>>() {
                     @Override
                     public void onChanged( List<Note> notes ) {
-                        notesAdapter.setData( notes );
+                        trashNotesList = notes;
+                        notesAdapter.setData( trashNotesList );
                     }
                 } );
     }
 
-    private void setupToolbar() {
+    private void setupMainToolbar() {
         NavController navController = NavHostFragment.findNavController( this );
         DrawerLayout drawerLayout = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
@@ -216,27 +202,53 @@ public class TrashFragment extends Fragment {
     }
 
     private void configureMenu() {
+        configureEditMenu();
+        configureEmptyMenu();
+    }
+
+    private void configureEditMenu() {
         MenuItem editMenuItem = binding.trashFragmentContent.trashFragmentAppBarLayout
                 .toolbar.getMenu()
                 .findItem( R.id.edit_option );
-        editMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        editMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Toast.makeText( getContext(), "Not yet implemented", Toast.LENGTH_SHORT )
-                        .show();
+            public boolean onMenuItemClick( MenuItem item ) {
+                notesViewModel.editMenuSelected();
                 return true;
             }
         } );
+    }
+
+    private void configureEmptyMenu() {
         MenuItem emptyMenuItem = binding.trashFragmentContent.trashFragmentAppBarLayout
                 .toolbar.getMenu()
                 .findItem( R.id.empty_option );
         emptyMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick( MenuItem item ) {
-                notesViewModel.emptyTrashList();
+                showConfirmationDialog( notesAdapter.getItemCount() );
                 return true;
             }
         } );
+    }
+
+    private void showConfirmationDialog( int noteCount ) {
+        ConfirmationDialog confirmationDialog = ConfirmationDialog.newInstance(
+                getString( R.string.permanently_delete_notes, noteCount ) );
+        confirmationDialog.addListener( new ConfirmationDialog.ConfirmationDialogListener() {
+            @Override
+            public void onCancelSelected() {
+                return;
+            }
+
+            @Override
+            public void onYesSelected() {
+                notesViewModel.emptyTrashList();
+
+            }
+        } );
+        confirmationDialog.show( ( (AppCompatActivity) getContext() ).getSupportFragmentManager(),
+                "confirmation" );
     }
 
     private void navigationToAddNoteFragment( View view, int viewHolderPosition ) {
@@ -253,5 +265,29 @@ public class TrashFragment extends Fragment {
         binding.navView.getMenu().findItem( R.id.nav_trash ).setChecked( true );
         binding.trashFragmentContent.trashFragmentAppBarLayout.mainTitle
                 .setText( getString( R.string.trash ) );
+    }
+
+
+    @Override
+    public void onAttach( @NonNull Context context ) {
+        super.onAttach( context );
+        OnBackPressedCallback callback = new OnBackPressedCallback( true ) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBackNavigation();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback( this, callback );
+    }
+
+    private void handleBackNavigation() {
+        if ( notesViewModel.getObservableEditStatus().getValue() ) {
+            notesViewModel.doneEditing();
+            binding.trashFragmentContent.trashFragmentAppBarLayout
+                    .allCheckBox.setChecked( false );
+            return;
+        }
+        NavController controller = NavHostFragment.findNavController( this );
+        controller.navigateUp();
     }
 }

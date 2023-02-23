@@ -47,8 +47,6 @@
 
         </LinearLayout>
 
-
-
         <android.widget.Space
             android:id="@+id/space"
             android:layout_width="0dp"

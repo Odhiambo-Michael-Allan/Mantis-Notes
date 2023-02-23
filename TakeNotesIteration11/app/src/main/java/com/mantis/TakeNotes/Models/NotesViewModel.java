@@ -40,6 +40,7 @@ public class NotesViewModel extends ViewModel {
     private Observer<List<Note>> notesTableObserver;
     private ConfigOptionsModel configOptionsModel;
     private MutableLiveData<Boolean> observableEditStatus = new MutableLiveData<>();
+    private MutableLiveData<List<Note>> observableNotesList = new MutableLiveData<>();
 
     // TODO: Move to database..
     private List<Query> recentQueryList = new ArrayList<>();
@@ -50,9 +51,14 @@ public class NotesViewModel extends ViewModel {
     public NotesViewModel( NoteRepository noteRepository ) {
         this.noteRepository = noteRepository;
         initializeFragmentModels();
+        observableNotesList.postValue( new ArrayList<>() );
         initializeConfigOptionsModel();
         observeNotesTable();
         addListenerToMenuConfigurator();
+    }
+
+    public LiveData<List<Note>> getObservableNotesList() {
+        return observableNotesList;
     }
 
     private void initializeFragmentModels() {
@@ -71,16 +77,21 @@ public class NotesViewModel extends ViewModel {
             @Override
             public void onChanged( List<Note> notes ) {
                 cachedNotesList = notes;
+                observableNotesList.postValue( cachedNotesList );
             }
         };
         this.noteRepository.getAllNotes().observeForever( notesTableObserver );
+    }
+
+    public void editMenuSelected() {
+        observableEditStatus.postValue( true );
     }
 
     private void addListenerToMenuConfigurator() {
         MenuConfigurator.addListener( new MenuConfigurator.MenuConfigurationListener() {
             @Override
             public void onEditOptionSelected() {
-                observableEditStatus.postValue( true );
+                editMenuSelected();
             }
 
             @Override
@@ -205,10 +216,6 @@ public class NotesViewModel extends ViewModel {
         return configOptionsModel.getLayoutTypeConfigOption();
     }
 
-    public int getCurrentLayoutTypeConfig() {
-        return configOptionsModel.getCurrentLayoutTypeConfig();
-    }
-
     public LiveData<Integer> getSortingStrategyConfigOption() {
         return configOptionsModel.getSortingStrategyConfigOption();
     }
@@ -233,10 +240,23 @@ public class NotesViewModel extends ViewModel {
     public void deleteReferencesIn( List<Note> notes ) {
         Iterator i = notes.iterator();
         while ( i.hasNext() ) {
-            Note note = (Note) i.next();
-            deleteHomeFragmentNote( note.getId() );
-            deleteFrequentFragmentNote( note.getId() );
-            deleteArchiveFragmentNote( note.getId() );
+            Note note = ( Note ) i.next();
+            if ( note.getOwner() == HOME_FRAGMENT )
+                deleteHomeFragmentNote( note.getId() );
+            else if ( note.getOwner() == FREQUENT_FRAGMENT )
+                deleteFrequentFragmentNote( note.getId() );
+            else if ( note.getOwner() == ARCHIVE_FRAGMENT )
+                deleteArchiveFragmentNote( note.getId() );
+            else
+                deleteTrashFragmentNote( note.getId() );
+            
+        }
+    }
+
+    public void permanentlyDeleteNotesIn( List<Note> notes ) {
+        Iterator i = notes.iterator();
+        while ( i.hasNext() ) {
+            Note note = ( Note ) i.next();
             deleteTrashFragmentNote( note.getId() );
         }
     }

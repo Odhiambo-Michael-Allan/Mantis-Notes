@@ -20,7 +20,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:visibility="visible">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text_empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

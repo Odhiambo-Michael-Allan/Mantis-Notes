@@ -3,7 +3,11 @@ package com.mantis.TakeNotes.Models;
 import com.mantis.TakeNotes.data.source.NoteRepository;
 import com.mantis.TakeNotes.data.source.local.Note;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TrashFragmentModel extends FragmentModel {
 
@@ -34,5 +38,10 @@ public class TrashFragmentModel extends FragmentModel {
             if ( note.getOwner() == NotesViewModel.TRASH_FRAGMENT )
                 this.noteRepository.deleteNote( note.getId() );
         }
+    }
+
+    @Override
+    public void deleteNoteWithId( int noteId ) {
+        this.noteRepository.deleteNote( noteId );
     }
 }

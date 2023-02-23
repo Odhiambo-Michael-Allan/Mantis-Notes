@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import com.google.android.material.navigation.NavigationView;
 import com.mantis.TakeNotes.UI.MenuManagers.EditMenuManager.EditMenuManager;
 import com.mantis.TakeNotes.UI.MenuManagers.ViewMenuManager.ViewMenuManager;
+import com.mantis.TakeNotes.Utils.ToastProvider;
 import com.mantis.TakeNotes.data.source.local.Note;
 import com.mantis.TakeNotes.databinding.FragmentArchiveBinding;
 import com.mantis.TakeNotes.Adapters.NotesAdapter;
@@ -209,6 +210,16 @@ public class ArchiveFragment extends Fragment {
             @Override
             public void onUnarchiveSelected() {
                 notesViewModel.unarchiveNote( noteSelectedId );
+            }
+
+            @Override
+            public void onShareSelected() {
+                ToastProvider.showToast( getContext(), "Not yet implemented" );
+            }
+
+            @Override
+            public void onSendFeedbackSelected() {
+                ToastProvider.showToast( getContext(), "Not yet implemented" );
             }
         } );
     }

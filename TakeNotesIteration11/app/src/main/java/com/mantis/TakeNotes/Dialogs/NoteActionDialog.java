@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.mantis.TakeNotes.R;
 import com.mantis.TakeNotes.databinding.NoteViewActionDialogVerticalBinding;
 
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ public class NoteActionDialog extends BottomSheetDialogFragment {
 
     private static final String SHOW_ARCHIVE_OPTION = "True";
     private NoteViewActionDialogVerticalBinding binding;
-    private int noteSelectedPosition;
     private ArrayList<NoteActionDialogListener> listeners = new ArrayList<>();
 
 
@@ -39,7 +39,6 @@ public class NoteActionDialog extends BottomSheetDialogFragment {
                              @Nullable Bundle savedInstanceState ) {
 
         binding = NoteViewActionDialogVerticalBinding.inflate( inflater, container, false );
-
         boolean showArchiveOption = getArguments().getBoolean( SHOW_ARCHIVE_OPTION );
         if ( showArchiveOption )
             binding.archiveTextView.setVisibility( View.VISIBLE );
@@ -51,8 +50,10 @@ public class NoteActionDialog extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated( View view, Bundle savedInstanceState ) {
         super.onViewCreated( view, savedInstanceState );
-        binding.archiveTextView.setOnClickListener( v -> { dismiss(); } );
-        binding.textViewShare.setOnClickListener( v -> { dismiss(); } );
+        binding.textViewShare.setOnClickListener( v -> {
+            notifyListenersOfShare();
+            dismiss();
+        } );
         binding.textViewDelete.setOnClickListener( v -> {
             notifyListenersOfDelete();
             dismiss();
@@ -65,6 +66,26 @@ public class NoteActionDialog extends BottomSheetDialogFragment {
             notifyListenersOfUnarchive();
             dismiss();
         } );
+        binding.textViewSendFeedback.setOnClickListener( v -> {
+            notifyListenersOfSendFeedback();
+            dismiss();
+        });
+    }
+
+    private void notifyListenersOfShare() {
+        Iterator i = listeners.iterator();
+        while ( i.hasNext() ) {
+            NoteActionDialogListener listener = ( NoteActionDialogListener ) i.next();
+            listener.onShareSelected();
+        }
+    }
+
+    private void notifyListenersOfSendFeedback() {
+        Iterator i = listeners.iterator();
+        while ( i.hasNext() ) {
+            NoteActionDialogListener listener = ( NoteActionDialogListener ) i.next();
+            listener.onSendFeedbackSelected();
+        }
     }
 
     private void notifyListenersOfDelete() {
@@ -99,5 +120,7 @@ public class NoteActionDialog extends BottomSheetDialogFragment {
         void deleteSelected();
         void onArchiveSelected();
         void onUnarchiveSelected();
+        void onShareSelected();
+        void onSendFeedbackSelected();
     }
 }

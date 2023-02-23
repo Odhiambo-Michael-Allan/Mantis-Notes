@@ -36,7 +36,7 @@ public abstract class FragmentModel {
         };
     }
 
-    private void updateMyNotes() {
+    protected void updateMyNotes() {
         List<Note> myNotes = new ArrayList<>();
         Iterator i = cachedNotesList.iterator();
         while ( i.hasNext() ) {
@@ -48,7 +48,7 @@ public abstract class FragmentModel {
     }
 
     private void attachObservers() {
-        noteRepository.getAllNotes().observeForever( notesListObserver );
+        notesViewModel.getObservableNotesList().observeForever( notesListObserver );
     }
 
     protected abstract boolean noteIsMine( Note note );

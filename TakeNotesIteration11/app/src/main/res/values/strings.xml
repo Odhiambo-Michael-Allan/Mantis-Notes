@@ -20,7 +20,7 @@ your code readers and your own, you should follow the coding conventions
     <string name="note_title">Title</string>
     <string name="sample_title">Sample Title</string>
     <string name="text_empty_message">
-        <![CDATA[No notes added. Tap the <font color=\'#d7d7d7\'>+</font>
+        <![CDATA[No notes added. Tap the <font color=\'#797979\'>+</font>
         button to create a note.]]>
     </string>
     <string name="my_email">odhiambomichaelallan@gmail.com</string>
@@ -73,4 +73,11 @@ your code readers and your own, you should follow the coding conventions
     <string name="note_count">%d Notes</string>
     <string name="single_note_count">%d Note</string>
     <string name="note">Note</string>
+
+    <string name="restore">Restore</string>
+    <string name="send_feedback">Send Feedback</string>
+    <string name="yes">Yes</string>
+    <string name="permanently_delete_notes">Permanently delete %d notes</string>
+
+    <string name="move_notes_to_trash">Move %d notes to trash</string>
 </resources>

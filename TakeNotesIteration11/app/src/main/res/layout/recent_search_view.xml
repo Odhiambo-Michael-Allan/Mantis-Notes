@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/query_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/sample_note" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/date_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
