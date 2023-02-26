@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UI.AddNoteFragment.AddNoteFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/top_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/note_title_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/note_title"
+        android:textStyle="bold"
+        android:paddingStart="@dimen/default_padding"
+        android:paddingEnd="@dimen/default_padding"
+        android:paddingBottom="@dimen/default_padding"
+        android:paddingTop="@dimen/default_padding"
+        android:background="@android:color/transparent"
+        android:ellipsize="end"
+        android:maxLines="10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_toolbar"/>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/note_description_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="top"
+        android:background="@android:color/transparent"
+        android:paddingStart="@dimen/default_padding"
+        android:paddingEnd="@dimen/default_padding"
+        android:scrollbars="vertical"
+        android:hint="@string/note"
+        app:layout_constraintTop_toBottomOf="@id/note_title_edit_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_toolbar"
+        tools:text="@string/sample_note" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/trash_note_title_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/note_title"
+        android:textStyle="bold"
+        android:textSize="@dimen/default_text_size"
+        android:paddingStart="@dimen/default_padding"
+        android:paddingEnd="@dimen/default_padding"
+        android:paddingBottom="@dimen/default_padding"
+        android:paddingTop="@dimen/default_padding"
+        android:background="@android:color/transparent"
+        android:ellipsize="end"
+        android:maxLines="10"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_toolbar"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/trash_note_description_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="top"
+        android:background="@android:color/transparent"
+        android:padding="@dimen/default_padding"
+        android:textSize="@dimen/default_text_size"
+        android:scrollbars="vertical"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/trash_note_title_text_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/trash_fragment_bottom_banner"
+        tools:text="@string/sample_note" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/trash_content_bottom_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:dividerThickness="@dimen/default_divider_thickness"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/trash_fragment_bottom_banner"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/trash_fragment_bottom_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/trash_content_bottom_banner"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/trash_note_description_text_view"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/bottom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintTop_toBottomOf="@id/note_description_edit_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" >
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/text_limit_card_view"
+            android:layout_width="@dimen/text_limit_card_view_width"
+            android:layout_height="@dimen/text_limit_card_view_height"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:visibility="gone"
+            app:cardElevation="@dimen/default_card_elevation"
+            tools:visibility="visible">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/note_text_limit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="@dimen/default_text_size"
+                tools:text="@string/sample_text_limit" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </com.google.android.material.appbar.MaterialToolbar>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

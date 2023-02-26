@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="expanded_title_margin_start">48dp</dimen>
+    <dimen name="expanded_title_margin_end">64dp</dimen>
+    <dimen name="app_bar_layout_height">300dp</dimen>
+
+    <dimen name="large_text_size">30sp</dimen>
+    <dimen name="default_text_size">16sp</dimen>
+    <dimen name="default_padding">16dp</dimen>
+
+    <dimen name="scroll_bar_size">5dp</dimen>
+    <dimen name="default_margin">8dp</dimen>
+    <dimen name="default_corner_radius">12dp</dimen>
+
+    <dimen name="simple_list_note_view_text_view_size">80dp</dimen>
+    <dimen name="simple_list_note_view_text_view_text_size">5sp</dimen>
+    <dimen name="simple_list_note_view_text_view_padding">10dp</dimen>
+
+    <dimen name="simple_list_note_view_description_text_view_padding_top">6dp</dimen>
+    <dimen name="simple_list_note_view_time_text_view_bottom_padding">10dp</dimen>
+    <dimen name="sort_option_dialog_divider_margin_top">26dp</dimen>
+
+    <dimen name="default_divider_thickness">1dp</dimen>
+    <dimen name="confirmation_action_text_size">20sp</dimen>
+    <dimen name="default_card_elevation">5dp</dimen>
+
+    <dimen name="navigation_view_margin">5dp</dimen>
+    <dimen name="text_limit_card_view_width">80dp</dimen>
+    <dimen name="text_limit_card_view_height">30dp</dimen>
+
+    <dimen name="divider_height">20dp</dimen>
+    <dimen name="half_padding">8dp</dimen>
+    <dimen name="quarter_padding">4dp</dimen>
+
+    <dimen name="default_inset">30dp</dimen>
+
+
+</resources>

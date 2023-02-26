@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/ModalBottomSheetDialog">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/cancel_imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="center"
+                android:src="@drawable/cancel_icon"
+                android:padding="@dimen/default_padding"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/send_feedback"
+                android:padding="@dimen/default_padding"
+                android:textSize="@dimen/default_text_size"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_margin"
+            app:cardCornerRadius="@dimen/default_corner_radius"
+            app:cardElevation="@dimen/default_card_elevation"
+            app:cardBackgroundColor="@color/onPrimary">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/welcome_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/welcome"
+                android:paddingStart="@dimen/half_padding"
+                android:paddingTop="@dimen/quarter_padding"
+                android:paddingBottom="@dimen/quarter_padding"
+                android:paddingEnd="@dimen/half_padding"/>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/message_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:textSize="@dimen/default_text_size"
+            android:text="@string/first_feedback_text" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/get_started_button"
+            style="@style/Widget.Material3.Button.IconButton.Filled"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:insetLeft="@dimen/default_inset"
+            android:insetRight="@dimen/default_inset"
+            android:text="@string/get_started"
+            android:layout_gravity="center"
+            android:textSize="@dimen/default_text_size"
+            app:cornerRadius="@dimen/default_corner_radius"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/describe_issue_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/describe_issue"
+            android:textStyle="bold"
+            android:layout_marginStart="@dimen/default_margin"
+            android:textSize="@dimen/default_text_size"
+            android:paddingTop="@dimen/default_padding"
+            android:paddingBottom="@dimen/default_padding"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/sensitive_content_disclaimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sensitive_content_disclaimer"
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
+            app:drawableRightCompat="@drawable/help_icon" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/default_divider_thickness"
+            app:dividerColor="@color/default_tint" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/issue_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:hint="@string/tell_us_how_we_can_improve"
+            android:background="@android:color/transparent"
+            android:paddingTop="@dimen/default_padding"
+            android:textSize="@dimen/default_text_size"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/send_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/send_icon"
+            android:layout_gravity="end"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</com.google.android.material.card.MaterialCardView>
