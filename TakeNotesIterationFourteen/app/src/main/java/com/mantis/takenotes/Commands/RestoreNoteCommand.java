@@ -20,6 +20,5 @@ public class RestoreNoteCommand implements Command {
     public void execute() {
         for ( Note note : notesToRestore )
             note.restore( this.notesViewModel.getNoteRepository() );
-        this.notesViewModel.doneEditing();
     }
 }

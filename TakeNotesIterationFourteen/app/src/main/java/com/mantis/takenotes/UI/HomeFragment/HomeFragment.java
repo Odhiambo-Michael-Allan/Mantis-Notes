@@ -66,6 +66,7 @@ public class HomeFragment extends Fragment {
     private SortMenuManager sortMenuManager;
     private ViewMenuManager viewMenuManager;
     private List<Note> homeFragmentNotes = new ArrayList<>();
+    private boolean editingIsInProgress = false;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -126,6 +127,20 @@ public class HomeFragment extends Fragment {
                 R.menu.take_notes_home_fragment_options_menu);
         MenuConfigurator.configureMenu( binding.homeFragmentContent.appBarLayout.toolbar.getMenu() );
         configureSearchMenuItem();
+        configureEditMenuItem();
+    }
+
+    private void configureEditMenuItem() {
+        MenuItem editMenuItem = binding.homeFragmentContent.appBarLayout.toolbar.getMenu()
+                .findItem( R.id.edit_option );
+        editMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
+                editingIsInProgress = true;
+                editMenuManager.updateEditingStatus( true );
+                return true;
+            }
+        } );
     }
 
     private void configureSearchMenuItem() {
@@ -151,7 +166,7 @@ public class HomeFragment extends Fragment {
             public void onClick( View v ) {
                 HomeFragmentDirections.ActionNavHomeToNavAddNote action =
                         HomeFragmentDirections.actionNavHomeToNavAddNote(
-                                -1, AddNoteFragment.HOME_FRAGMENT );
+                                -1 );
                 Navigation.findNavController( v ).navigate( action );
             }
         } );
@@ -202,8 +217,7 @@ public class HomeFragment extends Fragment {
     private void navigateToAddNoteFragment( View view, int viewHolderPosition ) {
         HomeFragmentDirections.ActionNavHomeToNavAddNote action =
                 HomeFragmentDirections.actionNavHomeToNavAddNote(
-                        notesAdapter.getData().get( viewHolderPosition ).getId(),
-                        AddNoteFragment.HOME_FRAGMENT );
+                        notesAdapter.getData().get( viewHolderPosition ).getId() );
         Navigation.findNavController( view ).navigate( action );
     }
 
@@ -276,6 +290,12 @@ public class HomeFragment extends Fragment {
     private void setupEditMenuManager() {
         editMenuManager = new HomeFragmentEditMenuManager( this,
                 notesAdapter, notesViewModel, binding );
+        editMenuManager.addListener( new EditMenuManager.EditMenuManagerListener() {
+            @Override
+            public void editStatusChange( boolean editing ) {
+                editingIsInProgress = editing;
+            }
+        } );
     }
 
     private void setupSortMenuManager() {
@@ -314,9 +334,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void handleBackNavigation() {
-        if ( notesViewModel.getObservableEditStatus().getValue() ) {
-            notesViewModel.doneEditing();
-            binding.homeFragmentContent.appBarLayout.allCheckBox.setChecked( false );
+        if ( editingIsInProgress ) {
+            editingIsInProgress = false;
+            editMenuManager.updateEditingStatus( false );
             return;
         }
         requireActivity().finish();

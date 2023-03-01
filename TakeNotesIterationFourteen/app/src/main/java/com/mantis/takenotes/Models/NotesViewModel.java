@@ -31,12 +31,13 @@ public class NotesViewModel extends ViewModel {
     public static int DATE_MODIFIED = 8;
     public static int DESCENDING = 14;
 
+    public static final int TIME_TRASHED_NOTE_HAS_TO_LIVE = 1296000000;  // 15 DAYS
+
     private final NoteRepository noteRepository;
     private List<Note> cachedNotesList = new ArrayList<>();
 
     private Observer<List<Note>> notesTableObserver;
     private ConfigOptionsModel configOptionsModel;
-    private final MutableLiveData<Boolean> observableEditStatus = new MutableLiveData<>();
     private final MutableLiveData<List<Note>> observableNotesList = new MutableLiveData<>();
 
     private final MutableLiveData<List<Note>> observableHomeFragmentNotes = new MutableLiveData<>();
@@ -54,7 +55,7 @@ public class NotesViewModel extends ViewModel {
     }
 
     private void setupReaper() {
-        Reaper.getInstance( this );
+        Reaper reaper = Reaper.getInstance( this );
     }
 
     private void initializeConfigOptionsModel() {
@@ -94,17 +95,8 @@ public class NotesViewModel extends ViewModel {
         observableTrashFragmentNotes.postValue( trashFragmentNotes );
     }
 
-    public void editMenuSelected() {
-        observableEditStatus.postValue( true );
-    }
-
     private void addListenerToMenuConfigurator() {
         MenuConfigurator.addListener( new MenuConfigurator.MenuConfigurationListener() {
-            @Override
-            public void onEditOptionSelected() {
-                editMenuSelected();
-            }
-
             @Override
             public void onSimpleListOptionSelected() {
                 configOptionsModel.updateLayoutTypeConfig( LAYOUT_STATE_SIMPLE_LIST );
@@ -125,20 +117,6 @@ public class NotesViewModel extends ViewModel {
     public void addNote( Note note ) {
         note.save( this.noteRepository );
     }
-
-    public void editNote( int noteId, String newTitle, String newDescription ) {
-        Note note = getNoteWithId( noteId );
-        note.edit( newTitle, newDescription, this.noteRepository );
-    }
-
-    public LiveData<Boolean> getObservableEditStatus() {
-        return observableEditStatus;
-    }
-
-    public void doneEditing() {
-        observableEditStatus.postValue( false );
-    }
-
 
     public LiveData<List<Note>> getHomeFragmentNotesList() {
         return observableHomeFragmentNotes;
@@ -245,6 +223,9 @@ public class NotesViewModel extends ViewModel {
     @Override
     public void onCleared() {
         this.noteRepository.getAllNotes().removeObserver( notesTableObserver );
+        for ( Note note : cachedNotesList )
+            if ( note.getOwner() == TRASH_FRAGMENT )
+                note.saveTimeLeftToDatabase( noteRepository );
         configOptionsModel.onCleared();
     }
 

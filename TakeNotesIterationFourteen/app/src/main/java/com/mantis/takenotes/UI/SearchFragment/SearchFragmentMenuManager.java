@@ -92,8 +92,7 @@ public class SearchFragmentMenuManager {
     private void navigateToAddNoteFragment( View view, int viewHolderPosition ) {
         SearchFragmentDirections.ActionNavSearchToNavAddNote action =
                 SearchFragmentDirections.actionNavSearchToNavAddNote(
-                        notesAdapter.getData().get( viewHolderPosition ).getId(),
-                        AddNoteFragment.SEARCH_FRAGMENT );
+                        notesAdapter.getData().get( viewHolderPosition ).getId() );
         Navigation.findNavController( view ).navigate( action );
     }
 

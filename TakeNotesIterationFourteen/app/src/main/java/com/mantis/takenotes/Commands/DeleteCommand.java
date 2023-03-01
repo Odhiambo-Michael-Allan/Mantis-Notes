@@ -37,14 +37,12 @@ public class DeleteCommand implements Command {
         confirmationDialog.addListener( new ConfirmationDialog.ConfirmationDialogListener() {
             @Override
             public void onCancelSelected() {
-                notesViewModel.doneEditing();
-                return;
+                // Do Nothing..
             }
 
             @Override
             public void onYesSelected() {
                 notesViewModel.deleteNotesIn( notesToBeDeleted );
-                notesViewModel.doneEditing();
             }
         } );
         confirmationDialog.show( ( ( AppCompatActivity ) context ).getSupportFragmentManager(),

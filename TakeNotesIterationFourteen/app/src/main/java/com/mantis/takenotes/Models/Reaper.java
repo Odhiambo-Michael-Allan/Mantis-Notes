@@ -14,8 +14,6 @@ import java.util.UUID;
 public class Reaper {
 
     private static Reaper INSTANCE;
-
-    private static final int TIME_NOTE_HAS_TO_LIVE = 1296000000;  // 15 DAYS
     private NotesViewModel notesViewModel;
     private Thread reaper;
     private List<Note> trashNotesList = new ArrayList<>();
@@ -56,7 +54,7 @@ public class Reaper {
         Iterator i = trashNotesList.iterator();
         while ( i.hasNext() ) {
             Note note = ( Note ) i.next();
-            note.notifyNoteItsInTheTrash( noteRepository );
+            note.adjustTimeLeft( noteRepository );
         }
     }
 
@@ -66,7 +64,7 @@ public class Reaper {
             Note note = ( Note ) i.next();
             Note existingNote = getNoteIfItExists( note );
             if ( existingNote != null ) {
-                note.initializeTimeLeft(existingNote.getTimeLeft());
+                note.initializeTimeLeft( existingNote.getTimeLeft());
                 note.addObservers( existingNote.getObservers() );
                 note.setNoteHasAlreadyBeenNotifiedItsInTrash( existingNote.getHasAlreadyBeenNotifiedItsInTrash() );
                 note.setChecked( existingNote.isChecked() );
@@ -96,7 +94,7 @@ public class Reaper {
         Iterator i = trashNotesList.iterator();
         while ( i.hasNext() ) {
             Note note = ( Note ) i.next();
-            note.initializeTimeLeft( TIME_NOTE_HAS_TO_LIVE );
+            note.initializeTimeLeft( NotesViewModel.TIME_TRASHED_NOTE_HAS_TO_LIVE );
         }
     }
 
@@ -164,15 +162,8 @@ public class Reaper {
         }
     }
 
-    public void onCleared( NoteRepository noteRepository ) {
-        Iterator i = trashNotesList.iterator();
-        while ( i.hasNext() ) {
-            Note note = ( Note ) i.next();
-            note.saveTimeLeftToDatabase( noteRepository );
-        }
-    }
-
     public static Reaper getInstance( NotesViewModel notesViewModel ) {
+        Logger.log( "CREATING REAPER" );
         if ( INSTANCE == null ) {
             synchronized ( Reaper.class ) {
                 if ( INSTANCE == null )

@@ -52,8 +52,9 @@ public class TrashFragment extends Fragment {
     private NotesAdapter notesAdapter;
     private NotesViewModel notesViewModel;
     private ViewMenuManager trashFragmentViewMenuManager;
-    private EditMenuManager trashFragmentEditMenuManager;
+    private EditMenuManager editMenuManager;
     private List<Note> trashNotesList = new ArrayList<>();
+    private boolean editingIsInProgress = false;
 
     public TrashFragment() {
         // Required empty public constructor
@@ -104,8 +105,14 @@ public class TrashFragment extends Fragment {
     }
 
     private void setupEditMenuManager() {
-        trashFragmentEditMenuManager = new TrashFragmentEditMenuManager( this, notesAdapter,
+        editMenuManager = new TrashFragmentEditMenuManager( this, notesAdapter,
                 notesViewModel, binding );
+        editMenuManager.addListener( new EditMenuManager.EditMenuManagerListener() {
+            @Override
+            public void editStatusChange( boolean editing ) {
+                editingIsInProgress = editing;
+            }
+        } );
     }
 
     private void setupEditingToolbar() {
@@ -216,7 +223,8 @@ public class TrashFragment extends Fragment {
         editMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick( MenuItem item ) {
-                notesViewModel.editMenuSelected();
+                editingIsInProgress = true;
+                editMenuManager.updateEditingStatus( true );
                 return true;
             }
         } );
@@ -238,8 +246,7 @@ public class TrashFragment extends Fragment {
     private void navigationToAddNoteFragment( View view, int viewHolderPosition ) {
         TrashFragmentDirections.ActionNavTrashToNavAddNote action =
                 TrashFragmentDirections.actionNavTrashToNavAddNote(
-                        notesAdapter.getData().get( viewHolderPosition ).getId(),
-                        AddNoteFragment.TRASH_FRAGMENT );
+                        notesAdapter.getData().get( viewHolderPosition ).getId() );
         Navigation.findNavController( view ).navigate( action );
     }
 
@@ -264,10 +271,9 @@ public class TrashFragment extends Fragment {
     }
 
     private void handleBackNavigation() {
-        if ( notesViewModel.getObservableEditStatus().getValue() ) {
-            notesViewModel.doneEditing();
-            binding.trashFragmentContent.trashFragmentAppBarLayout
-                    .allCheckBox.setChecked( false );
+        if ( editingIsInProgress ) {
+            editingIsInProgress = false;
+            editMenuManager.updateEditingStatus( false );
             return;
         }
         NavController controller = NavHostFragment.findNavController( this );

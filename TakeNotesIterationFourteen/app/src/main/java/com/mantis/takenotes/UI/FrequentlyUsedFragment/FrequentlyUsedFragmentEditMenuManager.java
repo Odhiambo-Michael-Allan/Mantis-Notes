@@ -25,7 +25,6 @@ public class FrequentlyUsedFragmentEditMenuManager extends EditMenuManager {
                                                   TakeNotesFragmentFrequentlyUsedBinding binding ) {
         super( owner, notesAdapter, notesViewModel );
         this.binding = binding;
-        super.observeEditingStatus();
     }
     @Override
     protected NotesAdapter getAdapter() {

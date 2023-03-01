@@ -24,6 +24,8 @@ import com.mantis.takenotes.Commands.ShareCommand;
 import com.mantis.takenotes.Models.NotesViewModel;
 import com.mantis.takenotes.R;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public abstract class EditMenuManager {
@@ -32,6 +34,7 @@ public abstract class EditMenuManager {
     protected NotesViewModel notesViewModel;
     private boolean allNotesCheckedStatusChangeResultedFromUserAction = true, editStatus = false;
     protected Fragment owner;
+    private List<EditMenuManagerListener> listenerList = new ArrayList<>();
 
     public EditMenuManager( Fragment owner, NotesAdapter notesAdapter,
                             NotesViewModel notesViewModel ) {
@@ -40,17 +43,9 @@ public abstract class EditMenuManager {
         this.owner = owner;
     }
 
-    protected void observeEditingStatus() {
-        notesViewModel.getObservableEditStatus().observe(
-                owner.getViewLifecycleOwner(),
-                new Observer<Boolean>() {
-                    @Override
-                    public void onChanged( Boolean editingEnabled ) {
-                        updateAdapter( getAdapter() );
-                        editStatusChanged( editingEnabled );
-                    }
-                }
-        );
+    public void updateEditingStatus( boolean editingStatus ) {
+        updateAdapter( getAdapter() );
+        editStatusChanged( editingStatus );
     }
 
     public void updateAdapter( NotesAdapter notesAdapter ) {
@@ -240,6 +235,8 @@ public abstract class EditMenuManager {
                         notesViewModel,
                         notesAdapter.getSelectedNotes().size() > 1 ? R.string.delete_multiple_notes :
                                 R.string.delete_single_note ).execute();
+                updateEditingStatus( false );
+                notifyListenersOfEditStatusChange( false );
                 return true;
             }
         } );
@@ -252,6 +249,8 @@ public abstract class EditMenuManager {
             public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
                 new ArchiveCommand( owner.getContext(), notesAdapter.getSelectedNotes(),
                         notesViewModel, true ).execute();
+                updateEditingStatus( false );
+                notifyListenersOfEditStatusChange( false );
                 return true;
             }
         } );
@@ -264,6 +263,8 @@ public abstract class EditMenuManager {
             public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
                 new ArchiveCommand( owner.getContext(), notesAdapter.getSelectedNotes(),
                         notesViewModel, false ).execute();
+                updateEditingStatus( false );
+                notifyListenersOfEditStatusChange( false );
                 return true;
             }
         } );
@@ -276,6 +277,8 @@ public abstract class EditMenuManager {
             public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
                 new ShareCommand( owner.getContext(), notesAdapter.getSelectedNotes(),
                         notesViewModel ).execute();
+                updateEditingStatus( false );
+                notifyListenersOfEditStatusChange( false );
                 return true;
             }
         } );
@@ -290,4 +293,18 @@ public abstract class EditMenuManager {
     protected abstract Toolbar getEditingToolbar();
     protected abstract String getTitle();
     protected abstract RecyclerView getRecyclerView();
+
+
+    public void addListener( EditMenuManagerListener listener ) {
+        listenerList.add( listener );
+    }
+
+    protected void notifyListenersOfEditStatusChange( boolean editing ) {
+        for ( EditMenuManagerListener listener : listenerList )
+            listener.editStatusChange( editing );
+    }
+
+    public interface EditMenuManagerListener {
+        void editStatusChange( boolean editing );
+    }
 }

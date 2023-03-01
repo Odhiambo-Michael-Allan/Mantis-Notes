@@ -3,15 +3,15 @@ package com.mantis.takenotes.data.source.local;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
 import java.util.Iterator;
 import java.util.List;
-import androidx.room.Entity;
 
+import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import com.mantis.takenotes.Models.NotesViewModel;
 
+import com.mantis.takenotes.Models.NotesViewModel;
+import com.mantis.takenotes.Utils.Logger;
 import com.mantis.takenotes.data.source.NoteRepository;
 
 @Entity( tableName = "notes_table" )
@@ -33,8 +33,6 @@ public class Note {
     private List<NoteObserver> observerList = new ArrayList<>();
     @Ignore
     private Calendar calendar = Calendar.getInstance();
-    @Ignore
-    private int timeSinceTimeLeftWasSavedToDatabase = 0;
     @Ignore
     private boolean noteHasAlreadyBeenNotifiedItsInTrash = false;
 
@@ -148,9 +146,6 @@ public class Note {
         //Logger.log( "Note Id: " + this.id + " Time Left: " + this.timeLeft );
         notifyListenersOfTimeLeftDecreased();
         checkIfMyTimeIsUp();
-        if ( timeSinceTimeLeftWasSavedToDatabase > 5 )
-            saveTimeLeftToDatabase( noteRepository );
-        timeSinceTimeLeftWasSavedToDatabase++;
     }
 
     private void checkIfMyTimeIsUp() {
@@ -197,7 +192,6 @@ public class Note {
     public void saveTimeLeftToDatabase( NoteRepository noteRepository ) {
         //Logger.log( "NOTE ID: " + this.id + " SAVING TIME LEFT: " + this.timeLeft );
         noteRepository.saveTimeLeft( this.id, this.timeLeft );
-        timeSinceTimeLeftWasSavedToDatabase = 0;
     }
 
     public void setDateNoteWasLastDeleted( Date date ) {
@@ -208,13 +202,12 @@ public class Note {
         return this.dateNoteWasLastDeleted;
     }
 
-    public void notifyNoteItsInTheTrash( NoteRepository noteRepository ) {
+    public void adjustTimeLeft( NoteRepository noteRepository ) {
         if ( dateNoteWasLastDeleted == null )
             return;
         if ( noteHasAlreadyBeenNotifiedItsInTrash )
             return;
         noteHasAlreadyBeenNotifiedItsInTrash = true;
-        //Logger.log( "Getting date note was last deleted. Note ID: " + id + " Date Note was last deleted: " + dateNoteWasLastDeleted );
         Calendar calendar = Calendar.getInstance();
         Date currentDate = new Date();
         calendar.setTime( currentDate );
@@ -222,6 +215,7 @@ public class Note {
         calendar.setTime( dateNoteWasLastDeleted );
         long dateNoteWasLastDeletedInMilliseconds = calendar.getTimeInMillis();
         long timeElapsed = currentTimeInMilliseconds - dateNoteWasLastDeletedInMilliseconds;
+        Logger.log( "TIME ELAPSED: " + timeElapsed );
         decreaseTimeLeftBy( timeElapsed, noteRepository );
     }
 
@@ -238,7 +232,6 @@ public class Note {
         timeLeft = 0;
         noteHasAlreadyBeenNotifiedItsInTrash = false;
         accessCount = 0;
-        timeSinceTimeLeftWasSavedToDatabase = 0;
         owner = NotesViewModel.HOME_FRAGMENT;
         noteRepository.updateNoteOwner( id, owner );
         noteRepository.updateAccessCount( id, accessCount );
@@ -277,6 +270,7 @@ public class Note {
             noteRepository.deleteNote( getId() );
         else {
             noteRepository.updateNoteOwner( getId(), NotesViewModel.TRASH_FRAGMENT );
+            noteRepository.setDateNoteWasLastDeleted( this.getId(), new Date() );
         }
     }
 

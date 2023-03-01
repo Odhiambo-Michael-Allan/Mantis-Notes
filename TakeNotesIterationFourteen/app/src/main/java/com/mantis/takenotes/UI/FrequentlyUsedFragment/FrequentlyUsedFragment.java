@@ -62,8 +62,9 @@ public class FrequentlyUsedFragment extends Fragment {
     private NotesAdapter notesAdapter;
     private NotesViewModel notesViewModel;
     private ViewMenuManager frequentlyUsedFragmentViewMenuManager;
-    private EditMenuManager frequentlyUsedFragmentEditMenuManager;
+    private EditMenuManager editMenuManager;
     private List<Note> frequentFragmentNotes = new ArrayList<>();
+    private boolean editingIsInProgress = false;
 
     public FrequentlyUsedFragment() {
         // Required empty public constructor
@@ -128,6 +129,20 @@ public class FrequentlyUsedFragment extends Fragment {
         MenuConfigurator.configureMenu( binding.frequentlyUsedFragmentContent
                 .appBarLayout.toolbar.getMenu() );
         configureSearchMenuItem();
+        configureEditMenuItem();
+    }
+
+    private void configureEditMenuItem() {
+        MenuItem editMenuItem = binding.frequentlyUsedFragmentContent.appBarLayout.toolbar.getMenu()
+                .findItem( R.id.edit_option );
+        editMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
+                editingIsInProgress = true;
+                editMenuManager.updateEditingStatus( true );
+                return true;
+            }
+        } );
     }
 
     private void configureSearchMenuItem() {
@@ -194,8 +209,7 @@ public class FrequentlyUsedFragment extends Fragment {
         FrequentlyUsedFragmentDirections.ActionNavFrequentlyUsedToNavAddNote action =
                 FrequentlyUsedFragmentDirections
                         .actionNavFrequentlyUsedToNavAddNote(
-                                notesAdapter.getData().get( viewHolderPosition ).getId(),
-                                AddNoteFragment.FREQUENT_FRAGMENT );
+                                notesAdapter.getData().get( viewHolderPosition ).getId() );
         Navigation.findNavController( view ).navigate( action );
     }
 
@@ -269,8 +283,14 @@ public class FrequentlyUsedFragment extends Fragment {
     }
 
     private void setupEditMenuManager() {
-        frequentlyUsedFragmentEditMenuManager = new FrequentlyUsedFragmentEditMenuManager(
+        editMenuManager = new FrequentlyUsedFragmentEditMenuManager(
                 this, notesAdapter, notesViewModel, binding );
+        editMenuManager.addListener( new EditMenuManager.EditMenuManagerListener() {
+            @Override
+            public void editStatusChange(boolean editing) {
+                editingIsInProgress = editing;
+            }
+        } );
     }
 
     private void observeNotes() {
@@ -306,10 +326,9 @@ public class FrequentlyUsedFragment extends Fragment {
     }
 
     private void handleBackNavigation() {
-        if ( notesViewModel.getObservableEditStatus().getValue() ) {
-            notesViewModel.doneEditing();
-            binding.frequentlyUsedFragmentContent.appBarLayout
-                    .allCheckBox.setChecked( false );
+        if ( editingIsInProgress ) {
+            editingIsInProgress = false;
+            editMenuManager.updateEditingStatus( false );
             return;
         }
         NavController controller = NavHostFragment.findNavController( this );

@@ -55,11 +55,11 @@ import java.util.UUID;
 
 public class AddNoteFragment extends Fragment {
 
-    public static final int HOME_FRAGMENT = 1;
-    public static final int FREQUENT_FRAGMENT = 2;
-    public static final int ARCHIVE_FRAGMENT = 3;
-    public static final int TRASH_FRAGMENT = 4;
-    public static final int SEARCH_FRAGMENT = 5;
+//    public static final int HOME_FRAGMENT = 1;
+//    public static final int FREQUENT_FRAGMENT = 2;
+//    public static final int ARCHIVE_FRAGMENT = 3;
+//    public static final int TRASH_FRAGMENT = 4;
+//    public static final int SEARCH_FRAGMENT = 5;
     public static final String TIME_REMAINING = "Time Remaining";
     public static final String TIME_UP = "Time up";
     private static final int MAX_CHARACTERS_ALLOWED_IN_TITLE = 2000;
@@ -69,7 +69,7 @@ public class AddNoteFragment extends Fragment {
     private NavController controller;
     private boolean isEditing;
     private int noteId;
-    private int fragmentNavigatedFrom;
+    //private int fragmentNavigatedFrom;
     private Note noteSelected;
     private boolean fragmentIsAlive = true;
 
@@ -92,7 +92,6 @@ public class AddNoteFragment extends Fragment {
         super.onCreate( savedInstanceState );
         AddNoteFragmentArgs args = AddNoteFragmentArgs.fromBundle( getArguments() );
         noteId = args.getNoteID();
-        fragmentNavigatedFrom = args.getFragmentType();
     }
 
     @Override
@@ -117,6 +116,14 @@ public class AddNoteFragment extends Fragment {
         NotesViewModelFactory factory = new NotesViewModelFactory( noteRepository );
         notesViewModel = new ViewModelProvider( requireActivity(), factory ).get(
                 NotesViewModel.class );
+        getNoteSelected();
+    }
+
+    private void getNoteSelected() {
+        if ( noteId == -1 )  // If this condition is true, then we know for sure the user is creating a new note..
+            return;
+        // At this point, we know the user is editing an existing note..
+        noteSelected = notesViewModel.getNoteWithId( noteId );
     }
 
     private void setupToolbar() {
@@ -145,12 +152,8 @@ public class AddNoteFragment extends Fragment {
         MenuItem deleteMenuItem = binding.topToolbar.getMenu().findItem( R.id.delete_option );
         deleteMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
-                if ( fragmentNavigatedFrom == TRASH_FRAGMENT )
-                    noteSelected.delete( notesViewModel.getNoteRepository() );
-                else if ( !isEditing  )
-                    controller.navigateUp();
-                else
+            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
+                if ( noteSelected != null )
                     noteSelected.delete( notesViewModel.getNoteRepository() );
                 controller.navigateUp();
                 return true;
@@ -162,13 +165,16 @@ public class AddNoteFragment extends Fragment {
         MenuItem shareMenuItem = binding.topToolbar.getMenu().findItem( R.id.share_option );
         shareMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
-                Note note = new Note( binding.noteTitleEditText.getText().toString(), binding.noteDescriptionEditText.getText().toString(), DateProvider.getCurrentDate(), new Date() );
+            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
+                Note note = new Note( binding.noteTitleEditText.getText().toString(),
+                        binding.noteDescriptionEditText.getText().toString(),
+                        DateProvider.getCurrentDate(), new Date() );
                 if ( note.getTitle().equals( "" ) && note.getDescription().equals( "" ) ) {
                     ToastProvider.showToast( getContext(), getString( R.string.cannot_send_empty_message ) );
                     return true;
                 }
-                new ShareCommand( getContext(), Arrays.asList( new Note[] { note } ), notesViewModel ).execute();
+                new ShareCommand( getContext(), Arrays.asList( new Note[] { note } ),
+                        notesViewModel ).execute();
                 return true;
             }
         } );
@@ -179,7 +185,7 @@ public class AddNoteFragment extends Fragment {
         restoreMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
-                noteSelected.restore(notesViewModel.getNoteRepository() );
+                noteSelected.restore( notesViewModel.getNoteRepository() );
                 controller.navigateUp();
                 return true;
             }
@@ -266,12 +272,13 @@ public class AddNoteFragment extends Fragment {
     }
 
     private void showTrashFragmentComponents() {
-        if ( !( fragmentNavigatedFrom == TRASH_FRAGMENT ) ) {
-            showShareOption( true );
+        if ( noteSelected != null && noteSelected.getOwner() == NotesViewModel.TRASH_FRAGMENT ) {
+            showTrashFragmentViews();
+            showShareOption( false );
             return;
         }
-        showTrashFragmentViews();
-        showShareOption( false );
+        showShareOption( true );
+
     }
 
     private void showTrashFragmentViews() {
@@ -308,9 +315,8 @@ public class AddNoteFragment extends Fragment {
         super.onStart();
         if ( noteId == -1 )
             return;
-        noteSelected = notesViewModel.getNoteWithId( noteId );
         populateViews( noteSelected );
-        if ( fragmentNavigatedFrom == TRASH_FRAGMENT ) {
+        if ( noteSelected.getOwner() == NotesViewModel.TRASH_FRAGMENT ) {
             setupHandler();
             setupTrashNoteObserver();
             attachObserverToSelectedNote();
@@ -364,7 +370,7 @@ public class AddNoteFragment extends Fragment {
     }
 
     private void populateViews( Note note ) {
-        if ( fragmentNavigatedFrom == TRASH_FRAGMENT )
+        if ( note.getOwner() == NotesViewModel.TRASH_FRAGMENT )
             populateTrashFragmentViews( note );
         else
             populateOtherFragmentViews( note );
@@ -385,7 +391,7 @@ public class AddNoteFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         Logger.log( "FRAGMENT IS BEING DESTROYED" );
-        if ( fragmentNavigatedFrom == TRASH_FRAGMENT )
+        if ( noteSelected != null && noteSelected.getOwner() == NotesViewModel.TRASH_FRAGMENT )
             removeObserverFromSelectedNote();
         fragmentIsAlive = false;
         handler = null;

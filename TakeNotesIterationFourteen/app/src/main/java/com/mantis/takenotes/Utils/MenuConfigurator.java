@@ -20,29 +20,29 @@ public class MenuConfigurator {
     private static ArrayList<MenuConfigurationListener> listeners = new ArrayList<>();
 
     public static void configureMenu( Menu menu ) {
-        MenuItem editOptionSubMenu = menu.findItem( R.id.edit_option );
-        configureEditMenuItem( editOptionSubMenu );
+        //MenuItem editOptionSubMenu = menu.findItem( R.id.edit_option );
+        //configureEditMenuItem( editOptionSubMenu );
         SubMenu viewOptionSubMenu = menu.findItem( R.id.view_option ).getSubMenu();
         configureViewMenuItem( viewOptionSubMenu );
     }
 
-    public static void configureEditMenuItem( MenuItem editMenuItem ) {
-        editMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
-                notifyListenersOfMenuItemSelection();
-                return true;
-            }
-        } );
-    }
+//    public static void configureEditMenuItem( MenuItem editMenuItem ) {
+//        editMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
+//                notifyListenersOfMenuItemSelection();
+//                return true;
+//            }
+//        } );
+//    }
 
-    private static void notifyListenersOfMenuItemSelection() {
-        Iterator i = listeners.iterator();
-        while ( i.hasNext() ) {
-            MenuConfigurationListener listener = ( MenuConfigurationListener ) i.next();
-            listener.onEditOptionSelected();
-        }
-    }
+//    private static void notifyListenersOfMenuItemSelection() {
+//        Iterator i = listeners.iterator();
+//        while ( i.hasNext() ) {
+//            MenuConfigurationListener listener = ( MenuConfigurationListener ) i.next();
+//            listener.onEditOptionSelected();
+//        }
+//    }
 
     public static void configureViewMenuItem( SubMenu viewOptionSubMenu ) {
         configureSimpleListOption( viewOptionSubMenu );
@@ -160,7 +160,7 @@ public class MenuConfigurator {
     }
 
     public interface MenuConfigurationListener {
-        void onEditOptionSelected();
+        //void onEditOptionSelected();
         void onSimpleListOptionSelected();
         void onGridOptionSelected();
         void onListOptionSelected();

@@ -37,7 +37,6 @@ public class TrashFragmentEditMenuManager extends EditMenuManager {
                                          TakeNotesFragmentTrashBinding binding ) {
         super( owner, notesAdapter, notesViewModel );
         this.binding = binding;
-        super.observeEditingStatus();
     }
     @Override
     protected View getEditOptions() {
@@ -95,6 +94,29 @@ public class TrashFragmentEditMenuManager extends EditMenuManager {
             toolbar.setVisibility( View.GONE );
     }
 
+
+
+    @Override
+    protected void observeEditingToolbarMenusItems() {
+        observeRestoreMenuItem();
+        observeDeleteMenuItem();
+    }
+
+    private void observeRestoreMenuItem() {
+        MenuItem restoreMenuItem = getEditingToolbar().getMenu().findItem( R.id.restore );
+        restoreMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
+                List<Note> notesToRestore = notesAdapter.getSelectedNotes();
+                new RestoreNoteCommand( notesToRestore,
+                        notesViewModel ).execute();
+                TrashFragmentEditMenuManager.super.updateEditingStatus( false );
+                TrashFragmentEditMenuManager.super.notifyListenersOfEditStatusChange( false );
+                return true;
+            }
+        } );
+    }
+
     @Override
     protected void observeDeleteMenuItem() {
         MenuItem deleteMenuItem = getEditingToolbar().getMenu().findItem( R.id.delete );
@@ -106,22 +128,8 @@ public class TrashFragmentEditMenuManager extends EditMenuManager {
                         notesAdapter.getSelectedNotes().size() > 1 ?
                                 R.string.permanently_delete_multiple_notes :
                                 R.string.permanently_delete_single_note).execute();
-                return true;
-            }
-        } );
-    }
-
-
-    @Override
-    protected void observeEditingToolbarMenusItems() {
-        MenuItem restoreMenuItem = getEditingToolbar().getMenu().findItem( R.id.restore );
-        restoreMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
-                List<Note> notesToRestore = notesAdapter.getSelectedNotes();
-                Command restoreCommand = new RestoreNoteCommand( notesToRestore,
-                        notesViewModel );
-                restoreCommand.execute();
+                TrashFragmentEditMenuManager.super.updateEditingStatus( false );
+                TrashFragmentEditMenuManager.super.notifyListenersOfEditStatusChange( false );
                 return true;
             }
         } );

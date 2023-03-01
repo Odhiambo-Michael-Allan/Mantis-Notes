@@ -62,8 +62,9 @@ public class ArchiveFragment extends Fragment {
     private NotesAdapter notesAdapter;
     private NotesViewModel notesViewModel;
     private ViewMenuManager archiveFragmentViewMenuManager;
-    private EditMenuManager archiveFragmentEditMenuManager;
+    private EditMenuManager editMenuManager;
     private List<Note> archiveNotes = new ArrayList<>();
+    private boolean editingIsInProgress = false;
 
     public ArchiveFragment() {
         // Required empty public constructor
@@ -128,6 +129,20 @@ public class ArchiveFragment extends Fragment {
         MenuConfigurator.configureMenu( binding.archiveFragmentContent
                 .appBarLayout.toolbar.getMenu() );
         configureSearchMenuItem();
+        configureEditMenuItem();
+    }
+
+    private void configureEditMenuItem() {
+        MenuItem editMenuItem = binding.archiveFragmentContent.appBarLayout.toolbar.getMenu()
+                .findItem( R.id.edit_option );
+        editMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
+                editingIsInProgress = true;
+                editMenuManager.updateEditingStatus( true );
+                return true;
+            }
+        } );
     }
 
     private void configureSearchMenuItem() {
@@ -193,8 +208,7 @@ public class ArchiveFragment extends Fragment {
         ArchiveFragmentDirections.ActionNavArchiveToNavAddNote action =
                 ArchiveFragmentDirections
                         .actionNavArchiveToNavAddNote(
-                                notesAdapter.getData().get( viewHolderPosition ).getId(),
-                                AddNoteFragment.ARCHIVE_FRAGMENT );
+                                notesAdapter.getData().get( viewHolderPosition ).getId() );
         Navigation.findNavController( view ).navigate( action );
     }
 
@@ -268,8 +282,14 @@ public class ArchiveFragment extends Fragment {
     }
 
     private void setupEditMenuManager() {
-        archiveFragmentEditMenuManager = new ArchiveFragmentEditMenuManager(
+        editMenuManager = new ArchiveFragmentEditMenuManager(
                 this, notesAdapter, notesViewModel, binding );
+        editMenuManager.addListener( new EditMenuManager.EditMenuManagerListener() {
+            @Override
+            public void editStatusChange(boolean editing) {
+                editingIsInProgress = editing;
+            }
+        } );
     }
 
     private void observeNotes() {
@@ -304,10 +324,9 @@ public class ArchiveFragment extends Fragment {
     }
 
     private void handleBackNavigation() {
-        if ( notesViewModel.getObservableEditStatus().getValue() ) {
-            notesViewModel.doneEditing();
-            binding.archiveFragmentContent.appBarLayout
-                    .allCheckBox.setChecked( false );
+        if ( editingIsInProgress ) {
+            editingIsInProgress = false;
+            editMenuManager.updateEditingStatus( false );
             return;
         }
         NavController controller = NavHostFragment.findNavController( this );

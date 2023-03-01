@@ -24,8 +24,6 @@ public class HomeFragmentEditMenuManager extends EditMenuManager {
                                         TakeNotesFragmentHomeBinding binding ) {
         super( owner, notesAdapter, notesViewModel );
         this.binding = binding;
-        super.observeEditingStatus();
-
     }
 
     @Override

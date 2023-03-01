@@ -29,7 +29,6 @@ public class ShareCommand implements Command {
         intent.setType( "text/plain" );
         intent.putExtra( Intent.EXTRA_TEXT, getNotesToShare() );
         this.context.startActivity( Intent.createChooser( intent, "Select Option" ) );
-        this.notesViewModel.doneEditing();
     }
 
     private String getNotesToShare() {

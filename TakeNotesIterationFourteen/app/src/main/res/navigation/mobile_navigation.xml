@@ -62,9 +62,6 @@
         <argument
             android:name="NoteID"
             app:argType="integer" />
-        <argument
-            android:name="FragmentType"
-            app:argType="integer" />
     </fragment>
 
     <fragment

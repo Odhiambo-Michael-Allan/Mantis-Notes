@@ -37,8 +37,7 @@ public class ArchiveCommand implements Command {
         confirmationDialog.addListener( new ConfirmationDialog.ConfirmationDialogListener() {
             @Override
             public void onCancelSelected() {
-                notesViewModel.doneEditing();
-                return;
+                // Do Nothing..
             }
 
             @Override
@@ -47,8 +46,6 @@ public class ArchiveCommand implements Command {
                     notesViewModel.archiveNotesIn( notesToBeArchived );
                 else
                     notesViewModel.unarchiveNotesIn( notesToBeArchived );
-
-                notesViewModel.doneEditing();
             }
         } );
         confirmationDialog.show( ( (AppCompatActivity) context ).getSupportFragmentManager(),

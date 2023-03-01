@@ -24,7 +24,6 @@ public class ArchiveFragmentEditMenuManager extends EditMenuManager {
                                            TakeNotesFragmentArchiveBinding binding ) {
         super( owner, notesAdapter, notesViewModel );
         this.binding = binding;
-        super.observeEditingStatus();
     }
     @Override
     protected NotesAdapter getAdapter() {
