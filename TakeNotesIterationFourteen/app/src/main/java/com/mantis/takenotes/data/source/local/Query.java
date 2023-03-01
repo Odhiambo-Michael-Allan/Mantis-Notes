@@ -47,6 +47,8 @@ public class Query {
 
 
     public void add( NoteRepository noteRepository ) {
+        if ( this.description.equals( "" ) )
+            return;  // No need to add an empty query to the database..
         noteRepository.insertQuery( this );
     }
 

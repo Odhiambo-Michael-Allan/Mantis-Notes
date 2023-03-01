@@ -5,7 +5,6 @@ import android.view.View;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
-import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -15,7 +14,6 @@ import com.mantis.takenotes.Adapters.RecentSearchesAdapter;
 
 import com.mantis.takenotes.Models.NotesViewModel;
 import com.mantis.takenotes.UI.AddNoteFragment.AddNoteFragment;
-import com.mantis.takenotes.Utils.DateProvider;
 
 import com.mantis.takenotes.Utils.Logger;
 import com.mantis.takenotes.Utils.ToastProvider;
@@ -36,23 +34,31 @@ public class SearchFragmentMenuManager {
     private RecentSearchesAdapter recentSearchesAdapter;
     private List<Query> searchHistory = new ArrayList<>();
     private RecyclerView.LayoutManager currentLayoutManager;
-    private boolean resultsAreBeingDisplayed = false;
+    private SearchResultsMediator searchResultsMediator;
 
     public SearchFragmentMenuManager( Fragment owner, NotesViewModel notesViewModel,
                                       TakeNotesFragmentSearchBinding binding ) {
         this.owner = owner;
         this.notesViewModel = notesViewModel;
         this.binding = binding;
-        observeSearchBar();
         setupRecentSearchesAdapter();
-        attachListenerToClearSearchHistoryButton();
     }
 
     public void updateAdapter( NotesAdapter notesAdapter ) {
-        Logger.log( "Updating Search Fragment Menu Manager Adapter" );
         this.notesAdapter = notesAdapter;
         attachNotesAdapterListener();
         currentLayoutManager = binding.recyclerview.getLayoutManager();
+        setupSearchResultsMediator( notesAdapter );
+        searchResultsMediator.setCurrentLayoutManager( currentLayoutManager );
+    }
+
+    private void setupSearchResultsMediator( NotesAdapter notesAdapter ) {
+        if ( searchResultsMediator == null ) {
+            setupRecentSearchesAdapter();
+            searchResultsMediator = new SearchResultsMediator( owner, binding,
+                    notesViewModel, notesAdapter, recentSearchesAdapter );
+        }
+        searchResultsMediator.updateAdapter( notesAdapter );
     }
 
     private void attachNotesAdapterListener() {
@@ -92,130 +98,16 @@ public class SearchFragmentMenuManager {
     }
 
 
-    private void observeSearchBar() {
-        observeTextChange();
-        observeFocusChange();
-    }
-
-    private void observeTextChange() {
-        binding.searchView.setOnQueryTextListener( new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit( String query ) {
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange( String newText ) {
-                displaySearchResultsMatching( newText );
-                return true;
-            }
-        } );
-    }
-
-    private void displaySearchResultsMatching( String query ) {
-        List<Note> searchResults = getSearchResults( query );
-        if ( searchResults.size() > 0 )
-            displaySearchResults( searchResults, query );
-        else if ( !query.equals( "" ) )
-            displayNoResultsFoundView();
-        else
-            displayRecentSearchesView();
-    }
-
-    private List<Note> getSearchResults( String queryString ) {
-        return notesViewModel.searchNotesMatching( queryString );
-    }
-
-    private void displaySearchResults( List<Note> searchResults, String query ) {
-        binding.recyclerview.setLayoutManager( currentLayoutManager );
-        binding.recyclerview.setAdapter( notesAdapter );
-        notesAdapter.setData( searchResults );
-        notifyAdapterToHighlightViewHoldersWithResultsMatching( query );
-        binding.recyclerview.setVisibility( View.VISIBLE );
-        binding.clearSearchHistoryButton.setVisibility( View.GONE );
-        binding.noSearchResultsFound.setVisibility( View.GONE );
-    }
-
-    private void attachListenerToClearSearchHistoryButton() {
-        binding.clearSearchHistoryButton.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick( View view ) {
-                ToastProvider.showToast( owner.getContext(), "Not yet implemented" );
-            }
-        } );
-    }
-    // ===============================================================================================================
-
-
-    // ----------------------- SearchBar Status Behavior -----------------------
-
-    private void observeFocusChange() {
-        binding.searchView.setOnQueryTextFocusChangeListener( new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange( View view, boolean isFocused ) {
-                if ( !isFocused )
-                    return;
-                handleFocusGained( binding.searchView.getQuery().toString() );
-            }
-        } );
-    }
-
-    private void handleFocusGained( String textInSearchBar ) {
-        if ( textInSearchBar.equals( "" ) )
-            displayRecentSearchesView();
-        else if ( getSearchResults( textInSearchBar ).size() <= 0 )
-            displayNoResultsFoundView();
-        else
-            displaySearchResultsMatching( textInSearchBar );
-    }
-
-    private void displayRecentSearchesView() {
-        if ( searchHistory.size() > 0 )
-            displayRecentSearches();
-        else
-            displayNoRecentSearchesView();
-    }
-
-    private void displayRecentSearches() {
-        binding.recyclerview.setLayoutManager( new LinearLayoutManager( owner.getContext() ) );
-        binding.recyclerview.setAdapter( recentSearchesAdapter );
-        recentSearchesAdapter.setData( searchHistory );
-        binding.recyclerview.setVisibility( View.VISIBLE );
-        binding.layoutEmpty.setVisibility( View.GONE );
-        binding.noSearchResultsFound.setVisibility( View.GONE );
-        binding.clearSearchHistoryButton.setVisibility( View.VISIBLE );
-    }
-
-    private void displayNoRecentSearchesView() {
-        binding.layoutEmpty.setVisibility( View.VISIBLE );
-        binding.recyclerview.setVisibility( View.GONE );
-        binding.noSearchResultsFound.setVisibility( View.GONE );
-        binding.clearSearchHistoryButton.setVisibility( View.GONE );
-    }
-
-    private void notifyAdapterToHighlightViewHoldersWithResultsMatching( String query ) {
-        notesAdapter.notifyViewHoldersToHighlightTextMatching( query );
-    }
-
-    private void displayNoResultsFoundView() {
-        binding.noSearchResultsFound.setVisibility( View.VISIBLE );
-        binding.layoutEmpty.setVisibility( View.GONE );
-        binding.recyclerview.setVisibility( View.GONE );
-    }
-
     private void setupRecentSearchesAdapter() {
         recentSearchesAdapter = new RecentSearchesAdapter( this.owner, this.notesViewModel );
         recentSearchesAdapter.addListener( new RecentSearchesAdapter.RecentSearchesAdapterListener() {
             @Override
             public void onRecentQueryClick( Query query ) {
-                displaySearchResultsMatching( query.getDescription() );
+                searchResultsMediator.displayResultsMatching( query.getDescription() );
             }
 
             @Override
             public void onSearchHistoryChange( List<Query> searchHistory ) {
-                Logger.log( "SEARCH HISTORY SIZE: " + searchHistory.size() );
-                SearchFragmentMenuManager.this.searchHistory = searchHistory;
-                binding.searchView.requestFocus();
             }
         } );
     }

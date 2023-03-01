@@ -30,17 +30,8 @@ public class RecentSearchesAdapter extends RecyclerView.Adapter<RecentSearchView
     public RecentSearchesAdapter( Fragment owner, NotesViewModel notesViewModel ) {
         this.owner = owner;
         this.notesViewModel = notesViewModel;
-        observeRecentSearches();
     }
 
-    private void observeRecentSearches() {
-        notesViewModel.getSearchHistory().observe( owner.getViewLifecycleOwner(), new Observer<List<Query>>() {
-            @Override
-            public void onChanged( List<Query> queries ) {
-                setData( queries );
-            }
-        } );
-    }
 
     @NonNull
     @Override

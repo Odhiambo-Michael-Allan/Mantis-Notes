@@ -222,7 +222,7 @@ public class NotesViewModel extends ViewModel {
             note.unarchive( this.noteRepository );
     }
 
-    public List<Note> searchNotesMatching(String queryString ) {
+    public List<Note> getNotesMatching(String queryString ) {
         if ( queryString.equals( "" ) )
             return new ArrayList<>();
         List<Note> notesMatchingQuery = new ArrayList<>();
@@ -247,7 +247,6 @@ public class NotesViewModel extends ViewModel {
         this.noteRepository.getAllNotes().removeObserver( notesTableObserver );
         configOptionsModel.onCleared();
     }
-
 
     public LiveData<List<Query>> getSearchHistory() {
         return this.noteRepository.getQueries();
