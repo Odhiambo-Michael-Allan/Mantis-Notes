@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/share_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:drawablePadding="@dimen/default_padding"
+        android:drawableStart="@drawable/share_icon"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/default_padding"
+        android:paddingEnd="@dimen/default_padding"
+        android:paddingLeft="@dimen/default_padding"
+        android:paddingRight="@dimen/default_padding"
+        android:paddingStart="@dimen/default_padding"
+        android:paddingTop="@dimen/default_padding"
+        android:text="@string/share"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/archive_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:drawableLeft="@drawable/archive_icon"
+        android:drawablePadding="@dimen/default_padding"
+        android:drawableStart="@drawable/archive_icon"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/default_padding"
+        android:paddingEnd="@dimen/default_padding"
+        android:paddingLeft="@dimen/default_padding"
+        android:paddingRight="@dimen/default_padding"
+        android:paddingStart="@dimen/default_padding"
+        android:paddingTop="@dimen/default_padding"
+        android:text="@string/archive"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/unarchive_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:drawableLeft="@drawable/unarchive_icon"
+        android:drawablePadding="@dimen/default_padding"
+        android:drawableStart="@drawable/archive_icon"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/default_padding"
+        android:paddingEnd="@dimen/default_padding"
+        android:paddingLeft="@dimen/default_padding"
+        android:paddingRight="@dimen/default_padding"
+        android:paddingStart="@dimen/default_padding"
+        android:paddingTop="@dimen/default_padding"
+        android:text="@string/unarchive"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/text_view_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:drawableLeft="@drawable/delete_icon"
+        android:drawablePadding="@dimen/default_padding"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/default_padding"
+        android:paddingEnd="@dimen/default_padding"
+        android:paddingLeft="@dimen/default_padding"
+        android:paddingRight="@dimen/default_padding"
+        android:paddingStart="@dimen/default_padding"
+        android:paddingTop="@dimen/default_padding"
+        android:text="Delete item"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/text_view_send_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/feedback_icon"
+        android:drawablePadding="@dimen/default_padding"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/default_padding"
+        android:paddingEnd="@dimen/default_padding"
+        android:paddingLeft="@dimen/default_padding"
+        android:paddingRight="@dimen/default_padding"
+        android:paddingStart="@dimen/default_padding"
+        android:paddingTop="@dimen/default_padding"
+        android:text="@string/send_feedback"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+</LinearLayout>

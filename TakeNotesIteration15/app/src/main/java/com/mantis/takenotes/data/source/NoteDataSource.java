@@ -1,0 +1,40 @@
+package com.mantis.takenotes.data.source;
+
+import androidx.lifecycle.LiveData;
+import com.mantis.takenotes.Repository.Note;
+import com.mantis.takenotes.data.source.local.Configuration;
+import com.mantis.takenotes.data.source.local.NoteEntity;
+import com.mantis.takenotes.data.source.local.Query;
+
+import java.util.Date;
+import java.util.List;
+
+public interface NoteDataSource {
+    // ----------- Notes Table --------------
+    void insertNote( NoteEntity noteEntity );
+    LiveData<List<NoteEntity>> getNotesById( int[] ids );
+    LiveData<List<NoteEntity>> getAllNotes();
+    void deleteNote( int noteId );
+    void deleteAllNotes();
+    void updateNote( int noteId, String newTitle, String newDescription, Date dateLastModified,
+                     int newAccessCount );
+    void updateNoteOwner( int noteId, int newOwner );
+    void saveTimeLeft( int noteId, long timeLeft );
+    void setDateNoteWasLastDeleted( int noteId, Date date );
+    void updateAccessCount( int noteId, int accessCount );
+
+    // -------------- Configuration Options ----------------
+    void insertConfiguration( Configuration configuration );
+    LiveData<Integer> getAscending();
+    LiveData<Integer> getSortingStrategy();
+    LiveData<Integer> getLayoutType();
+    void updateLayoutTypeConfig( int newLayoutTypeConfig );
+    void updateAscendingConfig( int newAscendingConfig );
+    void updateSortingStrategyConfig( int newSortingStrategyConfig );
+
+    // ----------------- Recent Queries -------------------------
+
+    void insertQuery( Query query );
+    void deleteQuery( int queryId );
+    LiveData<List<Query>> getQueries();
+}

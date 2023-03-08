@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.mantis.takenotes.UI.HomeFragment.HomeFragment"
+        android:label="@string/home_fragment"
+        tools:layout="@layout/take_notes_fragment_home">
+        <action
+            android:id="@+id/action_nav_home_to_nav_add_note"
+            app:destination="@id/nav_add_note"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_search"
+            app:destination="@id/nav_search" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/nav_frequently_used"
+        android:name="com.mantis.takenotes.UI.FrequentlyUsedFragment.FrequentlyUsedFragment"
+        android:label="@string/frequent_fragment"
+        tools:layout="@layout/take_notes_fragment_frequently_used">
+        <action
+            android:id="@+id/action_nav_frequently_used_to_nav_add_note"
+            app:destination="@id/nav_add_note"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_nav_frequently_used_to_nav_search"
+            app:destination="@id/nav_search" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_trash"
+        android:name="com.mantis.takenotes.UI.TrashFragment.TrashFragment"
+        android:label="@string/trash"
+        tools:layout="@layout/take_notes_fragment_trash">
+        <action
+            android:id="@+id/action_nav_trash_to_nav_add_note"
+            app:destination="@id/nav_add_note"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_add_note"
+        android:name="com.mantis.takenotes.UI.AddNoteFragment.AddNoteFragment"
+        android:label="@string/add_note_fragment"
+        tools:layout="@layout/take_notes_fragment_add_note">
+        <argument
+            android:name="NoteID"
+            app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.mantis.takenotes.UI.SettingsFragment.SettingsFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/take_notes_fragment_settings" />
+
+    <fragment
+        android:id="@+id/nav_archive"
+        android:name="com.mantis.takenotes.UI.ArchiveFragment.ArchiveFragment"
+        android:label="@string/archive"
+        tools:layout="@layout/take_notes_fragment_archive">
+        <action
+            android:id="@+id/action_nav_archive_to_nav_add_note"
+            app:destination="@id/nav_add_note" />
+        <action
+            android:id="@+id/action_nav_archive_to_nav_search"
+            app:destination="@id/nav_search" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_search"
+        android:name="com.mantis.takenotes.UI.SearchFragment.SearchFragment"
+        android:label="@string/search"
+        tools:layout="@layout/take_notes_fragment_search">
+        <action
+            android:id="@+id/action_nav_search_to_nav_add_note"
+            app:destination="@id/nav_add_note" />
+    </fragment>
+
+</navigation>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/note_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/default_margin"
+    android:layout_marginEnd="@dimen/default_margin"
+    android:layout_marginTop="@dimen/default_margin"
+    app:cardCornerRadius="@dimen/default_corner_radius">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/note_check_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_margin"
+                android:textColorHighlight="@color/onPrimary"
+                android:visibility="gone"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/note_title_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/default_padding"
+                android:paddingStart="@dimen/default_padding"
+                android:paddingEnd="@dimen/default_padding"
+                android:maxLines="15"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                tools:text="@string/sample_title"/>
+
+        </LinearLayout>
+
+        <android.widget.Space
+            android:id="@+id/space"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/default_margin" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/note_date_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/default_padding"
+            tools:text="@string/sample_time"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/note_description_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/default_padding"
+            android:maxLines="15"
+            android:ellipsize="end"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/note_title_text_view"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="@string/sample_note" />
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

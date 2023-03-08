@@ -1,0 +1,31 @@
+package com.mantis.takenotes;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+public class LiveDataTestUtil {
+
+    /**
+     * Get the value from a LiveData object. We're waiting for LiveData to emit, for 2 seconds.
+     * Once we get a notification via onChanged, we stop observing..
+     */
+    public static <T> T getValue( final LiveData<T> liveData ) throws InterruptedException {
+        final Object[] data = new Object[1];
+        final CountDownLatch latch = new CountDownLatch( 1 );
+        Observer<T> observer = new Observer<T>() {
+            @Override
+            public void onChanged( T t ) {
+                data[0] = t;
+                latch.countDown();
+                liveData.removeObserver( this );
+            }
+        };
+        liveData.observeForever( observer );
+        latch.await( 2, TimeUnit.SECONDS );
+        //No inspection: unchecked..
+        return ( T ) data[0];
+    }
+}
