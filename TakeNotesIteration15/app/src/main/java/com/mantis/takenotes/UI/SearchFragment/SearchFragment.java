@@ -118,7 +118,6 @@ public class SearchFragment extends Fragment {
     private void configureRecyclerViewComponents( RecyclerView recyclerView ) {
         binding.textEmpty.setText( getString( R.string.no_recent_searches ) );
         notesAdapter = ( NotesAdapter ) recyclerView.getAdapter();
-        notesAdapter.setEmptyView( binding.layoutEmpty );
         notesAdapter.setNotesViewModel( notesViewModel );
     }
 

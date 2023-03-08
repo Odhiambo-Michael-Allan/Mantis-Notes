@@ -33,11 +33,6 @@ public class FrequentlyUsedFragmentViewMenuManager extends ViewMenuManager {
     }
 
     @Override
-    protected View getEmptyView() {
-        return binding.frequentlyUsedFragmentContent.layoutEmpty;
-    }
-
-    @Override
     protected Menu getMenu() {
         return binding.frequentlyUsedFragmentContent
                 .appBarLayout.toolbar.getMenu();

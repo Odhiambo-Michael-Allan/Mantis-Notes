@@ -35,11 +35,6 @@ public class HomeFragmentViewMenuManager extends ViewMenuManager {
     }
 
     @Override
-    protected View getEmptyView() {
-        return binding.homeFragmentContent.layoutEmpty;
-    }
-
-    @Override
     protected Menu getMenu() {
         return binding.homeFragmentContent.appBarLayout.toolbar.getMenu();
     }

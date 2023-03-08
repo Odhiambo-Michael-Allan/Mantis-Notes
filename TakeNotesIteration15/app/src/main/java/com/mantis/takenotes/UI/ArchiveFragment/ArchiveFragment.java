@@ -1,5 +1,21 @@
 package com.mantis.takenotes.UI.ArchiveFragment;
 
+/**
+ * Copyright (C) 2017 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import android.content.Context;
 import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
@@ -53,15 +69,23 @@ import java.util.Arrays;
 
 import java.util.List;
 
+/**
+ * @author - Michael Allan Odhiambo
+ * @email - odhiambomichaelallan@gmail.com
+ * @date - 4th March 2023
+ */
+
+
 public class ArchiveFragment extends Fragment {
 
     private static final boolean SHOW_ARCHIVE_OPTION = false;
-
     private TakeNotesFragmentArchiveBinding binding;
     private NotesAdapter notesAdapter;
+
     private NotesViewModel notesViewModel;
     private ViewMenuManager archiveFragmentViewMenuManager;
     private EditMenuManager editMenuManager;
+
     private List<Note> archiveNotes = new ArrayList<>();
     private boolean editingIsInProgress = false;
 
@@ -73,7 +97,7 @@ public class ArchiveFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      */
-    public static ArchiveFragment newInstance( String param1, String param2 ) {
+    public static ArchiveFragment newInstance() {
         ArchiveFragment fragment = new ArchiveFragment();
         Bundle args = new Bundle();
         fragment.setArguments( args );
@@ -95,7 +119,6 @@ public class ArchiveFragment extends Fragment {
 
     @Override
     public void onViewCreated( View view, Bundle savedInstanceState ) {
-        super.onViewCreated( view, savedInstanceState );
         setupNotesViewModel();
         setupMainToolbar();
         setupEditOptionsToolbar();
@@ -131,29 +154,13 @@ public class ArchiveFragment extends Fragment {
         configureEditMenuItem();
     }
 
-    private void configureEditMenuItem() {
-        MenuItem editMenuItem = binding.archiveFragmentContent.appBarLayout.toolbar.getMenu()
-                .findItem( R.id.edit_option );
-        editMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
-                editingIsInProgress = true;
-                editMenuManager.updateEditingStatus( true );
-                return true;
-            }
-        } );
-    }
-
     private void configureSearchMenuItem() {
         MenuItem searchMenuItem = binding.archiveFragmentContent
                 .appBarLayout
                 .toolbar.getMenu().findItem( R.id.nav_search );
-        searchMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
-                navigateToSearchFragment();
-                return true;
-            }
+        searchMenuItem.setOnMenuItemClickListener( menuItem -> {
+            navigateToSearchFragment();
+            return true;
         } );
     }
 
@@ -162,20 +169,28 @@ public class ArchiveFragment extends Fragment {
                 ArchiveFragmentDirections.actionNavArchiveToNavSearch() );
     }
 
+    private void configureEditMenuItem() {
+        MenuItem editMenuItem = binding.archiveFragmentContent.appBarLayout.toolbar.getMenu()
+                .findItem( R.id.edit_option );
+        editMenuItem.setOnMenuItemClickListener( menuItem -> {
+            editingIsInProgress = true;
+            editMenuManager.updateEditingStatus( true );
+            return true;
+        } );
+    }
+
     private void setupEditOptionsToolbar() {
-        binding.archiveFragmentContent.editOptionToolbar.inflateMenu( R.menu.take_notes_bottom_toolbar_menu );
+        binding.archiveFragmentContent.editOptionToolbar.inflateMenu(
+                R.menu.take_notes_bottom_toolbar_menu );
     }
 
     private void setupViewMenuManager() {
-        archiveFragmentViewMenuManager = new ArchiveFragmentViewMenuManager( this, notesViewModel,
-                binding );
-        archiveFragmentViewMenuManager.addListener( new ViewMenuManager.ViewMenuManagerListener() {
-            @Override
-            public void onAdapterChange( NotesAdapter newNotesAdapter ) {
-                notesAdapter = newNotesAdapter;
-                notesAdapter.setData( archiveNotes );
-                configureListenerOnNotesAdapter();
-            }
+        archiveFragmentViewMenuManager = new ArchiveFragmentViewMenuManager( this,
+                notesViewModel, binding );
+        archiveFragmentViewMenuManager.addListener( newNotesAdapter -> {
+            notesAdapter = newNotesAdapter;
+            notesAdapter.setData( archiveNotes );
+            configureListenerOnNotesAdapter();
         } );
     }
 
@@ -194,6 +209,7 @@ public class ArchiveFragment extends Fragment {
             @Override
             public void onRecyclerViewEmpty( boolean isEmpty ) {
                 showMenu( isEmpty );
+                showEmptyView( isEmpty );
             }
 
             @Override
@@ -266,6 +282,13 @@ public class ArchiveFragment extends Fragment {
                 menu.getItem( i ).setVisible( true );
     }
 
+    private void showEmptyView( boolean show ) {
+        if ( show )
+            binding.archiveFragmentContent.layoutEmpty.setVisibility( View.VISIBLE );
+        else
+            binding.archiveFragmentContent.layoutEmpty.setVisibility( View.GONE );
+    }
+
     private void displayNoteCount( int noteCount ) {
         if ( noteCount <= 0 )
             binding.archiveFragmentContent.appBarLayout.noteCountTextView
@@ -293,12 +316,9 @@ public class ArchiveFragment extends Fragment {
 
     private void observeNotes() {
         notesViewModel.getArchiveFragmentNotesList().
-                observe( getViewLifecycleOwner(), new Observer<List<Note>>() {
-                    @Override
-                    public void onChanged( List<Note> notes ) {
-                        archiveNotes = notes;
-                        notesAdapter.setData( archiveNotes );
-                    }
+                observe( getViewLifecycleOwner(),  notes -> {
+                    archiveNotes = notes;
+                    notesAdapter.setData( archiveNotes );
                 } );
     }
 

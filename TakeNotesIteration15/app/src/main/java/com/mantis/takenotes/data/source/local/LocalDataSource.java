@@ -26,6 +26,12 @@ import java.util.Date;
 
 import java.util.List;
 
+/**
+ * @author - Michael Allan Odhiambo
+ * @email - odhiambomichaelallan@gmail.com
+ * @date - 4th March 2023
+ */
+
 public class LocalDataSource implements NoteDataSource {
 
     private final NoteDao noteDao;

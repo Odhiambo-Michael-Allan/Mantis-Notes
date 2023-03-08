@@ -19,6 +19,12 @@ package com.mantis.takenotes.data.source.local;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+/**
+ * @author - Michael Allan Odhiambo
+ * @email - odhiambomichaelallan@gmail.com
+ * @date - 4th March 2023
+ */
+
 @Entity( tableName = "configurations_table" )
 public class Configuration {
 

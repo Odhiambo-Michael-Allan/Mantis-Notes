@@ -203,6 +203,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onRecyclerViewEmpty( boolean isEmpty ) {
                 showMenu( isEmpty );
+                showEmptyView( isEmpty );
             }
 
             @Override
@@ -211,6 +212,13 @@ public class HomeFragment extends Fragment {
 
             }
         } );
+    }
+
+    private void showEmptyView( boolean show ) {
+        if ( show )
+            binding.homeFragmentContent.layoutEmpty.setVisibility( View.VISIBLE );
+        else
+            binding.homeFragmentContent.layoutEmpty.setVisibility( View.GONE );
     }
 
     private void navigateToAddNoteFragment( View view, int viewHolderPosition ) {

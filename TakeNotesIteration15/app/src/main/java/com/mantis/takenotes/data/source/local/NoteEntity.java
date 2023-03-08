@@ -20,6 +20,12 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import java.util.Date;
 
+/**
+ * @author - Michael Allan Odhiambo
+ * @email - odhiambomichaelallan@gmail.com
+ * @date - 4th March 2023
+ */
+
 @Entity( tableName = "notes_table" )
 public class NoteEntity {
 

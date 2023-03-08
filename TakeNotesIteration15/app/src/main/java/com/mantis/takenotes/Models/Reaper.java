@@ -49,15 +49,12 @@ public class Reaper {
     }
 
     private void observeTrashNotes() {
-        trashedNotesObserver = new Observer<List<Note>>() {
-            @Override
-            public void onChanged( List<Note> notes ) {
-                trashNotesList = notes;
-                if ( trashNotesList.isEmpty() )
-                    stopReaper();
-                else
-                    startReaper();
-            }
+        trashedNotesObserver = notes -> {
+            trashNotesList = notes;
+            if ( trashNotesList.isEmpty() )
+                stopReaper();
+            else
+                startReaper();
         };
         notesViewModel.getTrashFragmentNotesList().observeForever( trashedNotesObserver );
     }

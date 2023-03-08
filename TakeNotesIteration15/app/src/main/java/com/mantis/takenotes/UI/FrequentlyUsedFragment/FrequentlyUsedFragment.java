@@ -195,6 +195,7 @@ public class FrequentlyUsedFragment extends Fragment {
             @Override
             public void onRecyclerViewEmpty( boolean isEmpty ) {
                 showMenu( isEmpty );
+                showEmptyView( isEmpty );
             }
 
             @Override
@@ -202,6 +203,13 @@ public class FrequentlyUsedFragment extends Fragment {
                 displayNoteCount( newNotesSize );
             }
         } );
+    }
+
+    private void showEmptyView( boolean show ) {
+        if ( show )
+            binding.frequentlyUsedFragmentContent.layoutEmpty.setVisibility( View.VISIBLE );
+        else
+            binding.frequentlyUsedFragmentContent.layoutEmpty.setVisibility( View.GONE );
     }
 
     private void navigateToAddNoteFragment( View view, int viewHolderPosition ) {

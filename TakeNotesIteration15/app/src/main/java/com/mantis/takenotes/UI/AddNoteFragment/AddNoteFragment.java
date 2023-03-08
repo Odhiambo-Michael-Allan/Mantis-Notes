@@ -1,5 +1,21 @@
 package com.mantis.takenotes.UI.AddNoteFragment;
 
+/**
+ * Copyright (C) 2017 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import android.content.Context;
 import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
@@ -19,39 +35,37 @@ import android.os.Looper;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
+import android.view.ViewGroup;
 import com.mantis.takenotes.Commands.ShareCommand;
 import com.mantis.takenotes.Models.NotesViewModel;
 
 import com.mantis.takenotes.Models.NotesViewModelFactory;
 import com.mantis.takenotes.R;
-import com.mantis.takenotes.Utils.DateProvider;
-
-import com.mantis.takenotes.Utils.Logger;
 import com.mantis.takenotes.Utils.ToastProvider;
-import com.mantis.takenotes.Repository.NoteRepository;
 
+import com.mantis.takenotes.Repository.NoteRepository;
 import com.mantis.takenotes.Repository.NoteRepositoryImpl;
 import com.mantis.takenotes.Repository.Note;
-import com.mantis.takenotes.databinding.TakeNotesFragmentAddNoteBinding;
 
+import com.mantis.takenotes.databinding.TakeNotesFragmentAddNoteBinding;
 import java.util.Arrays;
 import java.util.Date;
 
 import java.util.UUID;
 
+/**
+ * @author - Michael Allan Odhiambo
+ * @email - odhiambomichaelallan@gmail.com
+ * @date - 4th March 2023
+ */
+
 public class AddNoteFragment extends Fragment {
 
-//    public static final int HOME_FRAGMENT = 1;
-//    public static final int FREQUENT_FRAGMENT = 2;
-//    public static final int ARCHIVE_FRAGMENT = 3;
-//    public static final int TRASH_FRAGMENT = 4;
-//    public static final int SEARCH_FRAGMENT = 5;
     public static final String TIME_REMAINING = "Time Remaining";
     public static final String TIME_UP = "Time up";
     private static final int MAX_CHARACTERS_ALLOWED_IN_TITLE = 2000;
@@ -59,18 +73,17 @@ public class AddNoteFragment extends Fragment {
     private TakeNotesFragmentAddNoteBinding binding;
     private NotesViewModel notesViewModel;
     private NavController controller;
+
     private boolean isEditing;
     private int noteId;
-    //private int fragmentNavigatedFrom;
     private Note noteSelected;
-    private boolean fragmentIsAlive = true;
 
+    private boolean fragmentIsAlive = true;
     private Handler handler;
     private Note.NoteObserver trashedNoteObserver;
 
-    public AddNoteFragment() {
-        // Required empty public constructor
-    }
+    // Required public constructor..
+    public AddNoteFragment() {}
 
     public static AddNoteFragment newInstance() {
         AddNoteFragment fragment = new AddNoteFragment();
@@ -90,7 +103,8 @@ public class AddNoteFragment extends Fragment {
     public View onCreateView( LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState ) {
         // Inflate the layout for this fragment
-        binding = TakeNotesFragmentAddNoteBinding.inflate( inflater, container, false );
+        binding = TakeNotesFragmentAddNoteBinding.inflate( inflater, container,
+                false );
         return binding.getRoot();
     }
 
@@ -112,7 +126,7 @@ public class AddNoteFragment extends Fragment {
     }
 
     private void getNoteSelected() {
-        if ( noteId == -1 )  // If this condition is true, then we know for sure the user is creating a new note..
+        if ( noteId == -1 )
             return;
         // At this point, we know the user is editing an existing note..
         noteSelected = notesViewModel.getNoteWithId( noteId );
@@ -123,12 +137,7 @@ public class AddNoteFragment extends Fragment {
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration
                 .Builder( controller.getGraph() ).build();
         NavigationUI.setupWithNavController( binding.topToolbar, controller, appBarConfiguration );
-        binding.topToolbar.setNavigationOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick( View v ) {
-                handleBackNavigation();
-            }
-        } );
+        binding.topToolbar.setNavigationOnClickListener( v -> handleBackNavigation());
         binding.topToolbar.setTitle( "" );
         binding.topToolbar.inflateMenu( R.menu.take_notes_add_note_fragment_options_menu );
         attachListenersToMenuItems();
@@ -142,45 +151,37 @@ public class AddNoteFragment extends Fragment {
 
     private void attachListenerToDeleteOption() {
         MenuItem deleteMenuItem = binding.topToolbar.getMenu().findItem( R.id.delete_option );
-        deleteMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
-                if ( noteSelected != null )
-                    noteSelected.delete( notesViewModel.getNoteRepository() );
-                controller.navigateUp();
-                return true;
-            }
-        } );
+        deleteMenuItem.setOnMenuItemClickListener( menuItem -> {
+            if ( noteSelected != null )
+                noteSelected.delete( notesViewModel.getNoteRepository() );
+            controller.navigateUp();
+            return true;
+        });
     }
 
     private void attachListenerToShareOption() {
         MenuItem shareMenuItem = binding.topToolbar.getMenu().findItem( R.id.share_option );
-        shareMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
-                Note note = new Note( binding.noteTitleEditText.getText().toString(),
-                        binding.noteDescriptionEditText.getText().toString(), new Date(),
-                        NotesViewModel.HOME_FRAGMENT );
-                if ( note.getTitle().equals( "" ) && note.getDescription().equals( "" ) ) {
-                    ToastProvider.showToast( getContext(), getString( R.string.cannot_send_empty_message ) );
-                    return true;
-                }
-                new ShareCommand( getContext(), Arrays.asList( new Note[] { note } ),
-                        notesViewModel ).execute();
+        shareMenuItem.setOnMenuItemClickListener( menuItem -> {
+            Note note = new Note( binding.noteTitleEditText.getText().toString(),
+                    binding.noteDescriptionEditText.getText().toString(), new Date(),
+                    NotesViewModel.HOME_FRAGMENT );
+            if ( note.getTitle().equals( "" ) && note.getDescription().equals( "" ) ) {
+                ToastProvider.showToast( getContext(), getString(
+                        R.string.cannot_send_empty_message ) );
                 return true;
             }
+            new ShareCommand( getContext(), Arrays.asList( new Note[] { note } ),
+                    notesViewModel ).execute();
+            return true;
         } );
     }
 
     private void attachListenerToRestoreOption() {
         MenuItem restoreMenuItem = binding.topToolbar.getMenu().findItem( R.id.restore_option );
-        restoreMenuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick( @NonNull MenuItem menuItem ) {
-                noteSelected.restore( notesViewModel.getNoteRepository() );
-                controller.navigateUp();
-                return true;
-            }
+        restoreMenuItem.setOnMenuItemClickListener( menuItem -> {
+            noteSelected.restore( notesViewModel.getNoteRepository() );
+            controller.navigateUp();
+            return true;
         } );
     }
 
@@ -196,17 +197,16 @@ public class AddNoteFragment extends Fragment {
     }
 
     private void observeNoteTitleEditTextFocusChange() {
-        binding.noteTitleEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange( View view, boolean isFocused ) {
-                if ( isFocused ) {
-                    binding.textLimitCardView.setVisibility(View.VISIBLE);
-                    binding.noteTextLimit.setText( getString( R.string.note_title_text_limit, binding.noteTitleEditText.getText().length() ) );
-                }
-                else
-                    binding.textLimitCardView.setVisibility( View.GONE );
+        binding.noteTitleEditText.setOnFocusChangeListener( ( view, isFocused ) -> {
+            if ( isFocused ) {
+                binding.textLimitCardView.setVisibility( View.VISIBLE );
+                binding.noteTextLimit.setText( getString(
+                        R.string.note_title_text_limit,
+                        binding.noteTitleEditText.getText().length() ) );
             }
-        } );
+            else
+                binding.textLimitCardView.setVisibility( View.GONE );
+        });
     }
 
     private void observeNoteTitleTextChange() {
@@ -217,7 +217,8 @@ public class AddNoteFragment extends Fragment {
             @Override
             public void onTextChanged( CharSequence charSequence, int i, int i1, int i2 ) {
                 if ( charSequence.length() > MAX_CHARACTERS_ALLOWED_IN_TITLE ) {
-                    binding.noteTitleEditText.getText().delete( charSequence.length() - 1, charSequence.length() );
+                    binding.noteTitleEditText.getText().delete(
+                            charSequence.length() - 1, charSequence.length() );
                     ToastProvider.showToast( getContext(), getString( R.string.title_too_long ) );
                 }
                 else
@@ -235,16 +236,15 @@ public class AddNoteFragment extends Fragment {
     }
 
     private void observeNoteDescriptionFocusChange() {
-        binding.noteDescriptionEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean isFocused ) {
-                if ( isFocused ) {
-                    binding.textLimitCardView.setVisibility(View.VISIBLE);
-                    binding.noteTextLimit.setText( getString( R.string.note_description_text_limit, binding.noteDescriptionEditText.getText().length() ) );
-                }
-                else
-                    binding.textLimitCardView.setVisibility( View.GONE );
+        binding.noteDescriptionEditText.setOnFocusChangeListener( ( view, isFocused) -> {
+            if ( isFocused ) {
+                binding.textLimitCardView.setVisibility( View.VISIBLE );
+                binding.noteTextLimit.setText( getString(
+                        R.string.note_description_text_limit,
+                        binding.noteDescriptionEditText.getText().length() ) );
             }
+            else
+                binding.textLimitCardView.setVisibility( View.GONE );
         } );
     }
 
@@ -325,7 +325,8 @@ public class AddNoteFragment extends Fragment {
                 }
                 if ( fragmentIsAlive ){
                     String timeRemaining = message.getData().get( TIME_REMAINING ).toString();
-                    binding.trashFragmentBottomBanner.setText( getString( R.string.trash_content_bottom_banner, timeRemaining ) );
+                    binding.trashFragmentBottomBanner.setText(
+                            getString( R.string.trash_content_bottom_banner, timeRemaining ) );
                 }
             }
         };
@@ -381,7 +382,6 @@ public class AddNoteFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Logger.log( "FRAGMENT IS BEING DESTROYED" );
         if ( noteSelected != null && noteSelected.getOwner() == NotesViewModel.TRASH_FRAGMENT )
             removeObserverFromSelectedNote();
         fragmentIsAlive = false;
@@ -398,7 +398,7 @@ public class AddNoteFragment extends Fragment {
 
     public class NoteObserver implements Note.NoteObserver {
 
-        private String id;
+        private final String id;
 
         public NoteObserver( String id ) {
             this.id = id;

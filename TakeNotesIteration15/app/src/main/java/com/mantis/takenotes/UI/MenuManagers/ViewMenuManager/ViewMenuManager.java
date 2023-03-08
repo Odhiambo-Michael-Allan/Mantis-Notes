@@ -71,12 +71,10 @@ public abstract class ViewMenuManager {
     private void configureRecyclerViewComponents( RecyclerView recyclerView ) {
         setEmptyText();
         notesAdapter = ( NotesAdapter ) recyclerView.getAdapter();
-        notesAdapter.setEmptyView( getEmptyView() );
         notesAdapter.setNotesViewModel( notesViewModel );
     }
 
     protected abstract void setEmptyText();
-    protected abstract View getEmptyView();
 
     private void notifyListenersOfAdapterChange() {
         Iterator i = listeners.iterator();

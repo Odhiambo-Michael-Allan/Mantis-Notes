@@ -19,6 +19,12 @@ package com.mantis.takenotes.data.source.local;
 import androidx.room.TypeConverter;
 import java.util.Date;
 
+/**
+ * @author - Michael Allan Odhiambo
+ * @email - odhiambomichaelallan@gmail.com
+ * @date - 4th March 2023
+ */
+
 public class Converters {
 
     @TypeConverter

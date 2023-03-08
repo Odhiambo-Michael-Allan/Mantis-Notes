@@ -147,6 +147,7 @@ public class TrashFragment extends Fragment {
             @Override
             public void onRecyclerViewEmpty( boolean isEmpty ) {
                 showMenu( isEmpty );
+                showEmptyView( isEmpty );
             }
 
             @Override
@@ -154,6 +155,13 @@ public class TrashFragment extends Fragment {
                 displayNoteCount( newNotesSize );
             }
         } );
+    }
+
+    private void showEmptyView( boolean show ) {
+        if ( show )
+            binding.trashFragmentContent.layoutEmpty.setVisibility( View.VISIBLE );
+        else
+            binding.trashFragmentContent.layoutEmpty.setVisibility( View.GONE );
     }
 
     private void showMenu( boolean recyclerViewIsEmpty ) {

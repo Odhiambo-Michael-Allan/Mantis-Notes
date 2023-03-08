@@ -36,11 +36,6 @@ public class TrashFragmentViewMenuManager extends ViewMenuManager {
     }
 
     @Override
-    protected View getEmptyView() {
-        return binding.trashFragmentContent.layoutEmpty;
-    }
-
-    @Override
     protected Menu getMenu() {
         return binding.trashFragmentContent.trashFragmentAppBarLayout.toolbar.getMenu();
     }
